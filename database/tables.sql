@@ -172,6 +172,51 @@ INSERT INTO REACCIONES (REACCION, EMOJI) VALUES
 ('Me entristece', '😢'),
 ('Me enoja', '😠');
 
+
+-- Adding a column to control whether I want to keep the session started
 ALTER TABLE usuario ADD COLUMN IF NOT EXISTS REMEMBER_TOKEN VARCHAR(255) NULL;
 ALTER TABLE usuario ADD COLUMN IF NOT EXISTS TOKEN_EXPIRY DATETIME NULL;
 CREATE INDEX IF NOT EXISTS idx_remember_token ON usuario (REMEMBER_TOKEN);
+
+-- Insert game categories into the CATEGORIAS table
+INSERT INTO CATEGORIAS (CATEGORIA) VALUES 
+('Acción'),
+('Aventura'),
+('RPG'),
+('Estrategia'),
+('Simulación'),
+('Deportes'),
+('Carreras'),
+('Shooter'),
+('Plataformas'),
+('Puzzle'),
+('Survival Horror'),
+('MMORPG'),
+('Battle Royale'),
+('Mundo abierto'),
+('Sandbox'),
+('Indie'),
+('Educativos'),
+('Música y ritmo'),
+('Fighting'),
+('Hack and Slash'),
+('Beat em up'),
+('Roguelike'),
+('Metroidvania'),
+('Stealth'),
+('Tower Defense'),
+('Visual Novel'),
+('Point and Click'),
+('Conducción'),
+('Survival'),
+('Card Game'),
+('MOBA'),
+('RTS'),
+('Turnos'),
+('Construcción'),
+('Gestión'),
+('Rol táctico'),
+('Lucha'),
+('Arcade'),
+('Realidad Virtual'),
+('Realidad Aumentada');

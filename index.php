@@ -1,3 +1,15 @@
+<?php
+// Incluir el archivo de control de sesiones
+require_once './includes/session_control.php'; 
+
+// Si no hay sesión activa, redirigir al login
+// Si quieres que la página principal sea accesible sin iniciar sesión, comenta estas líneas
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ./pages/login.php');
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -5,89 +17,587 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Gameord</title>
+    <title>Gameord - Tu comunidad gamer</title>
 
     <link rel="shortcut icon" href="./assets/App-images/Gameord-logo.webp" type="image/x-icon">
     <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="./node_modules/bootstrap-icons/font/bootstrap-icons.css">
-
-    <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
-
+    
+    <style>
+        /* Custom styles */
+        :root {
+            --primary-color: #6f42c1;
+            --secondary-color: #4e73df;
+            --accent-color: #f0ad4e;
+            --dark-color: #343a40;
+            --light-color: #f8f9fa;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .navbar {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color)) !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-brand img {
+            transition: transform 0.3s ease;
+        }
+        
+        .navbar-brand:hover img {
+            transform: scale(1.1);
+        }
+        
+        .nav-icon {
+            transition: all 0.3s ease;
+            font-size: 1.4rem;
+        }
+        
+        .nav-item:hover .nav-icon {
+            transform: translateY(-3px);
+            color: var(--accent-color) !important;
+        }
+        
+        .search-box {
+            border-radius: 50px;
+            padding-left: 40px;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-icon {
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        
+        .content-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .content-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .game-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .game-img {
+            height: 160px;
+            object-fit: cover;
+        }
+        
+        .game-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 10px 0 5px;
+        }
+        
+        .game-category {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+        }
+        
+        .sidebar-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-header {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 8px;
+        }
+        
+        .category-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            color: var(--dark-color);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        
+        .category-item:hover {
+            color: var(--primary-color);
+            transform: translateX(5px);
+        }
+        
+        .category-icon {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+        
+        footer {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px 0;
+            margin-top: auto;
+        }
+        
+        .footer-link {
+            color: rgba(255, 255, 255, 0.8);
+            transition: color 0.2s ease;
+        }
+        
+        .footer-link:hover {
+            color: white;
+        }
+        
+        .social-icon {
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        /* Media queries for responsiveness */
+        @media (max-width: 992px) {
+            .sidebar {
+                margin-top: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .game-card {
+                margin-bottom: 20px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .navbar-brand span {
+                display: none;
+            }
+            
+            .search-box {
+                max-width: 200px;
+            }
+        }
+    </style>
 </head>
 
-<header class="navbar navbar-expand-lg navbar-dark bg-primary py-2 sticky-top">
-  <div class="container-fluid">
-    <!-- Logo and name -->
-    <a class="navbar-brand d-flex align-items-center" href="#">
-      <img src="./assets/App-images/Gameord-logo.webp" alt="Logo" class="me-2 rounded-2" height="40">
-      <span class="fw-bold fs-4 d-lg-block d-none">Gameord</span>
-    </a>
-    
-    <!-- Search -->
-    <div class="position-relative mx-3 flex-grow-1 ">
-      <i class="bi bi-search position-absolute text-muted" style="top: 7px; left: 12px;"></i>
-      <input type="text" class="form-control ps-5" placeholder="Buscar">
-    </div>
-    
-    <!-- Hamburger -->
-    <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    
-    <!-- Collapable content -->
-    <div class="collapse navbar-collapse flex-grow-0" id="navbarContent">
-      <!-- Icons -->
-      <ul class="navbar-nav d-flex align-items-center">
-        <!-- Chat -->
-        <li class="nav-item mx-1 mx-lg-2">
-          <a class="nav-link" href="./pages/chat.php" title="Chat">
-            <i class="bi bi-chat fs-4"></i>
-          </a>
-        </li>
-        <!-- Notifications -->
-        <li class="nav-item mx-1 mx-lg-2">
-          <div class="dropdown">
-            <a class="nav-link dropdown-toggle" href="" id="Notificaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-headset fs-4"></i>
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="Notificaciones">
-              <li><a class="dropdown-item-text text-decoration-none" href="">Sin notificaciones</a></li>
-            </ul>
-          </div>
-        </li>
-        <!-- Create post -->
-        <li class="nav-item mx-1 mx-lg-2">
-          <a class="nav-link" href="./pages/post.php" title="Crear">
-            <i class="bi bi-plus-circle fs-4"></i>
-          </a>
-        </li>
-        <!-- User profile and settings -->
-        <li class="nav-item mx-1 mx-lg-2">
-          <div class="dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-person-circle fs-4"></i>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-              <li><a class="dropdown-item" href="./pages/profile.php">Mi perfil</a></li>
-              <li><a class="dropdown-item" href="#">Configuración</a></li>
-              <li><a class="dropdown-item" href="#">Cambiar de cuenta</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="./pages/logout.php">Cerrar sesión</a></li>
-              </ul>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
-</header>
-
 <body>
+    <!-- Navbar -->
+    <header class="navbar navbar-expand-lg navbar-dark py-2 sticky-top">
+        <div class="container">
+            <!-- Logo and name -->
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="./assets/App-images/Gameord-logo.webp" alt="Logo" class="me-2 rounded-2" height="40">
+                <span class="fw-bold fs-4">Gameord</span>
+            </a>
+            
+            <!-- Search -->
+            <div class="position-relative d-none d-md-block mx-3 flex-grow-1">
+                <i class="bi bi-search position-absolute search-icon"></i>
+                <input type="text" class="form-control search-box" placeholder="Buscar juegos, categorías, usuarios...">
+            </div>
+            
+            <!-- Hamburger -->
+            <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- Collapsible content -->
+            <div class="collapse navbar-collapse flex-grow-0" id="navbarContent">
+                <!-- Icons -->
+                <ul class="navbar-nav d-flex align-items-center">
+                    <!-- Search button mobile -->
+                    <li class="nav-item d-md-none mx-1">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#searchModal" title="Buscar">
+                            <i class="bi bi-search nav-icon"></i>
+                        </a>
+                    </li>
+                    <!-- Chat -->
+                    <li class="nav-item mx-2">
+                        <a class="nav-link" href="./pages/chat.php" title="Chat">
+                            <i class="bi bi-chat nav-icon"></i>
+                        </a>
+                    </li>
+                    <!-- Notifications -->
+                    <li class="nav-item mx-2">
+                        <div class="dropdown">
+                            <a class="nav-link" href="#" id="Notificaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-bell nav-icon"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    3
+                                    <span class="visually-hidden">notificaciones no leídas</span>
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="Notificaciones" style="min-width: 300px;">
+                                <li class="px-3 py-2 bg-light fw-bold">Notificaciones</li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item d-flex align-items-center py-2" href="#">
+                                    <div class="flex-shrink-0">
+                                        <img src="./assets/App-images/Gameord-logo.webp" alt="User" class="rounded-circle" width="40">
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <p class="mb-0"><strong>Usuario1</strong> comentó tu publicación</p>
+                                        <small class="text-muted">Hace 5 minutos</small>
+                                    </div>
+                                </a></li>
+                                <li><a class="dropdown-item d-flex align-items-center py-2" href="#">
+                                    <div class="flex-shrink-0">
+                                        <img src="./assets/App-images/Gameord-logo.webp" alt="User" class="rounded-circle" width="40">
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <p class="mb-0"><strong>Usuario2</strong> te envió una solicitud de amistad</p>
+                                        <small class="text-muted">Hace 2 horas</small>
+                                    </div>
+                                </a></li>
+                                <li><a class="dropdown-item d-flex align-items-center py-2" href="#">
+                                    <div class="flex-shrink-0">
+                                        <img src="./assets/App-images/Gameord-logo.webp" alt="User" class="rounded-circle" width="40">
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <p class="mb-0">¡Nuevo evento para <strong>Fortnite</strong>!</p>
+                                        <small class="text-muted">Hace 1 día</small>
+                                    </div>
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-center text-primary" href="#">Ver todas las notificaciones</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <!-- Create post -->
+                    <li class="nav-item mx-2">
+                        <a class="nav-link" href="./pages/post.php" title="Crear publicación">
+                            <i class="bi bi-plus-circle nav-icon"></i>
+                        </a>
+                    </li>
+                    <!-- User profile and settings -->
+                    <li class="nav-item mx-2">
+                        <div class="dropdown">
+                            <a class="nav-link d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="./assets/App-images/Gameord-logo.webp" alt="User" class="rounded-circle me-1" width="32" height="32">
+                                <span class="d-none d-lg-block ms-1">
+                                    <?php echo isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Usuario'; ?>
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="./pages/profile.php"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
+                                <li><a class="dropdown-item" href="./pages/settings.php"><i class="bi bi-gear me-2"></i>Configuración</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-people me-2"></i>Mis amigos</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="./pages/logout.php"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
 
-</body>
+    <!-- Search Modal for mobile -->
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="searchModalLabel">Buscar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control" placeholder="Buscar juegos, categorías, usuarios...">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<footer>
+    <!-- Main Content -->
+    <main class="container py-4">
+        <div class="row">
+            <!-- Main Content Column -->
+            <div class="col-lg-8">
+                <!-- Featured Games Section -->
+                <section class="content-section mb-4">
+                    <div class="content-header d-flex justify-content-between align-items-center">
+                        <h2 class="h4 mb-0">Juegos destacados</h2>
+                        <a href="#" class="text-decoration-none">Ver todos</a>
+                    </div>
+                    <div class="row">
+                        <!-- Game Card 1 -->
+                        <div class="col-md-4 col-sm-6 mb-3">
+                            <div class="card game-card h-100">
+                                <img src="./assets/Games-logos/Epic Games/Fortnite-logo.webp" class="game-img" alt="Game 1">
+                                <div class="card-body">
+                                    <h5 class="game-title">Fortnite</h5>
+                                    <span class="game-category">Battle Royale</span>
+                                    <p class="card-text small text-muted mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Game Card 2 -->
+                        <div class="col-md-4 col-sm-6 mb-3">
+                            <div class="card game-card h-100">
+                                <img src="./assets/Games-logos/Mojang/Minecraft-logo.webp" class="game-img" alt="Game 2">
+                                <div class="card-body">
+                                    <h5 class="game-title">Minecraft</h5>
+                                    <span class="game-category">Sandbox</span>
+                                    <p class="card-text small text-muted mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Game Card 3 -->
+                        <div class="col-md-4 col-sm-6 mb-3">
+                            <div class="card game-card h-100">
+                                <img src="./assets/Games-logos/Riot_Games/lol-logo.webp" class="game-img" alt="Game 3">
+                                <div class="card-body">
+                                    <h5 class="game-title">League of Legends</h5>
+                                    <span class="game-category">MOBA</span>
+                                    <p class="card-text small text-muted mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Recent Posts Section -->
+                <section class="content-section">
+                    <div class="content-header d-flex justify-content-between align-items-center">
+                        <h2 class="h4 mb-0">Publicaciones recientes</h2>
+                        <a href="#" class="text-decoration-none">Ver todas</a>
+                    </div>
+                    
+                    <!-- Post 1 -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-transparent d-flex align-items-center">
+                            <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="User">
+                            <div>
+                                <h6 class="mb-0">Usuario123</h6>
+                                <small class="text-muted">Hace 2 horas</small>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">¡Nueva actualización de Fortnite!</h5>
+                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
+                            <img src="https://via.placeholder.com/800x400" class="img-fluid rounded mb-3" alt="Post image">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> 24</button>
+                                    <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat"></i> 8</button>
+                                </div>
+                                <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-share"></i> Compartir</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Post 2 -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-transparent d-flex align-items-center">
+                            <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="User">
+                            <div>
+                                <h6 class="mb-0">GamerPro</h6>
+                                <small class="text-muted">Hace 5 horas</small>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Mis consejos para mejorar en Minecraft</h5>
+                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> 47</button>
+                                    <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat"></i> 15</button>
+                                </div>
+                                <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-share"></i> Compartir</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Sidebar Column -->
+            <div class="col-lg-4 sidebar">
+                <!-- User Profile Card -->
+                <section class="sidebar-section">
+                    <div class="text-center mb-3">
+                        <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle mb-2" width="80" height="80" alt="User Profile">
+                        <h5><?php echo isset($_SESSION['user_name']) ? $_SESSION['user_name'] . ' ' . $_SESSION['user_lastname'] : 'Usuario'; ?></h5>
+                        <p class="text-muted mb-2">@<?php echo isset($_SESSION['username']) ? $_SESSION['username'] : 'username'; ?></p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <button class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i> Editar perfil</button>
+                            <button class="btn btn-sm btn-outline-primary"><i class="bi bi-share"></i> Compartir</button>
+                        </div>
+                    </div>
+                    <div class="row text-center g-0">
+                        <div class="col-4 border-end">
+                            <h6>142</h6>
+                            <small class="text-muted">Publicaciones</small>
+                        </div>
+                        <div class="col-4 border-end">
+                            <h6>723</h6>
+                            <small class="text-muted">Seguidores</small>
+                        </div>
+                        <div class="col-4">
+                            <h6>256</h6>
+                            <small class="text-muted">Siguiendo</small>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Categories Section -->
+                <section class="sidebar-section">
+                    <h5 class="sidebar-header">Categorías populares</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="category-item"><i class="bi bi-controller category-icon"></i> Battle Royale</a></li>
+                        <li><a href="#" class="category-item"><i class="bi bi-controller category-icon"></i> MOBA</a></li>
+                        <li><a href="#" class="category-item"><i class="bi bi-controller category-icon"></i> RPG</a></li>
+                        <li><a href="#" class="category-item"><i class="bi bi-controller category-icon"></i> FPS</a></li>
+                        <li><a href="#" class="category-item"><i class="bi bi-controller category-icon"></i> Simulación</a></li>
+                        <li><a href="#" class="category-item"><i class="bi bi-controller category-icon"></i> Estrategia</a></li>
+                    </ul>
+                </section>
+                
+                <!-- Trending Gamers -->
+                <section class="sidebar-section">
+                    <h5 class="sidebar-header">Gamers populares</h5>
+                    <div class="d-flex align-items-center mb-2">
+                        <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="Gamer 1">
+                        <div>
+                            <h6 class="mb-0">GamerPro</h6>
+                            <small class="text-muted">1.2K seguidores</small>
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary ms-auto">Seguir</button>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="Gamer 2">
+                        <div>
+                            <h6 class="mb-0">GameMaster</h6>
+                            <small class="text-muted">985 seguidores</small>
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary ms-auto">Seguir</button>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="Gamer 3">
+                        <div>
+                            <h6 class="mb-0">EpicPlayer</h6>
+                            <small class="text-muted">756 seguidores</small>
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary ms-auto">Seguir</button>
+                    </div>
+                </section>
+                
+                <!-- Upcoming Events -->
+                <section class="sidebar-section">
+                    <h5 class="sidebar-header">Próximos eventos</h5>
+                    <div class="card mb-2">
+                        <div class="card-body p-3">
+                            <h6 class="card-title">Torneo de Fortnite</h6>
+                            <p class="card-text small mb-2"><i class="bi bi-calendar me-1"></i> 15 de mayo, 2025</p>
+                            <p class="card-text small"><i class="bi bi-people me-1"></i> 128 participantes</p>
+                            <button class="btn btn-sm btn-primary w-100">Inscribirse</button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body p-3">
+                            <h6 class="card-title">Estreno de Call of Duty</h6>
+                            <p class="card-text small mb-2"><i class="bi bi-calendar me-1"></i> 22 de mayo, 2025</p>
+                            <p class="card-text small"><i class="bi bi-people me-1"></i> 98 interesados</p>
+                            <button class="btn btn-sm btn-primary w-100">Me interesa</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
 
-</footer>
+    <!-- Footer -->
+    <footer class="mt-auto py-4">
+        <div class="container">
+            <div class="row gy-3">
+                <div class="col-lg-4">
+                    <h5 class="mb-3">Gameord</h5>
+                    <p class="mb-3">La comunidad para gamers donde podrás compartir tus experiencias, encontrar compañeros de juego y mantenerte al día con las últimas novedades.</p>
+                    <div class="d-flex">
+                        <a href="#" class="social-icon"><i class="bi bi-facebook text-white"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-twitter text-white"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-instagram text-white"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-youtube text-white"></i></a>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h6 class="mb-3">Enlaces</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="footer-link">Inicio</a></li>
+                        <li><a href="#" class="footer-link">Explorar</a></li>
+                        <li><a href="#" class="footer-link">Noticias</a></li>
+                        <li><a href="#" class="footer-link">Eventos</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h6 class="mb-3">Categorías</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="footer-link">Battle Royale</a></li>
+                        <li><a href="#" class="footer-link">MOBA</a></li>
+                        <li><a href="#" class="footer-link">RPG</a></li>
+                        <li><a href="#" class="footer-link">FPS</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h6 class="mb-3">Suscríbete a nuestro boletín</h6>
+                    <p class="mb-3">Recibe las últimas noticias y actualizaciones directamente en tu correo.</p>
+                    <div class="input-group">
+                        <input type="email" class="form-control" placeholder="Tu correo electrónico">
+                        <button class="btn btn-light" type="button">Suscribirse</button>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4 bg-light">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">© 2025 Gameord. Todos los derechos reservados.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+                    <a href="#" class="footer-link me-3">Términos de servicio</a>
+                    <a href="#" class="footer-link me-3">Política de privacidad</a>
+                    <a href="#" class="footer-link">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-</html>
+    <!-- Scripts -->
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body

@@ -109,7 +109,7 @@
     <div class="container">
         <div class="login-container bg-white">
             <div class="text-center mb-4">
-                <img src="../assets/App-images/Gameord-logo.webp" alt="Gameord Logo" height="60" class="mb-2">
+                <img src="../assets/App-images/Gameord-logo.webp" alt="Gameord Logo" height="60" class="mb-2 rounded-2">
                 <h2 class="text-primary">Iniciar Sesión</h2>
             </div>
             
