@@ -62,6 +62,7 @@
 
     <!-- Boostrap downloaded import -->
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../node_modules/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="shortcut icon" href="../assets/App-images/Gameord-logo.webp" type="image/x-icon">
     
     <style>
@@ -76,8 +77,32 @@
             color: #dc3545;
             margin-bottom: 15px;
         }
+        .input-with-icon {
+            position: relative;
+        }
+        .input-with-icon .icon-left {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        .input-with-icon .icon-right {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            cursor: pointer;
+        }
+        .input-with-icon input {
+            padding-left: 35px;
+        }
+        .input-with-icon input[type="password"],
+        .input-with-icon input[type="text"] {
+            padding-right: 35px;
+        }
     </style>
-
 </head>
 <body class="bg-light">
     
@@ -96,13 +121,20 @@
                 <!-- Form group for username -->
                 <div class="form-group mb-3">
                     <label for="username">Nombre de usuario</label>
-                    <input type="text" class="form-control" name="username" placeholder="Nombre de usuario" required>
+                    <div class="input-with-icon">
+                        <i class="bi bi-person icon-left"></i>
+                        <input type="text" class="form-control" name="username" id="username" placeholder="Nombre de usuario" required>
+                    </div>
                 </div>
                 
                 <!-- Form group for password -->
                 <div class="form-group mb-3">
                     <label for="password">Contraseña</label>
-                    <input type="password" class="form-control" name="password" placeholder="Contraseña" required>
+                    <div class="input-with-icon">
+                        <i class="bi bi-lock icon-left"></i>
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Contraseña" required>
+                        <i class="bi bi-eye-slash icon-right" id="togglePassword"></i>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary w-100 mb-3">Iniciar Sesión</button>
@@ -112,5 +144,8 @@
         </div>
     </div>
 
+    <!-- Scripts -->
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/login.js"></script>
 </body>
 </html>

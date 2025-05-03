@@ -28,37 +28,53 @@ function registrarUsuario($nombre, $apellidos, $usuario, $correo, $password, $co
         return 0;
     }
 }
+
 // Function to check the name of the register form
 function comprobarNombre($nombre) {
-    
     $nombre = trim($nombre); // Remove spaces
+    
+    // Check if empty
+    if (empty($nombre)) {
+        return "El nombre es obligatorio.";
+    }
 
     // Check if the name only contains letters and spaces
     if (!preg_match("/^[a-zA-Z ]*$/", $nombre)) {
         return "El nombre solo puede contener letras y espacios.";
     }
-    echo "Nombre correcto";
+    
     return true;
-
 }
 
 // Function to check the last name of the register form
 function comprobarApellidos($apellidos) {
-    echo "Entrando";
-
     $apellidos = trim($apellidos); // Remove spaces
+    
+    // Check if empty
+    if (empty($apellidos)) {
+        return "Los apellidos son obligatorios.";
+    }
 
     // Check if the lastname only contains letters and spaces
     if (!preg_match("/^[a-zA-Z ]*$/", $apellidos)) {
-        return "El Apellido solo puede contener letras y espacios.";
+        return "Los apellidos solo pueden contener letras y espacios.";
     }
-    echo "Apellido correcto";
+    
     return true;
-
 }
 
 // Function to check the username of the register form
 function comprobarUsername($username) {
+    // Check if empty
+    if (empty($username)) {
+        return "El nombre de usuario es obligatorio.";
+    }
+    
+    // Check username format (alphanumeric and underscore only)
+    if (!preg_match("/^[a-zA-Z0-9_]*$/", $username)) {
+        return "El nombre de usuario solo puede contener letras, números y guiones bajos.";
+    }
+    
     try {
         // SQL query to check if the username already exists
         $sql = "SELECT USUARIO FROM usuario WHERE USUARIO = ?";
@@ -70,15 +86,25 @@ function comprobarUsername($username) {
             return "El nombre de usuario ya existe.";
         }
     } catch (Exception $e) {
-        error_log("Error en comprobarUsername: " . $e->getMessage());      
+        error_log("Error en comprobarUsername: " . $e->getMessage());
+        return "Error al verificar el nombre de usuario.";
     }
-    echo "Username correcto";
+    
     return true;
-
 }
 
 // Function to check the email of the register form
 function comprobarEmail($email) {
+    // Check if empty
+    if (empty($email)) {
+        return "El correo electrónico es obligatorio.";
+    }
+    
+    // Validate email format
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return "El formato del correo electrónico no es válido.";
+    }
+    
     try {
         // SQL query to check if the email already exists
         $sql = "SELECT CORREO FROM usuarios_info WHERE CORREO = ?";
@@ -90,17 +116,26 @@ function comprobarEmail($email) {
             return "El correo ya existe.";
         }
     } catch (Exception $e) {
-        error_log("Error en comprobarEmail: " . $e->getMessage());      
+        error_log("Error en comprobarEmail: " . $e->getMessage());
+        return "Error al verificar el correo electrónico.";
     }
-    echo "Email correcto";
+    
     return true;
-
 }
 
 // Function to check the password of the register form
 function comprobarContrasena($password, $confirmPassword) {
     // Array to store errors
     $errores = [];
+    
+    // Check if the password is empty
+    if (empty($password)) {
+        $errores[] = "La contraseña es obligatoria";
+        return [
+            'valido' => false,
+            'errores' => $errores
+        ];
+    }
     
     // Check if the password is at least 8 characters
     if (strlen($password) < 8) {
@@ -131,12 +166,11 @@ function comprobarContrasena($password, $confirmPassword) {
     if ($password !== $confirmPassword) {
         $errores[] = "Las contraseñas no coinciden";
     }
-    echo "Contraseña correcta";
+    
     return [
         'valido' => empty($errores),
         'errores' => $errores
     ];
-
 }
 
 // Function to check the login
@@ -164,4 +198,110 @@ function comprobarlogin($username, $password) {
     return false;
 }
 
+// Function to validate login form data
+function validarFormularioLogin($username, $password) {
+    $errores = [];
+    
+    // Validate username
+    if (empty($username)) {
+        $errores['username'] = "El nombre de usuario es obligatorio";
+    }
+    
+    // Validate password
+    if (empty($password)) {
+        $errores['password'] = "La contraseña es obligatoria";
+    }
+    
+    // If there are no validation errors, check credentials
+    if (empty($errores)) {
+        if (!comprobarlogin($username, $password)) {
+            $errores['credenciales'] = "Usuario o contraseña incorrectos";
+        }
+    }
+    
+    return [
+        'valido' => empty($errores),
+        'errores' => $errores
+    ];
+}
+
+// Function to validate register form data
+function validarFormularioRegistro($nombre, $apellidos, $usuario, $correo, $birthdate, $password, $confirmPassword) {
+    $errores = [];
+    
+    // Validate nombre
+    $validacionNombre = comprobarNombre($nombre);
+    if ($validacionNombre !== true) {
+        $errores['nombre'] = $validacionNombre;
+    }
+    
+    // Validate apellidos
+    $validacionApellidos = comprobarApellidos($apellidos);
+    if ($validacionApellidos !== true) {
+        $errores['apellidos'] = $validacionApellidos;
+    }
+    
+    // Validate username
+    $validacionUsername = comprobarUsername($usuario);
+    if ($validacionUsername !== true) {
+        $errores['usuario'] = $validacionUsername;
+    }
+    
+    // Validate email
+    $validacionEmail = comprobarEmail($correo);
+    if ($validacionEmail !== true) {
+        $errores['correo'] = $validacionEmail;
+    }
+    
+    // Validate birthdate
+    if (empty($birthdate)) {
+        $errores['birthdate'] = "La fecha de nacimiento es obligatoria";
+    } else {
+        $fechaNacimiento = new DateTime($birthdate);
+        $hoy = new DateTime();
+        $edad = $hoy->diff($fechaNacimiento)->y;
+        
+        if ($edad < 13) {
+            $errores['birthdate'] = "Debes tener al menos 13 años para registrarte";
+        }
+    }
+    
+    // Validate password
+    $validacionPassword = comprobarContrasena($password, $confirmPassword);
+    if (!$validacionPassword['valido']) {
+        $errores['password'] = $validacionPassword['errores'];
+    }
+    
+    return [
+        'valido' => empty($errores),
+        'errores' => $errores
+    ];
+}
+
+// Function to get a user by ID
+function obtenerUsuarioPorId($userId) {
+    try {
+        $sql = "SELECT u.IDUSUARIO, u.USUARIO, ui.NOMBRE, ui.APELLIDOS, ui.CORREO 
+                FROM usuario u 
+                JOIN usuarios_info ui ON u.IDUSUARIO = ui.IDUSUARIO 
+                WHERE u.IDUSUARIO = ?";
+        $user = DB::getOne($sql, [$userId]);
+        return $user;
+    } catch (Exception $e) {
+        error_log("Error en obtenerUsuarioPorId: " . $e->getMessage());
+        return null;
+    }
+}
+
+// Function to get a user by username
+function obtenerUsuarioPorUsername($username) {
+    try {
+        $sql = "SELECT u.IDUSUARIO FROM usuario u WHERE u.USUARIO = ?";
+        $user = DB::getOne($sql, [$username]);
+        return $user ? $user['IDUSUARIO'] : null;
+    } catch (Exception $e) {
+        error_log("Error en obtenerUsuarioPorUsername: " . $e->getMessage());
+        return null;
+    }
+}
 ?>
