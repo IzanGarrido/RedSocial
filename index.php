@@ -73,8 +73,8 @@
               <li><a class="dropdown-item" href="#">Configuración</a></li>
               <li><a class="dropdown-item" href="#">Cambiar de cuenta</a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="./pages/register.php">Cerrar sesión</a></li>
-            </ul>
+              <li><a class="dropdown-item" href="./pages/logout.php">Cerrar sesión</a></li>
+              </ul>
           </div>
         </li>
       </ul>

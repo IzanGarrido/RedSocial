@@ -1,10 +1,12 @@
 <?php
 
+// Config for the database
 const MYSQL_ROOT="root";
 const MYSQL_ROOT_PASSWORD="";
 const MYSQL_USER="tu_usuario";
 const MYSQL_PASSWORD="tu_password";
 
+// Trait 
 trait config {
     
     public static function connectDB()
