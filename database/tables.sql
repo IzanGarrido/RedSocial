@@ -163,7 +163,7 @@ CREATE INDEX idx_notificaciones_usuario ON NOTIFICACIONES(IDUSUARIO_DESTINO, LEI
 CREATE INDEX idx_mensajes_receptor ON MENSAJES(IDUSUARIO_RECEPTOR, LEIDO);
 CREATE INDEX idx_usuarios_juegos ON USUARIOS_JUEGOS(IDUSUARIO, FAVORITO);
 
--- Insertar datos de ejemplo para las reacciones
+-- Insert reaction emotes to the table
 INSERT INTO REACCIONES (REACCION, EMOJI) VALUES 
 ('Me gusta', '👍'),
 ('Me encanta', '❤️'),

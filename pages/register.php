@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ) {
             echo "Registrando";
             registrarUsuario($nombre, $apellidos, $username, $email, $password, $confirmPassword);
+            header("Location: ./login.php");
         }
     } else {
         echo "Todos los campos son obligatorios.";
