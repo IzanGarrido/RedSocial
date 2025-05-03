@@ -304,4 +304,10 @@ function obtenerUsuarioPorUsername($username) {
         return null;
     }
 }
+
+// Function to get all the categories from index page
+function obtenerCategorias() {
+    $categorias = DB::getAll("SELECT ID_CATEGORIA, CATEGORIA FROM categorias ORDER BY CATEGORIA ASC");
+    return $categorias;
+}
 ?>
