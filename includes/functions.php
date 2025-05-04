@@ -1,4 +1,7 @@
 <?php
+/**
+ * @author Izan Garrido Quintana
+ */
 // Include the config file
 require_once 'config.php';
 
@@ -31,7 +34,8 @@ function registrarUsuario($nombre, $apellidos, $usuario, $correo, $password, $co
 
 // Function to check the name of the register form
 function comprobarNombre($nombre) {
-    $nombre = trim($nombre); // Remove spaces
+    // Remove spaces
+    $nombre = trim($nombre); 
     
     // Check if empty
     if (empty($nombre)) {
@@ -48,7 +52,8 @@ function comprobarNombre($nombre) {
 
 // Function to check the last name of the register form
 function comprobarApellidos($apellidos) {
-    $apellidos = trim($apellidos); // Remove spaces
+    // Remove spaces
+    $apellidos = trim($apellidos); 
     
     // Check if empty
     if (empty($apellidos)) {
@@ -86,7 +91,7 @@ function comprobarUsername($username) {
             return "El nombre de usuario ya existe.";
         }
     } catch (Exception $e) {
-        error_log("Error en comprobarUsername: " . $e->getMessage());
+        error_log("Error al comprobar el nombre de usuario: " . $e->getMessage());
         return "Error al verificar el nombre de usuario.";
     }
     
@@ -217,59 +222,6 @@ function validarFormularioLogin($username, $password) {
         if (!comprobarlogin($username, $password)) {
             $errores['credenciales'] = "Usuario o contraseña incorrectos";
         }
-    }
-    
-    return [
-        'valido' => empty($errores),
-        'errores' => $errores
-    ];
-}
-
-// Function to validate register form data
-function validarFormularioRegistro($nombre, $apellidos, $usuario, $correo, $birthdate, $password, $confirmPassword) {
-    $errores = [];
-    
-    // Validate nombre
-    $validacionNombre = comprobarNombre($nombre);
-    if ($validacionNombre !== true) {
-        $errores['nombre'] = $validacionNombre;
-    }
-    
-    // Validate apellidos
-    $validacionApellidos = comprobarApellidos($apellidos);
-    if ($validacionApellidos !== true) {
-        $errores['apellidos'] = $validacionApellidos;
-    }
-    
-    // Validate username
-    $validacionUsername = comprobarUsername($usuario);
-    if ($validacionUsername !== true) {
-        $errores['usuario'] = $validacionUsername;
-    }
-    
-    // Validate email
-    $validacionEmail = comprobarEmail($correo);
-    if ($validacionEmail !== true) {
-        $errores['correo'] = $validacionEmail;
-    }
-    
-    // Validate birthdate
-    if (empty($birthdate)) {
-        $errores['birthdate'] = "La fecha de nacimiento es obligatoria";
-    } else {
-        $fechaNacimiento = new DateTime($birthdate);
-        $hoy = new DateTime();
-        $edad = $hoy->diff($fechaNacimiento)->y;
-        
-        if ($edad < 13) {
-            $errores['birthdate'] = "Debes tener al menos 13 años para registrarte";
-        }
-    }
-    
-    // Validate password
-    $validacionPassword = comprobarContrasena($password, $confirmPassword);
-    if (!$validacionPassword['valido']) {
-        $errores['password'] = $validacionPassword['errores'];
     }
     
     return [

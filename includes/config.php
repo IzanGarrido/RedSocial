@@ -1,4 +1,7 @@
 <?php
+/**
+ * @author Izan Garrido Quintana
+ */
 
 // Config for the database
 const MYSQL_ROOT="root";
@@ -9,6 +12,7 @@ const MYSQL_PASSWORD="tu_password";
 // Trait 
 trait config {
     
+    // Method to connect to the database
     public static function connectDB()
     {
         try {
@@ -24,7 +28,7 @@ trait config {
         return $conn;
     }
     
-    // Método para ejecutar consultas
+    // Method to execute a query
     public static function executeQuery($sql, $params = [])
     {
         try {
@@ -37,32 +41,28 @@ trait config {
         }
     }
     
-    // Método para obtener todos los registros
+    // Method to get all records
     public static function getAll($sql, $params = [])
     {
         $stmt = self::executeQuery($sql, $params);
         return $stmt->fetchAll();
     }
     
-    // Método para obtener un solo registro
+    // Method to get one record
     public static function getOne($sql, $params = [])
     {
         $stmt = self::executeQuery($sql, $params);
         return $stmt->fetch();
     }
     
+    // Method to insert a record
     public static function insert($sql, $params = []) {
     try {
         $conn = self::connectDB();
         $stmt = $conn->prepare($sql);
         $result = $stmt->execute($params);
         $lastId = $conn->lastInsertId();
-        
-        // Debug info
-        error_log("SQL: " . $sql);
-        error_log("Execute result: " . ($result ? "true" : "false"));
-        error_log("Last inserted ID: " . $lastId);
-        
+            
         return $lastId;
     } catch (PDOException $e) {
         error_log("Insert error: " . $e->getMessage());

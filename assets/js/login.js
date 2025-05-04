@@ -1,3 +1,4 @@
+// Script for show/hide password
 document.addEventListener('DOMContentLoaded', function() {
     const togglePassword = document.querySelector('#togglePassword');
     const password = document.querySelector('#password');

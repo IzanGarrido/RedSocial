@@ -1,3 +1,4 @@
+// Script for calculate max date
 document.addEventListener('DOMContentLoaded', function() {
     // Obtain the input element
     const birthdateInput = document.getElementById('birthdate');

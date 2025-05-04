@@ -1,62 +1,62 @@
 <?php
-// Archivo para control de sesiones
+/**
+ * @author Izan Garrido Quintana
+ */
 
-// Configuración para que la sesión PHP persista más tiempo
-// Esto hace que la sesión PHP dure 30 días en lugar del tiempo predeterminado
-ini_set('session.gc_maxlifetime', 2592000); // 30 días en segundos
-ini_set('session.cookie_lifetime', 2592000); // 30 días para la cookie de sesión PHP
+// This will make the PHP session persist for 30 days instead of the default time
+ini_set('session.gc_maxlifetime', 2592000);
+ini_set('session.cookie_lifetime', 2592000);
 
-// Iniciar o reanudar la sesión
+// Start or resume the session
 session_start();
 
-// Función para verificar si hay una sesión activa
+// Function to check if there is an active session
 function checkSession() {
-    // Si no existe la sesión o no está autenticado, redirigir al login
+    // If there is no session or the user is not authenticated, redirect to login
     if (!isset($_SESSION['user_id'])) {
-        // Verificar si existe una cookie de "recordarme"
+        // Verify if there is a remember_token cookie
         if (isset($_COOKIE['remember_token'])) {
-            // Intentar autenticar con la cookie
+            // Attempt to authenticate with cookie
             if (authenticateWithCookie()) {
-                // Si la autenticación fue exitosa, continuar
+                // If authentication with cookie is successful, return true
                 return true;
             }
         }
         
-        // Guardar la URL actual para volver después del login
+        // Save the current URL for redirecting after login
         $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
         
-        // Redirigir al login
+        // Redirect to login
         header('Location: ' . getBasePath() . 'pages/login.php');
         exit;
     }
     
-    // Opcional: Actualizar la hora de último acceso
+    // Update the last activity time
     $_SESSION['last_activity'] = time();
     
-    // Opcional: Verificar tiempo de inactividad (aumentado a 7 días para mayor comodidad)
+    // Verify if the user has been inactive for more than 7 days
     if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 604800)) {
-        // Si han pasado más de 7 días de inactividad, destruir la sesión
+        // If the user has been inactive for more than 7 days, log them out
         logoutUser();
         header('Location: ' . getBasePath() . 'pages/login.php');
         exit;
     }
     
-    // Si todo está bien, el script continúa normalmente
     return true;
 }
 
-// Función para autenticar con cookie
+// Function to authenticate with cookie
 function authenticateWithCookie() {
-    // Obtener el token de la cookie
+    // Obtain the token from the cookie
     $token = $_COOKIE['remember_token'];
     
-    // Incluir el archivo de funciones si no está incluido
+    // Include the config file if not already included
     if (!function_exists('DB::getOne')) {
         require_once 'config.php';
     }
     
     try {
-        // Buscar el usuario con ese token
+        // Find the user in the database based on the token
         $sql = "SELECT u.IDUSUARIO, u.USUARIO, ui.NOMBRE, ui.APELLIDOS, ui.CORREO 
                 FROM usuario u 
                 JOIN usuarios_info ui ON u.IDUSUARIO = ui.IDUSUARIO 
@@ -64,23 +64,23 @@ function authenticateWithCookie() {
         $user = DB::getOne($sql, [$token]);
         
         if ($user) {
-            // Crear la sesión para el usuario
+            // Create the session for the user
             $_SESSION['user_id'] = $user['IDUSUARIO'];
             $_SESSION['username'] = $user['USUARIO'];
             $_SESSION['user_name'] = $user['NOMBRE'];
             $_SESSION['user_lastname'] = $user['APELLIDOS'];
             $_SESSION['user_email'] = $user['CORREO'];
             $_SESSION['last_activity'] = time();
-            
-            // Generar un nuevo token y actualizar en la BD (seguridad adicional)
+        
+            // Generate a new token and update in the DB
             $new_token = bin2hex(random_bytes(32));
-            // Extiende la expiración a 90 días para mayor duración
+            // Extends the expiration to 90 days for longer duration
             $expiry = date('Y-m-d H:i:s', strtotime('+90 days'));
             
             $updateSql = "UPDATE usuario SET REMEMBER_TOKEN = ?, TOKEN_EXPIRY = ? WHERE IDUSUARIO = ?";
             DB::executeQuery($updateSql, [$new_token, $expiry, $user['IDUSUARIO']]);
             
-            // Actualizar la cookie con mayor duración (90 días)
+            // Update the cookie with a longer duration (90 days)
             setcookie('remember_token', $new_token, time() + (86400 * 90), '/', '', false, true);
             
             return true;
@@ -88,17 +88,18 @@ function authenticateWithCookie() {
     } catch (Exception $e) {
         error_log("Error en authenticateWithCookie: " . $e->getMessage());
     }
-    
-    // Si llegamos aquí, la autenticación falló
-    // Borrar la cookie inválida
+
+    // If we get here, authentication failed
+    // Delete invalid cookie
     setcookie('remember_token', '', time() - 3600, '/', '', false, true);
     return false;
 }
 
 // Función para crear sesión de usuario
+// Function for create user session
 function createUserSession($userId, $rememberMe = false) {
     try {
-        // Obtener los datos del usuario
+        // Obtain the user data from the database
         $sql = "SELECT u.IDUSUARIO, u.USUARIO, ui.NOMBRE, ui.APELLIDOS, ui.CORREO 
                 FROM usuario u 
                 JOIN usuarios_info ui ON u.IDUSUARIO = ui.IDUSUARIO 
@@ -106,7 +107,7 @@ function createUserSession($userId, $rememberMe = false) {
         $user = DB::getOne($sql, [$userId]);
         
         if ($user) {
-            // Crear la sesión
+            // Create the session for the user
             $_SESSION['user_id'] = $user['IDUSUARIO'];
             $_SESSION['username'] = $user['USUARIO'];
             $_SESSION['user_name'] = $user['NOMBRE'];
@@ -114,18 +115,18 @@ function createUserSession($userId, $rememberMe = false) {
             $_SESSION['user_email'] = $user['CORREO'];
             $_SESSION['last_activity'] = time();
             
-            // Si el usuario marcó "recordarme" o queremos que siempre se recuerde
+            // If rememberMe is true, generate a new token and update in the DB
             if ($rememberMe) {
-                // Generar un token único
+                // Generate a unique token
                 $token = bin2hex(random_bytes(32));
-                // Expiración extendida a 90 días
+                // Expire the token in 90 days
                 $expiry = date('Y-m-d H:i:s', strtotime('+90 days'));
                 
-                // Asegurarse de que la tabla usuario tenga las columnas REMEMBER_TOKEN y TOKEN_EXPIRY
+                // Asegure that the user table has columns REMEMBER_TOKEN and TOKEN_EXPIRY
                 $updateSql = "UPDATE usuario SET REMEMBER_TOKEN = ?, TOKEN_EXPIRY = ? WHERE IDUSUARIO = ?";
                 DB::executeQuery($updateSql, [$token, $expiry, $user['IDUSUARIO']]);
                 
-                // Crear cookie (90 días para mayor duración)
+                // Create the cookie (90 days)
                 setcookie('remember_token', $token, time() + (86400 * 90), '/', '', false, true);
             }
             
@@ -138,12 +139,12 @@ function createUserSession($userId, $rememberMe = false) {
     return false;
 }
 
-// Función para cerrar sesión
+// Function to log out the user
 function logoutUser() {
-    // Si hay una cookie de recordar, eliminarla de la BD
+    // If there is a remember_token cookie, delete it from the DB
     if (isset($_COOKIE['remember_token']) && isset($_SESSION['user_id'])) {
         try {
-            // Verificar si la clase DB está disponible, si no, incluir config.php
+            // Verify if the DB class is available, if not, include config.php
             if (!class_exists('DB')) {
                 require_once __DIR__ . '/config.php';
             }
@@ -154,25 +155,25 @@ function logoutUser() {
             error_log("Error al eliminar token: " . $e->getMessage());
         }
         
-        // Eliminar la cookie
+        // Delete the cookie
         setcookie('remember_token', '', time() - 3600, '/', '', false, true);
     }
     
-    // Destruir todas las variables de sesión
+    // Unset all session variables
     session_unset();
     
-    // Destruir la sesión
+    // Destroy the session
     session_destroy();
 }
 
-// Función auxiliar para obtener la ruta base del proyecto
+// Auxiliary function to get the base path
 function getBasePath() {
     $currentPath = $_SERVER['PHP_SELF'];
     $pathInfo = pathinfo($currentPath);
     $hostName = $_SERVER['HTTP_HOST'];
     $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
     
-    // Si estamos en una subcarpeta como 'pages'
+    // If the current path contains '/pages', remove it
     if (strpos($pathInfo['dirname'], '/pages') !== false) {
         return $protocol . $hostName . str_replace('/pages', '', $pathInfo['dirname']) . '/';
     }
