@@ -43,8 +43,8 @@ function comprobarNombre($nombre) {
     }
 
     // Check if the name only contains letters and spaces
-    if (!preg_match("/^[a-zA-Z ]*$/", $nombre)) {
-        return "El nombre solo puede contener letras y espacios.";
+    if (!preg_match("/^[a-zA-Z]*$/", $nombre)) {
+        return "El nombre solo puede contener letras.";
     }
     
     return true;
@@ -176,6 +176,15 @@ function comprobarContrasena($password, $confirmPassword) {
         'valido' => empty($errores),
         'errores' => $errores
     ];
+}
+
+// Function to create the user directory
+function creardirectoriobase($username) {
+    $directorio = "../assets/users/$username";
+    if (!file_exists($directorio)) {
+        mkdir($directorio, 0777, true);
+    }
+
 }
 
 // Function to check the login

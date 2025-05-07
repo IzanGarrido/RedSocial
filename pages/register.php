@@ -50,9 +50,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errores['password'] = $validacionPassword['errores'];
         }
         
-        // If no errors, register the user
+        // If no errors, register the user and create the directory for save the posts and profile image
         if (empty($errores)) {
             $userId = registrarUsuario($nombre, $apellidos, $username, $email, $password, $confirmPassword);
+            creardirectoriobase($username);
             
             if ($userId > 0) {
                 // Redirect to login page with success parameter
