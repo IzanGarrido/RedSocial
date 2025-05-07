@@ -373,7 +373,55 @@ if (!isset($_SESSION['user_id'])) {
             <div class="card-body">
               <h5 class="card-title">¡Nueva actualización de Fortnite!</h5>
               <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
-              <img src="https://via.placeholder.com/800x400" class="img-fluid rounded mb-3" alt="Post image">
+              <div class="d-flex ">
+              <img src="./assets/Games-logos/Rockstar Games/gta5-logo.webp" class="img-fluid rounded mb-3 w-75" alt="Post image">
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> 24</button>
+                  <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat"></i> 8</button>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-share"></i> Compartir</button>
+              </div>
+            </div>
+          <!-- Post 1 -->
+          <div class="card mb-3">
+            <div class="card-header bg-transparent d-flex align-items-center">
+              <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="User">
+              <div>
+                <h6 class="mb-0">Usuario123</h6>
+                <small class="text-muted">Hace 2 horas</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">¡Nueva actualización de Fortnite!</h5>
+              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
+              <div class="d-flex ">
+              <img src="./assets/Games-logos/Rockstar Games/gta5-logo.webp" class="img-fluid rounded mb-3 w-75" alt="Post image">
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> 24</button>
+                  <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat"></i> 8</button>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-share"></i> Compartir</button>
+              </div>
+            </div>
+          <!-- Post 1 -->
+          <div class="card mb-3">
+            <div class="card-header bg-transparent d-flex align-items-center">
+              <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="User">
+              <div>
+                <h6 class="mb-0">Usuario123</h6>
+                <small class="text-muted">Hace 2 horas</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">¡Nueva actualización de Fortnite!</h5>
+              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
+              <div class="d-flex ">
+              <img src="./assets/Games-logos/Rockstar Games/gta5-logo.webp" class="img-fluid rounded mb-3 w-75" alt="Post image">
+              </div>
               <div class="d-flex justify-content-between align-items-center">
                 <div>
                   <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> 24</button>
@@ -384,27 +432,7 @@ if (!isset($_SESSION['user_id'])) {
             </div>
           </div>
 
-          <!-- Post 2 -->
-          <div class="card mb-3">
-            <div class="card-header bg-transparent d-flex align-items-center">
-              <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="User">
-              <div>
-                <h6 class="mb-0">GamerPro</h6>
-                <small class="text-muted">Hace 5 horas</small>
-              </div>
-            </div>
-            <div class="card-body">
-              <h5 class="card-title">Mis consejos para mejorar en Minecraft</h5>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> 47</button>
-                  <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat"></i> 15</button>
-                </div>
-                <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-share"></i> Compartir</button>
-              </div>
-            </div>
-          </div>
+    
         </section>
       </div>
 
