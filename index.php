@@ -357,55 +357,9 @@ if (!isset($_SESSION['user_id'])) {
     <div class="row">
       <!-- Main Content Column -->
       <div class="col-lg-8">
-        <!-- Featured Games Section -->
-        <section class="content-section mb-4">
-          <div class="content-header d-flex justify-content-between align-items-center">
-            <h2 class="h4 mb-0">Juegos destacados</h2>
-            <a href="#" class="text-decoration-none">Ver todos</a>
-          </div>
-          <div class="row">
-            <!-- Game Card 1 -->
-            <div class="col-md-4 col-sm-6 mb-3">
-              <div class="card game-card h-100">
-                <img src="./assets/Games-logos/Epic Games/Fortnite-logo.webp" class="game-img" alt="Game 1">
-                <div class="card-body">
-                  <h5 class="game-title">Fortnite</h5>
-                  <span class="game-category">Battle Royale</span>
-                  <p class="card-text small text-muted mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div>
-              </div>
-            </div>
-            <!-- Game Card 2 -->
-            <div class="col-md-4 col-sm-6 mb-3">
-              <div class="card game-card h-100">
-                <img src="./assets/Games-logos/Mojang/Minecraft-logo.webp" class="game-img" alt="Game 2">
-                <div class="card-body">
-                  <h5 class="game-title">Minecraft</h5>
-                  <span class="game-category">Sandbox</span>
-                  <p class="card-text small text-muted mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div>
-              </div>
-            </div>
-            <!-- Game Card 3 -->
-            <div class="col-md-4 col-sm-6 mb-3">
-              <div class="card game-card h-100">
-                <img src="./assets/Games-logos/Riot_Games/lol-logo.webp" class="game-img" alt="Game 3">
-                <div class="card-body">
-                  <h5 class="game-title">League of Legends</h5>
-                  <span class="game-category">MOBA</span>
-                  <p class="card-text small text-muted mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
-        <!-- Recent Posts Section -->
+        <!-- Posts Section -->
         <section class="content-section">
-          <div class="content-header d-flex justify-content-between align-items-center">
-            <h2 class="h4 mb-0">Publicaciones recientes</h2>
-            <a href="#" class="text-decoration-none">Ver todas</a>
-          </div>
 
           <!-- Post 1 -->
           <div class="card mb-3">
@@ -456,32 +410,6 @@ if (!isset($_SESSION['user_id'])) {
 
       <!-- Sidebar Column -->
       <div class="col-lg-4 sidebar">
-        <!-- User Profile Card -->
-        <section class="sidebar-section">
-          <div class="text-center mb-3">
-            <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle mb-2" width="80" height="80" alt="User Profile">
-            <h5><?php echo isset($_SESSION['user_name']) ? $_SESSION['user_name'] . ' ' . $_SESSION['user_lastname'] : 'Usuario'; ?></h5>
-            <p class="text-muted mb-2">@<?php echo isset($_SESSION['username']) ? $_SESSION['username'] : 'username'; ?></p>
-            <div class="d-flex justify-content-center gap-2">
-              <button class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i> Editar perfil</button>
-              <button class="btn btn-sm btn-outline-primary"><i class="bi bi-share"></i> Compartir</button>
-            </div>
-          </div>
-          <div class="row text-center g-0">
-            <div class="col-4 border-end">
-              <h6>142</h6>
-              <small class="text-muted">Publicaciones</small>
-            </div>
-            <div class="col-4 border-end">
-              <h6>723</h6>
-              <small class="text-muted">Seguidores</small>
-            </div>
-            <div class="col-4">
-              <h6>256</h6>
-              <small class="text-muted">Siguiendo</small>
-            </div>
-          </div>
-        </section>
 
         <!-- Categories Section -->
         <section class="sidebar-section">
@@ -520,55 +448,7 @@ if (!isset($_SESSION['user_id'])) {
           <?php endif; ?>
         </section>
 
-        <!-- Trending Gamers -->
-        <section class="sidebar-section">
-          <h5 class="sidebar-header">Gamers populares</h5>
-          <div class="d-flex align-items-center mb-2">
-            <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="Gamer 1">
-            <div>
-              <h6 class="mb-0">GamerPro</h6>
-              <small class="text-muted">1.2K seguidores</small>
-            </div>
-            <button class="btn btn-sm btn-outline-primary ms-auto">Seguir</button>
-          </div>
-          <div class="d-flex align-items-center mb-2">
-            <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="Gamer 2">
-            <div>
-              <h6 class="mb-0">GameMaster</h6>
-              <small class="text-muted">985 seguidores</small>
-            </div>
-            <button class="btn btn-sm btn-outline-primary ms-auto">Seguir</button>
-          </div>
-          <div class="d-flex align-items-center mb-2">
-            <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="Gamer 3">
-            <div>
-              <h6 class="mb-0">EpicPlayer</h6>
-              <small class="text-muted">756 seguidores</small>
-            </div>
-            <button class="btn btn-sm btn-outline-primary ms-auto">Seguir</button>
-          </div>
-        </section>
-
-        <!-- Upcoming Events -->
-        <section class="sidebar-section">
-          <h5 class="sidebar-header">Próximos eventos</h5>
-          <div class="card mb-2">
-            <div class="card-body p-3">
-              <h6 class="card-title">Torneo de Fortnite</h6>
-              <p class="card-text small mb-2"><i class="bi bi-calendar me-1"></i> 15 de mayo, 2025</p>
-              <p class="card-text small"><i class="bi bi-people me-1"></i> 128 participantes</p>
-              <button class="btn btn-sm btn-primary w-100">Inscribirse</button>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-body p-3">
-              <h6 class="card-title">Estreno de Call of Duty</h6>
-              <p class="card-text small mb-2"><i class="bi bi-calendar me-1"></i> 22 de mayo, 2025</p>
-              <p class="card-text small"><i class="bi bi-people me-1"></i> 98 interesados</p>
-              <button class="btn btn-sm btn-primary w-100">Me interesa</button>
-            </div>
-          </div>
-        </section>
+        
       </div>
     </div>
   </main>
