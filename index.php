@@ -22,184 +22,8 @@ if (!isset($_SESSION['user_id'])) {
   <link rel="shortcut icon" href="./assets/App-images/Gameord-logo.webp" type="image/x-icon">
   <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="./node_modules/bootstrap-icons/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="./assets/css/index.css">
 
-  <style>
-    /* Custom styles */
-    :root {
-      --primary-color: #6f42c1;
-      --secondary-color: #4e73df;
-      --accent-color: #f0ad4e;
-      --dark-color: #343a40;
-      --light-color: #f8f9fa;
-    }
-
-    body {
-      background-color: #f5f5f5;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .navbar {
-      background: linear-gradient(to right, var(--primary-color), var(--secondary-color)) !important;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .navbar-brand img {
-      transition: transform 0.3s ease;
-    }
-
-    .navbar-brand:hover img {
-      transform: scale(1.1);
-    }
-
-    .nav-icon {
-      transition: all 0.3s ease;
-      font-size: 1.4rem;
-    }
-
-    .nav-item:hover .nav-icon {
-      transform: translateY(-3px);
-      color: var(--accent-color) !important;
-    }
-
-    .search-box {
-      border-radius: 50px;
-      padding-left: 40px;
-      border: none;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .search-icon {
-      left: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #6c757d;
-    }
-
-    /* Estilos para el scroll independiente */
-
-    /* Establecer altura máxima para el contenedor principal */
-    .main-content-container {
-      height: calc(100vh - 150px);
-      /* Ajusta según la altura de tu navbar y footer */
-      overflow-y: auto;
-      padding-right: 15px;
-      /* Espacio para el scrollbar */
-    }
-
-    /* Fijar la barra lateral */
-    .sidebar-container {
-      /* Misma altura que el contenido principal */
-      position: sticky;
-      top: 80px;
-      /* Ajusta según la altura de tu navbar */
-      overflow-y: auto;
-    }
-
-    /* Hacer que cada sección de la barra lateral tenga su propio scroll */
-    .sidebar-section {
-      max-height: calc((100vh - 100px) / 2);
-      /* Divide el espacio entre las secciones */
-      overflow-y: auto;
-      overflow-x: hidden;
-      margin-bottom: 20px;
-      scrollbar-width: thin;
-      /* Para Firefox */
-    }
-
-    /* Personalizar la barra de desplazamiento */
-    .sidebar-section::-webkit-scrollbar {
-      width: 5px;
-    }
-
-    .sidebar-section::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 10px;
-    }
-
-    .sidebar-section::-webkit-scrollbar-thumb {
-      background: var(--primary-color);
-      border-radius: 10px;
-    }
-
-    /* Estilos responsivos */
-    @media (max-width: 992px) {
-      .sidebar-container {
-        position: relative;
-        height: auto;
-        top: 0;
-      }
-
-      .sidebar-section {
-        max-height: 300px;
-        /* Altura fija en dispositivos móviles */
-      }
-    }
-
-    .category-item {
-      display: flex;
-      align-items: center;
-      padding: 8px 0;
-      color: var(--dark-color);
-      text-decoration: none;
-      transition: all 0.2s ease;
-    }
-
-    .category-item:hover {
-      color: var(--primary-color);
-      transform: translateX(5px);
-    }
-
-    .category-icon {
-      margin-right: 10px;
-      color: var(--primary-color);
-    }
-
-    footer {
-      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-      color: white;
-      padding: 20px 0;
-      margin-top: auto;
-    }
-
-    .footer-link {
-      color: rgba(255, 255, 255, 0.8);
-      transition: color 0.2s ease;
-    }
-
-    .footer-link:hover {
-      color: white;
-    }
-
-    .social-icon {
-      width: 36px;
-      height: 36px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      margin-right: 10px;
-      transition: all 0.3s ease;
-    }
-
-    .social-icon:hover {
-      background-color: rgba(255, 255, 255, 0.2);
-      transform: translateY(-3px);
-    }
-
-    @media (max-width: 576px) {
-      .navbar-brand span {
-        display: none;
-      }
-
-      .search-box {
-        max-width: 200px;
-      }
-    }
-  </style>
 </head>
 
 <body>
@@ -355,13 +179,13 @@ if (!isset($_SESSION['user_id'])) {
                 </div>
               </div>
               <div class="card-body">
-                <h5 class="card-title">¡Nueva actualización de Fortnite!</h5>
-                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
-                <div class="d-flex ">
-                  <img src="./assets/Games-logos/Rockstar Games/gta5-logo.webp" class="img-fluid rounded mb-3 w-75" alt="Post image">
+                <div class="d-flex justify-content-center">
+                  <img src="./assets/Games-logos/Rockstar Games/gta5-logo.webp" class="img-fluid rounded mb-3 w-50" alt="Post image">
                 </div>
                 <div class="d-flex justify-content-between align-items-center">
                   <div>
+                  <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
+
                     <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> 24</button>
                     <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat"></i> 8</button>
                   </div>

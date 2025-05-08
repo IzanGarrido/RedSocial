@@ -65,44 +65,7 @@
     <link rel="stylesheet" href="../node_modules/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="shortcut icon" href="../assets/App-images/Gameord-logo.webp" type="image/x-icon">
     
-    <style>
-        .login-container {
-            max-width: 400px;
-            margin: 50px auto;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .error-message {
-            color: #dc3545;
-            margin-bottom: 15px;
-        }
-        .input-with-icon {
-            position: relative;
-        }
-        .input-with-icon .icon-left {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
-        }
-        .input-with-icon .icon-right {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
-            cursor: pointer;
-        }
-        .input-with-icon input {
-            padding-left: 35px;
-        }
-        .input-with-icon input[type="password"],
-        .input-with-icon input[type="text"] {
-            padding-right: 35px;
-        }
-    </style>
+    <link rel="stylesheet" href="../assets/css/login.css">
 </head>
 <body class="bg-light">
     

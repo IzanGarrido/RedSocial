@@ -83,40 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../node_modules/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="shortcut icon" href="../assets/App-images/Gameord-logo.webp" type="image/x-icon">
     
-    <style>
-        .register-container {
-            max-width: 550px;
-            margin: 30px auto;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .error-message {
-            color: #dc3545;
-            margin-bottom: 15px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .input-with-icon {
-            position: relative;
-        }
-        .input-with-icon i {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
-        }
-        .input-with-icon input {
-            padding-left: 35px;
-        }
-        .password-requirements {
-            font-size: 0.85rem;
-            color: #6c757d;
-            margin-top: 5px;
-        }
-    </style>
+    <link rel="stylesheet" href="../assets/css/register.css">
 </head>
 
 <body class="bg-light">
