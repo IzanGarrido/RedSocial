@@ -112,9 +112,9 @@ if (!isset($_SESSION['user_id'])) {
               </ul>
             </div>
           </li>
-          <!-- Create post -->
+          <!-- Create post - Ahora abre un modal en lugar de ir a otra página -->
           <li class="nav-item mx-2">
-            <a class="nav-link" href="./pages/post.php" title="Crear publicación">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#createPostModal" title="Crear publicación">
               <i class="bi bi-plus-circle nav-icon"></i>
             </a>
           </li>
@@ -161,127 +161,190 @@ if (!isset($_SESSION['user_id'])) {
     </div>
   </div>
 
-  <!-- Sidebar Wrapper -->
-  <div class="sidebar-wrapper">
-    <!-- Categories Section -->
-    <div class="mx-3 mb-4 mt-3">
-      <section class="sidebar-section">
-        <h5 class="sidebar-header mb-3">Categorías</h5>
-        <ul class="list-unstyled" id="categorias-lista">
-          <?php
-          include_once('includes/functions.php');
-          // Consulta para obtener todas las categorías
-          $categorias = obtenerCategorias();
-
-          // Definir cuántas categorías mostrar inicialmente
-          $categoriasVisibles = 6;
-          $totalCategorias = count($categorias);
-
-          // Mostrar solo las primeras categorías
-          for ($i = 0; $i < min($categoriasVisibles, $totalCategorias); $i++) {
-            echo '<li><a href="#" class="category-item" data-id="' . $categorias[$i]['ID_CATEGORIA'] . '"><i class="bi bi-controller category-icon"></i> ' . $categorias[$i]['CATEGORIA'] . '</a></li>';
-          }
-          ?>
-        </ul>
-
-        <?php if ($totalCategorias > $categoriasVisibles): ?>
-          <!-- Lista oculta con todas las categorías -->
-          <ul class="list-unstyled" id="categorias-todas" style="display: none;">
-            <?php
-            foreach ($categorias as $categoria) {
-              echo '<li><a href="#" class="category-item" data-id="' . $categoria['ID_CATEGORIA'] . '"><i class="bi bi-controller category-icon"></i> ' . $categoria['CATEGORIA'] . '</a></li>';
-            }
-            ?>
-          </ul>
-
-          <!-- Botón para mostrar/ocultar todas las categorías -->
-          <div class="text-center mt-2">
-            <button class="btn btn-sm btn-outline-primary" id="btn-toggle-categorias">Ver más categorías</button>
-          </div>
-        <?php endif; ?>
-      </section>
-    </div>
-
-    <!-- Juegos Populares Section -->
-    <div class="mx-3 mb-4">
-      <section class="sidebar-section">
-        <h5 class="sidebar-header mb-3">Juegos populares</h5>
-        <ul class="list-unstyled" id="juegos-lista">
-          <!-- Ejemplo de juegos, estos vendrían de la base de datos -->
-          <li><a href="#" class="category-item" data-id="1"><i class="bi bi-joystick game-icon"></i> Fortnite</a></li>
-          <li><a href="#" class="category-item" data-id="2"><i class="bi bi-joystick game-icon"></i> Minecraft</a></li>
-          <li><a href="#" class="category-item" data-id="3"><i class="bi bi-joystick game-icon"></i> Call of Duty</a></li>
-          <li><a href="#" class="category-item" data-id="4"><i class="bi bi-joystick game-icon"></i> FIFA 25</a></li>
-        </ul>
-
-        <!-- Lista oculta con todos los juegos, esto sería dinámico -->
-        <ul class="list-unstyled" id="juegos-todos" style="display: none;">
-          <li><a href="#" class="category-item" data-id="1"><i class="bi bi-joystick game-icon"></i> Fortnite</a></li>
-          <li><a href="#" class="category-item" data-id="2"><i class="bi bi-joystick game-icon"></i> Minecraft</a></li>
-          <li><a href="#" class="category-item" data-id="3"><i class="bi bi-joystick game-icon"></i> Call of Duty</a></li>
-          <li><a href="#" class="category-item" data-id="4"><i class="bi bi-joystick game-icon"></i> FIFA 25</a></li>
-          <li><a href="#" class="category-item" data-id="5"><i class="bi bi-joystick game-icon"></i> GTA V</a></li>
-          <li><a href="#" class="category-item" data-id="6"><i class="bi bi-joystick game-icon"></i> League of Legends</a></li>
-          <li><a href="#" class="category-item" data-id="7"><i class="bi bi-joystick game-icon"></i> Valorant</a></li>
-          <li><a href="#" class="category-item" data-id="8"><i class="bi bi-joystick game-icon"></i> Overwatch</a></li>
-        </ul>
-
-        <!-- Botón para mostrar/ocultar todos los juegos -->
-        <div class="text-center mt-2">
-          <button class="btn btn-sm btn-outline-primary" id="btn-toggle-juegos">Ver más juegos</button>
+  <!-- Create Post Modal -->
+  <div class="modal fade" id="createPostModal" tabindex="-1" aria-labelledby="createPostModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="createPostModalLabel">Crear publicación</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-      </section>
+        <div class="modal-body">
+          <form id="createPostForm" action="includes/create_post.php" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+              <textarea class="form-control" id="postContent" name="postContent" rows="3" placeholder="¿Qué estás pensando?"></textarea>
+            </div>
+            
+            <div class="mb-3">
+              <label for="postMedia" class="form-label">Añadir foto o video</label>
+              <input class="form-control" type="file" id="postMedia" name="postMedia" accept="image/*,video/*">
+              <div id="mediaPreview" class="mt-2 d-none">
+                <img id="imagePreview" class="img-fluid rounded d-none" alt="Vista previa de la imagen">
+                <video id="videoPreview" class="img-fluid rounded d-none" controls></video>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="gameSelect" class="form-label">Relacionar con un juego (opcional)</label>
+              <select class="form-select" id="gameSelect" name="gameId">
+                <option value="" selected>Seleccionar juego</option>
+                <option value="1">Fortnite</option>
+                <option value="2">Minecraft</option>
+                <option value="3">Call of Duty</option>
+                <option value="4">FIFA 25</option>
+                <option value="5">GTA V</option>
+                <option value="6">League of Legends</option>
+                <option value="7">Valorant</option>
+                <option value="8">Overwatch</option>
+              </select>
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <button type="button" class="btn btn-outline-primary me-2" id="addPhotoBtn">
+                  <i class="bi bi-image"></i> Foto
+                </button>
+                <button type="button" class="btn btn-outline-primary me-2" id="addVideoBtn">
+                  <i class="bi bi-camera-video"></i> Video
+                </button>
+              </div>
+              <button type="submit" class="btn btn-primary">Publicar</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Main Content -->
-  <div class="main-content">
-    <!-- Posts Section -->
-    <section class="content-section">
-      <div class="card mb-3">
-        <div class="card-header bg-transparent d-flex align-items-center">
-          <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="User">
-          <div>
-            <h6 class="mb-0">Usuario123</h6>
-            <small class="text-muted">Hace 2 horas</small>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar Column - visible en lg y xl, oculto en md y menores -->
+      <div class="col-lg-3 d-none d-lg-block p-0 position-fixed">
+        <div class="sidebar-wrapper">
+          <!-- Categories Section -->
+          <div class="mx-3 mb-4 mt-3">
+            <section class="sidebar-section">
+              <h5 class="sidebar-header mb-3">Categorías</h5>
+              <ul class="list-unstyled" id="categorias-lista">
+                <?php
+                include_once('includes/functions.php');
+                // Consulta para obtener todas las categorías
+                $categorias = obtenerCategorias();
+
+                // Definir cuántas categorías mostrar inicialmente
+                $categoriasVisibles = 6;
+                $totalCategorias = count($categorias);
+
+                // Mostrar solo las primeras categorías
+                for ($i = 0; $i < min($categoriasVisibles, $totalCategorias); $i++) {
+                  echo '<li><a href="#" class="category-item" data-id="' . $categorias[$i]['ID_CATEGORIA'] . '"><i class="bi bi-controller category-icon"></i> ' . $categorias[$i]['CATEGORIA'] . '</a></li>';
+                }
+                ?>
+              </ul>
+
+              <?php if ($totalCategorias > $categoriasVisibles): ?>
+                <!-- Lista oculta con todas las categorías -->
+                <ul class="list-unstyled" id="categorias-todas" style="display: none;">
+                  <?php
+                  foreach ($categorias as $categoria) {
+                    echo '<li><a href="#" class="category-item" data-id="' . $categoria['ID_CATEGORIA'] . '"><i class="bi bi-controller category-icon"></i> ' . $categoria['CATEGORIA'] . '</a></li>';
+                  }
+                  ?>
+                </ul>
+
+                <!-- Botón para mostrar/ocultar todas las categorías -->
+                <div class="text-center mt-2">
+                  <button class="btn btn-sm btn-outline-primary" id="btn-toggle-categorias">Ver más categorías</button>
+                </div>
+              <?php endif; ?>
+            </section>
           </div>
-        </div>
-        <div class="card-body">
-          <div class="d-flex justify-content-center">
-            <img src="./assets/Games-logos/Rockstar Games/gta5-logo.webp" class="img-fluid rounded mb-3 w-50" alt="Post image">
-          </div>
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
-              <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> 24</button>
-              <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat"></i> 8</button>
-            </div>
-            <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-share"></i> Compartir</button>
+
+          <!-- Juegos Populares Section -->
+          <div class="mx-3 mb-4">
+            <section class="sidebar-section">
+              <h5 class="sidebar-header mb-3">Juegos populares</h5>
+              <ul class="list-unstyled" id="juegos-lista">
+                <!-- Ejemplo de juegos, estos vendrían de la base de datos -->
+                <li><a href="#" class="category-item" data-id="1"><i class="bi bi-joystick game-icon"></i> Fortnite</a></li>
+                <li><a href="#" class="category-item" data-id="2"><i class="bi bi-joystick game-icon"></i> Minecraft</a></li>
+                <li><a href="#" class="category-item" data-id="3"><i class="bi bi-joystick game-icon"></i> Call of Duty</a></li>
+                <li><a href="#" class="category-item" data-id="4"><i class="bi bi-joystick game-icon"></i> FIFA 25</a></li>
+              </ul>
+
+              <!-- Lista oculta con todos los juegos, esto sería dinámico -->
+              <ul class="list-unstyled" id="juegos-todos" style="display: none;">
+                <li><a href="#" class="category-item" data-id="1"><i class="bi bi-joystick game-icon"></i> Fortnite</a></li>
+                <li><a href="#" class="category-item" data-id="2"><i class="bi bi-joystick game-icon"></i> Minecraft</a></li>
+                <li><a href="#" class="category-item" data-id="3"><i class="bi bi-joystick game-icon"></i> Call of Duty</a></li>
+                <li><a href="#" class="category-item" data-id="4"><i class="bi bi-joystick game-icon"></i> FIFA 25</a></li>
+                <li><a href="#" class="category-item" data-id="5"><i class="bi bi-joystick game-icon"></i> GTA V</a></li>
+                <li><a href="#" class="category-item" data-id="6"><i class="bi bi-joystick game-icon"></i> League of Legends</a></li>
+                <li><a href="#" class="category-item" data-id="7"><i class="bi bi-joystick game-icon"></i> Valorant</a></li>
+                <li><a href="#" class="category-item" data-id="8"><i class="bi bi-joystick game-icon"></i> Overwatch</a></li>
+              </ul>
+
+              <!-- Botón para mostrar/ocultar todos los juegos -->
+              <div class="text-center mt-2">
+                <button class="btn btn-sm btn-outline-primary" id="btn-toggle-juegos">Ver más juegos</button>
+              </div>
+            </section>
           </div>
         </div>
       </div>
 
-      <!-- Ejemplo de otra publicación -->
-      <div class="card mb-3">
-        <div class="card-header bg-transparent d-flex align-items-center">
-          <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="User">
-          <div>
-            <h6 class="mb-0">Usuario234</h6>
-            <small class="text-muted">Hace 5 horas</small>
-          </div>
-        </div>
-        <div class="card-body">
-          <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut minima dolores, deserunt odit nostrum ex quia aspernatur, sit eum consectetur eaque sunt id vero voluptatem, libero quas? Dolores, aliquam vero!</p>
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> 42</button>
-              <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat"></i> 15</button>
+      <!-- Main Content Column - ocupa todo el ancho en pantallas pequeñas, margen lateral en pantallas grandes -->
+      <div class="col-12 col-lg-9 offset-lg-3">
+        <div class="main-content">
+          <!-- Posts Section -->
+          <section class="content-section">
+            <div class="card mb-3">
+              <div class="card-header bg-transparent d-flex align-items-center">
+                <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="User">
+                <div>
+                  <h6 class="mb-0">Usuario123</h6>
+                  <small class="text-muted">Hace 2 horas</small>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="d-flex justify-content-center">
+                  <img src="./assets/Games-logos/Rockstar Games/gta5-logo.webp" class="img-fluid rounded mb-3 w-50" alt="Post image">
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
+                    <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> 24</button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat"></i> 8</button>
+                  </div>
+                  <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-share"></i> Compartir</button>
+                </div>
+              </div>
             </div>
-            <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-share"></i> Compartir</button>
-          </div>
+
+            <!-- Ejemplo de otra publicación -->
+            <div class="card mb-3">
+              <div class="card-header bg-transparent d-flex align-items-center">
+                <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="User">
+                <div>
+                  <h6 class="mb-0">GamerPro</h6>
+                  <small class="text-muted">Hace 5 horas</small>
+                </div>
+              </div>
+              <div class="card-body">
+                <p class="card-text">¡Acabo de conseguir un logro muy difícil en mi juego favorito! ¿Alguien más lo ha intentado?</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> 42</button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat"></i> 15</button>
+                  </div>
+                  <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-share"></i> Compartir</button>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
-    </section>
+    </div>
   </div>
 
   <!-- Scripts -->
