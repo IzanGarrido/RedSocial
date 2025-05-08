@@ -78,66 +78,64 @@ if (!isset($_SESSION['user_id'])) {
       color: #6c757d;
     }
 
-    .content-section {
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-      padding: 20px;
-      margin-bottom: 20px;
+    /* Estilos para el scroll independiente */
+
+    /* Establecer altura máxima para el contenedor principal */
+    .main-content-container {
+      height: calc(100vh - 150px);
+      /* Ajusta según la altura de tu navbar y footer */
+      overflow-y: auto;
+      padding-right: 15px;
+      /* Espacio para el scrollbar */
     }
 
-    .content-header {
-      border-bottom: 1px solid #eee;
-      padding-bottom: 10px;
-      margin-bottom: 20px;
+    /* Fijar la barra lateral */
+    .sidebar-container {
+      /* Misma altura que el contenido principal */
+      position: sticky;
+      top: 80px;
+      /* Ajusta según la altura de tu navbar */
+      overflow-y: auto;
     }
 
-    .game-card {
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .game-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .game-img {
-      height: 160px;
-      object-fit: cover;
-    }
-
-    .game-title {
-      font-weight: 600;
-      font-size: 1.1rem;
-      margin: 10px 0 5px;
-    }
-
-    .game-category {
-      display: inline-block;
-      background-color: var(--primary-color);
-      color: white;
-      padding: 3px 10px;
-      border-radius: 50px;
-      font-size: 0.8rem;
-      margin-right: 5px;
-    }
-
+    /* Hacer que cada sección de la barra lateral tenga su propio scroll */
     .sidebar-section {
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-      padding: 15px;
+      max-height: calc((100vh - 100px) / 2);
+      /* Divide el espacio entre las secciones */
+      overflow-y: auto;
+      overflow-x: hidden;
       margin-bottom: 20px;
+      scrollbar-width: thin;
+      /* Para Firefox */
     }
 
-    .sidebar-header {
-      font-weight: 600;
-      margin-bottom: 15px;
-      color: var(--dark-color);
-      border-bottom: 2px solid var(--primary-color);
-      padding-bottom: 8px;
+    /* Personalizar la barra de desplazamiento */
+    .sidebar-section::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .sidebar-section::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    .sidebar-section::-webkit-scrollbar-thumb {
+      background: var(--primary-color);
+      border-radius: 10px;
+    }
+
+    /* Estilos responsivos */
+    @media (max-width: 992px) {
+      .sidebar-container {
+        position: relative;
+        height: auto;
+        top: 0;
+      }
+
+      .sidebar-section {
+        max-height: 300px;
+        /* Altura fija en dispositivos móviles */
+      }
     }
 
     .category-item {
@@ -190,19 +188,6 @@ if (!isset($_SESSION['user_id'])) {
     .social-icon:hover {
       background-color: rgba(255, 255, 255, 0.2);
       transform: translateY(-3px);
-    }
-
-    /* Media queries for responsiveness */
-    @media (max-width: 992px) {
-      .sidebar {
-        margin-top: 20px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .game-card {
-        margin-bottom: 20px;
-      }
     }
 
     @media (max-width: 576px) {
@@ -357,126 +342,80 @@ if (!isset($_SESSION['user_id'])) {
     <div class="row">
       <!-- Main Content Column -->
       <div class="col-lg-8">
-
-        <!-- Posts Section -->
-        <section class="content-section">
-
-          <!-- Post 1 -->
-          <div class="card mb-3">
-            <div class="card-header bg-transparent d-flex align-items-center">
-              <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="User">
-              <div>
-                <h6 class="mb-0">Usuario123</h6>
-                <small class="text-muted">Hace 2 horas</small>
-              </div>
-            </div>
-            <div class="card-body">
-              <h5 class="card-title">¡Nueva actualización de Fortnite!</h5>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
-              <div class="d-flex ">
-              <img src="./assets/Games-logos/Rockstar Games/gta5-logo.webp" class="img-fluid rounded mb-3 w-75" alt="Post image">
-              </div>
-              <div class="d-flex justify-content-between align-items-center">
+        <!-- Añadir este div como contenedor con scroll -->
+        <div class="main-content-container">
+          <!-- Posts Section -->
+          <section class="content-section">
+            <div class="card mb-3">
+              <div class="card-header bg-transparent d-flex align-items-center">
+                <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="User">
                 <div>
-                  <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> 24</button>
-                  <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat"></i> 8</button>
+                  <h6 class="mb-0">Usuario123</h6>
+                  <small class="text-muted">Hace 2 horas</small>
                 </div>
-                <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-share"></i> Compartir</button>
               </div>
-            </div>
-          <!-- Post 1 -->
-          <div class="card mb-3">
-            <div class="card-header bg-transparent d-flex align-items-center">
-              <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="User">
-              <div>
-                <h6 class="mb-0">Usuario123</h6>
-                <small class="text-muted">Hace 2 horas</small>
-              </div>
-            </div>
-            <div class="card-body">
-              <h5 class="card-title">¡Nueva actualización de Fortnite!</h5>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
-              <div class="d-flex ">
-              <img src="./assets/Games-logos/Rockstar Games/gta5-logo.webp" class="img-fluid rounded mb-3 w-75" alt="Post image">
-              </div>
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> 24</button>
-                  <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat"></i> 8</button>
+              <div class="card-body">
+                <h5 class="card-title">¡Nueva actualización de Fortnite!</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
+                <div class="d-flex ">
+                  <img src="./assets/Games-logos/Rockstar Games/gta5-logo.webp" class="img-fluid rounded mb-3 w-75" alt="Post image">
                 </div>
-                <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-share"></i> Compartir</button>
-              </div>
-            </div>
-          <!-- Post 1 -->
-          <div class="card mb-3">
-            <div class="card-header bg-transparent d-flex align-items-center">
-              <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="User">
-              <div>
-                <h6 class="mb-0">Usuario123</h6>
-                <small class="text-muted">Hace 2 horas</small>
-              </div>
-            </div>
-            <div class="card-body">
-              <h5 class="card-title">¡Nueva actualización de Fortnite!</h5>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
-              <div class="d-flex ">
-              <img src="./assets/Games-logos/Rockstar Games/gta5-logo.webp" class="img-fluid rounded mb-3 w-75" alt="Post image">
-              </div>
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> 24</button>
-                  <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat"></i> 8</button>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> 24</button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat"></i> 8</button>
+                  </div>
+                  <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-share"></i> Compartir</button>
                 </div>
-                <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-share"></i> Compartir</button>
               </div>
             </div>
-          </div>
-
-    
-        </section>
+          </section>
+        </div>
       </div>
 
       <!-- Sidebar Column -->
-      <div class="col-lg-4 sidebar">
-
-        <!-- Categories Section -->
-        <section class="sidebar-section">
-          <h5 class="sidebar-header">Categorías</h5>
-          <ul class="list-unstyled" id="categorias-lista">
-            <?php
-            include_once('includes/functions.php');
-            // Consulta para obtener todas las categorías
-            $categorias = obtenerCategorias();
-
-            // Definir cuántas categorías mostrar inicialmente
-            $categoriasVisibles = 6;
-            $totalCategorias = count($categorias);
-
-            // Mostrar solo las primeras categorías
-            for ($i = 0; $i < min($categoriasVisibles, $totalCategorias); $i++) {
-              echo '<li><a href="#" class="category-item" data-id="' . $categorias[$i]['ID_CATEGORIA'] . '"><i class="bi bi-controller category-icon"></i> ' . $categorias[$i]['CATEGORIA'] . '</a></li>';
-            }
-            ?>
-          </ul>
-
-          <?php if ($totalCategorias > $categoriasVisibles): ?>
-            <!-- Lista oculta con todas las categorías -->
-            <ul class="list-unstyled" id="categorias-todas" style="display: none;">
+      <div class="col-lg-4">
+        <!-- Añadir este div como contenedor con scroll independiente -->
+        <div class="sidebar-container">
+          <!-- Categories Section -->
+          <section class="sidebar-section">
+            <h5 class="sidebar-header">Categorías</h5>
+            <ul class="list-unstyled" id="categorias-lista">
               <?php
-              foreach ($categorias as $categoria) {
-                echo '<li><a href="#" class="category-item" data-id="' . $categoria['ID_CATEGORIA'] . '"><i class="bi bi-controller category-icon"></i> ' . $categoria['CATEGORIA'] . '</a></li>';
+              include_once('includes/functions.php');
+              // Consulta para obtener todas las categorías
+              $categorias = obtenerCategorias();
+
+              // Definir cuántas categorías mostrar inicialmente
+              $categoriasVisibles = 6;
+              $totalCategorias = count($categorias);
+
+              // Mostrar solo las primeras categorías
+              for ($i = 0; $i < min($categoriasVisibles, $totalCategorias); $i++) {
+                echo '<li><a href="#" class="category-item" data-id="' . $categorias[$i]['ID_CATEGORIA'] . '"><i class="bi bi-controller category-icon"></i> ' . $categorias[$i]['CATEGORIA'] . '</a></li>';
               }
               ?>
             </ul>
 
-            <!-- Botón para mostrar/ocultar todas las categorías -->
-            <div class="text-center mt-2">
-              <button class="btn btn-sm btn-outline-primary" id="btn-toggle-categorias">Ver más categorías</button>
-            </div>
-          <?php endif; ?>
-        </section>
+            <?php if ($totalCategorias > $categoriasVisibles): ?>
+              <!-- Lista oculta con todas las categorías -->
+              <ul class="list-unstyled" id="categorias-todas" style="display: none;">
+                <?php
+                foreach ($categorias as $categoria) {
+                  echo '<li><a href="#" class="category-item" data-id="' . $categoria['ID_CATEGORIA'] . '"><i class="bi bi-controller category-icon"></i> ' . $categoria['CATEGORIA'] . '</a></li>';
+                }
+                ?>
+              </ul>
 
-        
+              <!-- Botón para mostrar/ocultar todas las categorías -->
+              <div class="text-center mt-2">
+                <button class="btn btn-sm btn-outline-primary" id="btn-toggle-categorias">Ver más categorías</button>
+              </div>
+            <?php endif; ?>
+          </section>
+
+          <!-- Aquí irían otras secciones de la barra lateral -->
+        </div>
       </div>
     </div>
   </main>
