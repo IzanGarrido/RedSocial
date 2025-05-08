@@ -29,14 +29,14 @@ if (!isset($_SESSION['user_id'])) {
 <body>
   <!-- Navbar -->
   <header class="navbar navbar-expand-lg navbar-dark py-2 sticky-top">
-    <div class="container">
+    <div class="container-fluid">
       <!-- Logo and name -->
       <a class="navbar-brand d-flex align-items-center" href="#">
         <img src="./assets/App-images/Gameord-logo.webp" alt="Logo" class="me-2 rounded-2" height="40">
-        <span class="fw-bold fs-4">Gameord</span>
+        <span class="fw-bold fs-4 d-none d-sm-inline">Gameord</span>
       </a>
 
-      <!-- Search -->
+      <!-- Search - Hide on small screens, show on medium and up -->
       <div class="position-relative d-none d-md-block mx-3 flex-grow-1">
         <i class="bi bi-search position-absolute search-icon"></i>
         <input type="text" class="form-control search-box" placeholder="Buscar juegos, categorías, usuarios...">
@@ -51,7 +51,7 @@ if (!isset($_SESSION['user_id'])) {
       <div class="collapse navbar-collapse flex-grow-0" id="navbarContent">
         <!-- Icons -->
         <ul class="navbar-nav d-flex align-items-center">
-          <!-- Search button mobile -->
+          <!-- Search button mobile - visible only on small screens -->
           <li class="nav-item d-md-none mx-1">
             <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#searchModal" title="Buscar">
               <i class="bi bi-search nav-icon"></i>
@@ -165,10 +165,9 @@ if (!isset($_SESSION['user_id'])) {
   <main class="container py-4">
     <div class="row">
       <!-- Main Content Column -->
-      <div class="col-lg-8">
-        <!-- Añadir este div como contenedor con scroll -->
-        <div class="main-content-container">
-          <!-- Posts Section -->
+      <div class="col-lg-8 mb-4 mb-lg-0">
+        <!-- Posts Section - Using Bootstrap's overflow auto instead of custom scrolling -->
+        <div class="overflow-auto" style="max-height: calc(100vh - 150px);">
           <section class="content-section">
             <div class="card mb-3">
               <div class="card-header bg-transparent d-flex align-items-center">
@@ -184,8 +183,7 @@ if (!isset($_SESSION['user_id'])) {
                 </div>
                 <div class="d-flex justify-content-between align-items-center">
                   <div>
-                  <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
-
+                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
                     <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> 24</button>
                     <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat"></i> 8</button>
                   </div>
@@ -197,12 +195,11 @@ if (!isset($_SESSION['user_id'])) {
         </div>
       </div>
 
-      <!-- Sidebar Column -->
+      <!-- Sidebar Column - Using Bootstrap's sticky-top for positioning -->
       <div class="col-lg-4">
-        <!-- Añadir este div como contenedor con scroll independiente -->
-        <div class="sidebar-container">
+        <div class="" style="top: 80px;">
           <!-- Categories Section -->
-          <section class="sidebar-section">
+          <section class="sidebar-section rounded bg-white p-3 shadow-sm" style="max-height: 50vh;">
             <h5 class="sidebar-header">Categorías</h5>
             <ul class="list-unstyled" id="categorias-lista">
               <?php
@@ -244,62 +241,9 @@ if (!isset($_SESSION['user_id'])) {
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="mt-auto py-4">
-    <div class="container">
-      <div class="row gy-3">
-        <div class="col-lg-4">
-          <h5 class="mb-3">Gameord</h5>
-          <p class="mb-3">La comunidad para gamers donde podrás compartir tus experiencias, encontrar compañeros de juego y mantenerte al día con las últimas novedades.</p>
-          <div class="d-flex">
-            <a href="#" class="social-icon"><i class="bi bi-facebook text-white"></i></a>
-            <a href="#" class="social-icon"><i class="bi bi-twitter text-white"></i></a>
-            <a href="#" class="social-icon"><i class="bi bi-instagram text-white"></i></a>
-            <a href="#" class="social-icon"><i class="bi bi-youtube text-white"></i></a>
-          </div>
-        </div>
-        <div class="col-6 col-lg-2">
-          <h6 class="mb-3">Enlaces</h6>
-          <ul class="list-unstyled">
-            <li><a href="#" class="footer-link">Inicio</a></li>
-            <li><a href="#" class="footer-link">Explorar</a></li>
-            <li><a href="#" class="footer-link">Noticias</a></li>
-            <li><a href="#" class="footer-link">Eventos</a></li>
-          </ul>
-        </div>
-        <div class="col-6 col-lg-2">
-          <h6 class="mb-3">Categorías</h6>
-          <ul class="list-unstyled">
-            <li><a href="#" class="footer-link">Battle Royale</a></li>
-            <li><a href="#" class="footer-link">MOBA</a></li>
-            <li><a href="#" class="footer-link">RPG</a></li>
-            <li><a href="#" class="footer-link">FPS</a></li>
-          </ul>
-        </div>
-        <div class="col-lg-4">
-          <h6 class="mb-3">Suscríbete a nuestro boletín</h6>
-          <p class="mb-3">Recibe las últimas noticias y actualizaciones directamente en tu correo.</p>
-          <div class="input-group">
-            <input type="email" class="form-control" placeholder="Tu correo electrónico">
-            <button class="btn btn-light" type="button">Suscribirse</button>
-          </div>
-        </div>
-      </div>
-      <hr class="my-4 bg-light">
-      <div class="row align-items-center">
-        <div class="col-md-6 text-center text-md-start">
-          <p class="mb-0">© 2025 Gameord. Todos los derechos reservados.</p>
-        </div>
-        <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
-          <a href="#" class="footer-link me-3">Términos de servicio</a>
-          <a href="#" class="footer-link me-3">Política de privacidad</a>
-          <a href="#" class="footer-link">Cookies</a>
-        </div>
-      </div>
-    </div>
-  </footer>
-
   <!-- Scripts -->
   <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="./assets/js/index.js"></script>
-</body
+</body>
+
+</html>
