@@ -112,7 +112,7 @@ if (!isset($_SESSION['user_id'])) {
               </ul>
             </div>
           </li>
-          <!-- Create post - Ahora abre un modal en lugar de ir a otra página -->
+          <!-- Create post -->
           <li class="nav-item mx-2">
             <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#createPostModal" title="Crear publicación">
               <i class="bi bi-plus-circle nav-icon"></i>
@@ -174,7 +174,7 @@ if (!isset($_SESSION['user_id'])) {
             <div class="mb-3">
               <textarea class="form-control" id="postContent" name="postContent" rows="3" placeholder="¿Qué estás pensando?"></textarea>
             </div>
-            
+
             <div class="mb-3">
               <label for="postMedia" class="form-label">Añadir foto o video</label>
               <input class="form-control" type="file" id="postMedia" name="postMedia" accept="image/*,video/*">
@@ -183,22 +183,25 @@ if (!isset($_SESSION['user_id'])) {
                 <video id="videoPreview" class="img-fluid rounded d-none" controls></video>
               </div>
             </div>
-            
+
             <div class="mb-3">
               <label for="gameSelect" class="form-label">Relacionar con un juego (opcional)</label>
-              <select class="form-select" id="gameSelect" name="gameId">
-                <option value="" selected>Seleccionar juego</option>
-                <option value="1">Fortnite</option>
-                <option value="2">Minecraft</option>
-                <option value="3">Call of Duty</option>
-                <option value="4">FIFA 25</option>
-                <option value="5">GTA V</option>
-                <option value="6">League of Legends</option>
-                <option value="7">Valorant</option>
-                <option value="8">Overwatch</option>
-              </select>
+              <input list="gameOptions" id="gameInput" class="form-control" name="gameId">
+              <datalist id="gameOptions">
+                <option value="Sin juego"></option>
+                <?php
+                include_once('includes/functions.php');
+                // Query to obtain all games
+                $juegos = obtenerJuegos();
+
+                // Show all games
+                foreach ($juegos as $juego) {
+                  echo '<option value="' . $juego['JUEGO'] . '"></option>';
+                }
+                ?>
+              </datalist>
             </div>
-            
+
             <div class="d-flex justify-content-between align-items-center">
               <div>
                 <button type="button" class="btn btn-outline-primary me-2" id="addPhotoBtn">
@@ -218,7 +221,7 @@ if (!isset($_SESSION['user_id'])) {
 
   <div class="container-fluid">
     <div class="row">
-      <!-- Sidebar Column - visible en lg y xl, oculto en md y menores -->
+      <!-- Sidebar Column - visible in lg and xl, hidden in sm and xs -->
       <div class="col-lg-3 d-none d-lg-block p-0 position-fixed">
         <div class="sidebar-wrapper">
           <!-- Categories Section -->
@@ -228,14 +231,14 @@ if (!isset($_SESSION['user_id'])) {
               <ul class="list-unstyled" id="categorias-lista">
                 <?php
                 include_once('includes/functions.php');
-                // Consulta para obtener todas las categorías
+                // Query to obtain all categories
                 $categorias = obtenerCategorias();
 
-                // Definir cuántas categorías mostrar inicialmente
+                // Define the maximum number of categories to display
                 $categoriasVisibles = 6;
                 $totalCategorias = count($categorias);
 
-                // Mostrar solo las primeras categorías
+                // Show only some categories
                 for ($i = 0; $i < min($categoriasVisibles, $totalCategorias); $i++) {
                   echo '<li><a href="#" class="category-item" data-id="' . $categorias[$i]['ID_CATEGORIA'] . '"><i class="bi bi-controller category-icon"></i> ' . $categorias[$i]['CATEGORIA'] . '</a></li>';
                 }
@@ -243,7 +246,7 @@ if (!isset($_SESSION['user_id'])) {
               </ul>
 
               <?php if ($totalCategorias > $categoriasVisibles): ?>
-                <!-- Lista oculta con todas las categorías -->
+                <!-- Hidden list of all categories -->
                 <ul class="list-unstyled" id="categorias-todas" style="display: none;">
                   <?php
                   foreach ($categorias as $categoria) {
@@ -260,34 +263,43 @@ if (!isset($_SESSION['user_id'])) {
             </section>
           </div>
 
-          <!-- Juegos Populares Section -->
+          <!-- Games Section -->
           <div class="mx-3 mb-4">
             <section class="sidebar-section">
-              <h5 class="sidebar-header mb-3">Juegos populares</h5>
+              <h5 class="sidebar-header mb-3">Juegos</h5>
               <ul class="list-unstyled" id="juegos-lista">
-                <!-- Ejemplo de juegos, estos vendrían de la base de datos -->
-                <li><a href="#" class="category-item" data-id="1"><i class="bi bi-joystick game-icon"></i> Fortnite</a></li>
-                <li><a href="#" class="category-item" data-id="2"><i class="bi bi-joystick game-icon"></i> Minecraft</a></li>
-                <li><a href="#" class="category-item" data-id="3"><i class="bi bi-joystick game-icon"></i> Call of Duty</a></li>
-                <li><a href="#" class="category-item" data-id="4"><i class="bi bi-joystick game-icon"></i> FIFA 25</a></li>
+                <?php
+                include_once('includes/functions.php');
+                // Query to obtain all games
+                $juegos = obtenerJuegos();
+
+                // Define the maximum number of games to display
+                $juegosVisibles = 6;
+                $totalJuegos = count($juegos);
+
+                // Show only some games
+                for ($i = 0; $i < min($juegosVisibles, $totalJuegos); $i++) {
+                  echo '<li><a href="#" class="game-item" data-id="' . $juegos[$i]['IDJUEGO'] . '"><img src="' . $juegos[$i]['URL_IMAGEN'] . '" class="rounded-5 game-img" alt="Game image">' . $juegos[$i]['JUEGO'] . '</a></li>';
+                }
+                ?>
               </ul>
 
-              <!-- Lista oculta con todos los juegos, esto sería dinámico -->
-              <ul class="list-unstyled" id="juegos-todos" style="display: none;">
-                <li><a href="#" class="category-item" data-id="1"><i class="bi bi-joystick game-icon"></i> Fortnite</a></li>
-                <li><a href="#" class="category-item" data-id="2"><i class="bi bi-joystick game-icon"></i> Minecraft</a></li>
-                <li><a href="#" class="category-item" data-id="3"><i class="bi bi-joystick game-icon"></i> Call of Duty</a></li>
-                <li><a href="#" class="category-item" data-id="4"><i class="bi bi-joystick game-icon"></i> FIFA 25</a></li>
-                <li><a href="#" class="category-item" data-id="5"><i class="bi bi-joystick game-icon"></i> GTA V</a></li>
-                <li><a href="#" class="category-item" data-id="6"><i class="bi bi-joystick game-icon"></i> League of Legends</a></li>
-                <li><a href="#" class="category-item" data-id="7"><i class="bi bi-joystick game-icon"></i> Valorant</a></li>
-                <li><a href="#" class="category-item" data-id="8"><i class="bi bi-joystick game-icon"></i> Overwatch</a></li>
-              </ul>
+              <?php if ($totalJuegos > $juegosVisibles): ?>
+                <!-- Hidden list of all games -->
+                <ul class="list-unstyled" id="juegos-todos" style="display: none;">
+                  <?php
+                  foreach ($juegos as $juego) {
+                    echo '<li><a href="#" class="game-item" data-id="' . $juego['IDJUEGO'] . '"><img src="' . $juego['URL_IMAGEN'] . '" class="rounded-5 game-img" alt="Game image">' . $juego['JUEGO'] . '</a></li>';
+                  }
+                  ?>
+                </ul>
 
-              <!-- Botón para mostrar/ocultar todos los juegos -->
-              <div class="text-center mt-2">
-                <button class="btn btn-sm btn-outline-primary" id="btn-toggle-juegos">Ver más juegos</button>
-              </div>
+                <!-- Button for showing/hiding all games -->
+                <div class="text-center mt-2">
+                  <button class="btn btn-sm btn-outline-primary" id="btn-toggle-juegos">Ver más juegos</button>
+                </div>
+              <?php endif; ?>
+
             </section>
           </div>
         </div>

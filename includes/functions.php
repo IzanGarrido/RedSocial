@@ -271,4 +271,10 @@ function obtenerCategorias() {
     $categorias = DB::getAll("SELECT ID_CATEGORIA, CATEGORIA FROM categorias ORDER BY CATEGORIA ASC");
     return $categorias;
 }
+
+// Function to get all the games
+function obtenerJuegos() {
+    $juegos = DB::getAll("SELECT IDJUEGO, JUEGO, URL_IMAGEN FROM juegos ORDER BY JUEGO ASC");
+    return $juegos;
+}
 ?>
