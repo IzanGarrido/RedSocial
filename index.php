@@ -176,7 +176,7 @@ if (!isset($_SESSION['user_id'])) {
             </div>
 
             <div class="mb-3">
-              <label for="postMedia" class="form-label">Añadir foto o video</label>
+              <label for="postMedia" class="form-label postMedia ">Añadir foto o video</label>
               <input class="form-control" type="file" id="postMedia" name="postMedia" accept="image/*,video/*">
               <div id="mediaPreview" class="mt-2 d-none">
                 <img id="imagePreview" class="img-fluid rounded d-none" alt="Vista previa de la imagen">
@@ -202,15 +202,7 @@ if (!isset($_SESSION['user_id'])) {
               </datalist>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <button type="button" class="btn btn-outline-primary me-2" id="addPhotoBtn">
-                  <i class="bi bi-image"></i> Foto
-                </button>
-                <button type="button" class="btn btn-outline-primary me-2" id="addVideoBtn">
-                  <i class="bi bi-camera-video"></i> Video
-                </button>
-              </div>
+            <div class="d-flex justify-content-end align-items-center">
               <button type="submit" class="btn btn-primary">Publicar</button>
             </div>
           </form>

@@ -90,7 +90,7 @@ body {
   padding: 6px 0;
   color: var(--dark-color);
   text-decoration: none;
-  transition: all 0.2s ease; 
+  transition: all 0.2s ease;
 }
 
 .category-item:hover,
@@ -170,4 +170,18 @@ body {
 .btn-primary:hover {
   background-color: var(--secondary-color);
   border-color: var(--secondary-color);
+}
+
+.postMedia {
+  cursor: pointer;
+  background-color: var(--primary-color);
+  color: var(--light-color);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+
+}
+
+.postMedia:hover {
+  background-color: var(--secondary-color);
 }
