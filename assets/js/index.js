@@ -1,11 +1,11 @@
-document.addEventListener('DOMContentLoaded', function() {
-  // Toggle para mostrar/ocultar categorías
+document.addEventListener('DOMContentLoaded', function () {
+  // Toggle for showing/hiding categories
   const btnToggleCategories = document.getElementById('btn-toggle-categorias');
   const listaPrincipal = document.getElementById('categorias-lista');
   const listaCompleta = document.getElementById('categorias-todas');
-  
+
   if (btnToggleCategories) {
-    btnToggleCategories.addEventListener('click', function() {
+    btnToggleCategories.addEventListener('click', function () {
       if (listaCompleta.style.display === 'none') {
         // Show all categories
         listaPrincipal.style.display = 'none';
@@ -20,13 +20,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Toggle para mostrar/ocultar juegos
+  // Toggle for showing/hiding games
   const btnToggleGames = document.getElementById('btn-toggle-juegos');
   const gamesPrincipal = document.getElementById('juegos-lista');
   const gamesCompleta = document.getElementById('juegos-todos');
-  
+
   if (btnToggleGames) {
-    btnToggleGames.addEventListener('click', function() {
+    btnToggleGames.addEventListener('click', function () {
       if (gamesCompleta.style.display === 'none') {
         // Show all games
         gamesPrincipal.style.display = 'none';
@@ -41,97 +41,178 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Funcionalidad para la previsualización de media en el modal de crear post
+  // Functionality for media preview in the create post modal
   const postMedia = document.getElementById('postMedia');
   const imagePreview = document.getElementById('imagePreview');
   const videoPreview = document.getElementById('videoPreview');
   const mediaPreview = document.getElementById('mediaPreview');
   const addPhotoBtn = document.getElementById('addPhotoBtn');
   const addVideoBtn = document.getElementById('addVideoBtn');
-  
-  // Función para previsualizar archivos subidos
+  const mediaError = document.getElementById('mediaError');
+
+  // Function to show media validation errors
+  function showMediaError(message) {
+    if (mediaError) {
+      mediaError.textContent = message;
+      mediaError.classList.remove('d-none');
+    }
+  }
+
+  // Function to hide media validation errors
+  function hideMediaError() {
+    if (mediaError) {
+      mediaError.classList.add('d-none');
+    }
+  }
+
+  // Function to validate the file size
+  function validateFileSize(file) {
+    const minSize = 1024; // 1KB en bytes
+    const maxSize = 52428800; // 50MB en bytes
+
+    if (file.size < minSize) {
+      showMediaError(`El archivo es demasiado pequeño. Tamaño mínimo: 1KB`);
+      return false;
+    }
+
+    if (file.size > maxSize) {
+      showMediaError(`El archivo es demasiado grande. Tamaño máximo: 50MB`);
+      return false;
+    }
+
+    return true;
+  }
+
+  // Function to validate the video duration
+  function validateVideoDuration(videoElement) {
+    return new Promise((resolve) => {
+      videoElement.onloadedmetadata = function () {
+        const maxDuration = 120;
+
+        if (videoElement.duration > maxDuration) {
+          showMediaError(`El video es demasiado largo. Duración máxima: 2 minutos`);
+          resolve(false);
+        } else {
+          hideMediaError();
+          resolve(true);
+        }
+      };
+    });
+  }
+
+  // Function to validate the file size
   if (postMedia) {
-    postMedia.addEventListener('change', function() {
-      // Resetear las vistas previas
+    postMedia.addEventListener('change', async function () {
+      // Reset the previews and errors
       imagePreview.classList.add('d-none');
       videoPreview.classList.add('d-none');
-      
+      hideMediaError();
+
       if (this.files && this.files[0]) {
         const file = this.files[0];
+
+        // Validate file size
+        if (!validateFileSize(file)) {
+          this.value = '';
+          return;
+        }
+
         const fileReader = new FileReader();
-        
-        // Mostrar el contenedor de vista previa
+
+        // Show the preview container
         mediaPreview.classList.remove('d-none');
-        
+
         if (file.type.match('image.*')) {
-          // Es una imagen
-          fileReader.onload = function(e) {
+          // Is an image
+          fileReader.onload = function (e) {
             imagePreview.src = e.target.result;
             imagePreview.classList.remove('d-none');
           };
           fileReader.readAsDataURL(file);
         } else if (file.type.match('video.*')) {
-          // Es un video
-          fileReader.onload = function(e) {
+          // Is a video
+          fileReader.onload = async function (e) {
             videoPreview.src = e.target.result;
             videoPreview.classList.remove('d-none');
+
+            // Validate the video duration
+            const isValidDuration = await validateVideoDuration(videoPreview);
+
+            if (!isValidDuration) {
+              postMedia.value = ''; // Limpiar el input
+              videoPreview.classList.add('d-none');
+            }
           };
           fileReader.readAsDataURL(file);
         }
       } else {
-        // No hay archivo, ocultar la vista previa
+        // If there is no file, hide the preview
         mediaPreview.classList.add('d-none');
       }
     });
   }
-  
-  // Botones para añadir foto o video
+
+  // Buttons to add photo or video
   if (addPhotoBtn) {
-    addPhotoBtn.addEventListener('click', function() {
+    addPhotoBtn.addEventListener('click', function () {
       postMedia.setAttribute('accept', 'image/*');
       postMedia.click();
     });
   }
-  
+
   if (addVideoBtn) {
-    addVideoBtn.addEventListener('click', function() {
+    addVideoBtn.addEventListener('click', function () {
       postMedia.setAttribute('accept', 'video/*');
       postMedia.click();
     });
   }
-  
-  // Validación del formulario de crear post
+
+  // Validate the form for creating a post
   const createPostForm = document.getElementById('createPostForm');
-  
+
   if (createPostForm) {
-    createPostForm.addEventListener('submit', function(e) {
-      e.preventDefault(); // Evitar el envío normal del formulario
-      
+    createPostForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+
       const postContent = document.getElementById('postContent').value;
       const mediaFile = postMedia.files[0];
-      
-      // Validar que al menos haya contenido o un archivo multimedia
+
+      // Validate that there is at least content or a media file
       if (!postContent && !mediaFile) {
         alert('Por favor, escribe algo o añade una foto o video.');
         return;
       }
-      
-      // Aquí puedes implementar el envío del formulario por AJAX o permitir el envío normal
-      // Para este ejemplo, enviamos el formulario normalmente
+
+      // If all is correct, submit the form
       this.submit();
     });
   }
-  
-  // Eventos para el modal de crear post
+
+  // Events for the create post modal
   const createPostModal = document.getElementById('createPostModal');
-  
+
   if (createPostModal) {
-    // Limpiar el formulario cuando se cierra el modal
-    createPostModal.addEventListener('hidden.bs.modal', function() {
+    // Clean the form when the modal is closed
+    createPostModal.addEventListener('hidden.bs.modal', function () {
       if (createPostForm) createPostForm.reset();
       if (mediaPreview) mediaPreview.classList.add('d-none');
       if (imagePreview) imagePreview.classList.add('d-none');
       if (videoPreview) videoPreview.classList.add('d-none');
+      hideMediaError();
     });
   }
+
+  // Styles for the datalist 
+  const gameInput = document.getElementById('gameInput');
+  if (gameInput) {
+    // Styles when is focused
+    gameInput.addEventListener('focus', function () {
+      this.classList.add('focused-datalist');
+    });
+
+    gameInput.addEventListener('blur', function () {
+      this.classList.remove('focused-datalist');
+    });
+  }
+
 });

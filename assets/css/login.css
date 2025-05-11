@@ -1,3 +1,4 @@
+/* Styles for the login container */
 .login-container {
     max-width: 400px;
     margin: 50px auto;
@@ -5,13 +6,19 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
+
+/* Styles for the error message */
 .error-message {
     color: #dc3545;
     margin-bottom: 15px;
 }
+
+/* Styles for the input with icon */
 .input-with-icon {
     position: relative;
 }
+
+/* Styles for the icon */
 .input-with-icon .icon-left {
     position: absolute;
     left: 12px;
@@ -19,6 +26,8 @@
     transform: translateY(-50%);
     color: #6c757d;
 }
+
+/* Styles for the icon */
 .input-with-icon .icon-right {
     position: absolute;
     right: 12px;
@@ -27,9 +36,13 @@
     color: #6c757d;
     cursor: pointer;
 }
+
+/* Styles for the input */
 .input-with-icon input {
     padding-left: 35px;
 }
+
+/* Styles for the input */
 .input-with-icon input[type="password"],
 .input-with-icon input[type="text"] {
     padding-right: 35px;

@@ -18,14 +18,13 @@
         $username = $_POST['username'] ?? '';
         $password = $_POST['password'] ?? '';
         
-        // Por defecto, siempre activamos "recordarme" para guardar la sesión
-        // incluso si el usuario cierra el navegador
+        // Default to true for "remember me" functionality
         $rememberMe = true;
 
         // Validate the form data
         if (!empty($username) && !empty($password)) {
             if (comprobarLogin($username, $password)) {
-                // Obtener el ID del usuario
+                // Obtain the user ID
                 try {
                     $sql = "SELECT IDUSUARIO FROM usuario WHERE USUARIO = ?";
                     $params = [$username];

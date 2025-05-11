@@ -1,9 +1,8 @@
 <?php
-// Incluir el archivo de control de sesiones
+// Include the session control file
 require_once './includes/session_control.php';
 
-// Si no hay sesión activa, redirigir al login
-// Si quieres que la página principal sea accesible sin iniciar sesión, comenta estas líneas
+// If there is no active session, redirect to login
 if (!isset($_SESSION['user_id'])) {
   header('Location: ./pages/login.php');
   exit;
@@ -176,30 +175,44 @@ if (!isset($_SESSION['user_id'])) {
             </div>
 
             <div class="mb-3">
-              <label for="postMedia" class="form-label postMedia ">Añadir foto o video</label>
-              <input class="form-control" type="file" id="postMedia" name="postMedia" accept="image/*,video/*">
-              <div id="mediaPreview" class="mt-2 d-none">
+              <label class="form-label">Añadir foto o video</label>
+              <div class="media-buttons">
+                <button type="button" id="addPhotoBtn" class="media-btn add-photo-btn">
+                  <i class="bi bi-image"></i> Añadir foto
+                </button>
+                <button type="button" id="addVideoBtn" class="media-btn add-video-btn">
+                  <i class="bi bi-camera-video"></i> Añadir video
+                </button>
+              </div>
+              <input class="form-control d-none" type="file" id="postMedia" name="postMedia" accept="image/*,video/*">
+              <div class="file-limits-info">
+                <small>Límites: Tamaño entre 1KB y 50MB. Duración máxima de videos: 2 minutos.</small>
+              </div>
+              <div id="mediaError" class="media-error d-none"></div>
+              <div id="mediaPreview" class="preview-container mt-2 d-none">
                 <img id="imagePreview" class="img-fluid rounded d-none" alt="Vista previa de la imagen">
                 <video id="videoPreview" class="img-fluid rounded d-none" controls></video>
               </div>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3 custom-datalist-container">
               <label for="gameSelect" class="form-label">Relacionar con un juego (opcional)</label>
-              <input list="gameOptions" id="gameInput" class="form-control" name="gameId">
-              <datalist id="gameOptions">
-                <option value="Sin juego"></option>
-                <?php
-                include_once('includes/functions.php');
-                // Query to obtain all games
-                $juegos = obtenerJuegos();
+              <div class="position-relative">
+                <select id="gameSelect" class="game-select" name="gameId">
+                  <option value="">Selecciona un juego...</option>
+                  <?php
+                  include_once('includes/functions.php');
+                  // Query to obtain all games
+                  $juegos = obtenerJuegos();
 
-                // Show all games
-                foreach ($juegos as $juego) {
-                  echo '<option value="' . $juego['JUEGO'] . '"></option>';
-                }
-                ?>
-              </datalist>
+                  // Show all games
+                  foreach ($juegos as $juego) {
+                    echo '<option value="' . $juego['IDJUEGO'] . '">' . $juego['JUEGO'] . '</option>';
+                  }
+                  ?>
+                </select>
+                <i class="bi bi-chevron-down select-arrow"></i>
+              </div>
             </div>
 
             <div class="d-flex justify-content-end align-items-center">
@@ -211,6 +224,7 @@ if (!isset($_SESSION['user_id'])) {
     </div>
   </div>
 
+  <!-- Main Content -->
   <div class="container-fluid">
     <div class="row">
       <!-- Sidebar Column - visible in lg and xl, hidden in sm and xs -->
@@ -247,7 +261,7 @@ if (!isset($_SESSION['user_id'])) {
                   ?>
                 </ul>
 
-                <!-- Botón para mostrar/ocultar todas las categorías -->
+                <!-- Button for showing/hiding all categories -->
                 <div class="text-center mt-2">
                   <button class="btn btn-sm btn-outline-primary" id="btn-toggle-categorias">Ver más categorías</button>
                 </div>
@@ -297,7 +311,7 @@ if (!isset($_SESSION['user_id'])) {
         </div>
       </div>
 
-      <!-- Main Content Column - ocupa todo el ancho en pantallas pequeñas, margen lateral en pantallas grandes -->
+      <!-- Main Content Column - cover the entire width on small screens, add margin on large screens -->
       <div class="col-12 col-lg-9 offset-lg-3">
         <div class="main-content">
           <!-- Posts Section -->
@@ -325,7 +339,6 @@ if (!isset($_SESSION['user_id'])) {
               </div>
             </div>
 
-            <!-- Ejemplo de otra publicación -->
             <div class="card mb-3">
               <div class="card-header bg-transparent d-flex align-items-center">
                 <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="User">
