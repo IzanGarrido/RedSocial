@@ -30,9 +30,9 @@
                     $params = [$username];
                     $userId = DB::getOne($sql, $params)['IDUSUARIO'];
                     
-                    // Crear la sesión y siempre establecer la cookie
+                    // Create the session and always set the cookie
                     if (createUserSession($userId, $rememberMe)) {
-                        // Redirigir a la página principal o a la última página visitada
+                        // Redirect to the last visited page or the main page
                         $redirect = $_SESSION['redirect_url'] ?? '../index.php';
                         unset($_SESSION['redirect_url']);
                         header("Location: $redirect");
