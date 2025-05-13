@@ -57,10 +57,9 @@ function authenticateWithCookie() {
     
     try {
         // Find the user in the database based on the token
-        $sql = "SELECT u.IDUSUARIO, u.USUARIO, ui.NOMBRE, ui.APELLIDOS, ui.CORREO 
-                FROM usuario u 
-                JOIN usuarios_info ui ON u.IDUSUARIO = ui.IDUSUARIO 
-                WHERE u.REMEMBER_TOKEN = ? AND u.TOKEN_EXPIRY > NOW()";
+        $sql = "SELECT IDUSUARIO, USUARIO, NOMBRE, APELLIDOS, CORREO 
+                FROM usuario
+                WHERE REMEMBER_TOKEN = ? AND TOKEN_EXPIRY > NOW()";
         $user = DB::getOne($sql, [$token]);
         
         if ($user) {
@@ -100,10 +99,9 @@ function authenticateWithCookie() {
 function createUserSession($userId, $rememberMe = false) {
     try {
         // Obtain the user data from the database
-        $sql = "SELECT u.IDUSUARIO, u.USUARIO, ui.NOMBRE, ui.APELLIDOS, ui.CORREO 
-                FROM usuario u 
-                JOIN usuarios_info ui ON u.IDUSUARIO = ui.IDUSUARIO 
-                WHERE u.IDUSUARIO = ?";
+        $sql = "SELECT IDUSUARIO, USUARIO, NOMBRE, APELLIDOS, CORREO 
+                FROM usuario
+                WHERE IDUSUARIO = ?";
         $user = DB::getOne($sql, [$userId]);
         
         if ($user) {

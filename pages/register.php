@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // If no errors, register the user and create the directory for save the posts and profile image
         if (empty($errores)) {
-            $userId = registrarUsuario($nombre, $apellidos, $username, $email, $password, $confirmPassword);
+            $userId = registrarUsuario($nombre, $apellidos, $username, $email, $password);
             creardirectoriobase($username);
             
             if ($userId > 0) {
