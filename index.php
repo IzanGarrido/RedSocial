@@ -324,29 +324,6 @@ if (!isset($_SESSION['user_id'])) {
         <div class="main-content">
           <!-- Posts Section -->
           <section class="content-section">
-            <!-- <div class="card mb-3">
-              <div class="card-header bg-transparent d-flex align-items-center">
-                <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="User">
-                <div>
-                  <h6 class="mb-0">Usuario123</h6>
-                  <small class="text-muted">Hace 2 horas</small>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="d-flex justify-content-center">
-                  <img src="./assets/Games-logos/Rockstar Games/gta5-logo.webp" class="img-fluid rounded mb-3 w-50" alt="Post image">
-                </div>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div>
-                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.</p>
-                    <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> 24</button>
-                    <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat"></i> 8</button>
-                  </div>
-                  <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-share"></i> Compartir</button>
-                </div>
-              </div>
-            </div> -->
-
             <?php if (count(obtenerPublicaciones()) <= 0) { ?>
               <div class="text-center">
                 <p class="text-muted">No hay publicaciones para mostrar.</p>

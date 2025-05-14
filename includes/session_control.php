@@ -121,7 +121,7 @@ function createUserSession($userId, $rememberMe = false) {
                 $expiry = date('Y-m-d H:i:s', strtotime('+90 days'));
                 
                 // Asegure that the user table has columns REMEMBER_TOKEN and TOKEN_EXPIRY
-                $updateSql = "UPDATE usuario SET REMEMBER_TOKEN = ?, TOKEN_EXPIRY = ? WHERE IDUSUARIO = ?";
+                $updateSql = "UPDATE USUARIO SET REMEMBER_TOKEN = ?, TOKEN_EXPIRY = ? WHERE IDUSUARIO = ?";
                 DB::executeQuery($updateSql, [$token, $expiry, $user['IDUSUARIO']]);
                 
                 // Create the cookie (90 days)
