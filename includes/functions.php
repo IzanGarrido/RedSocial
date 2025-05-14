@@ -14,7 +14,7 @@ function registrarUsuario($nombre, $apellidos, $usuario, $correo, $password)
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         // SQL query to insert user in table usuario 
-        $sql = "INSERT INTO usuario (USUARIO, HASH_PASSWORD, NOMBRE, APELLIDOS, CORREO) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO USUARIO (USUARIO, HASH_PASSWORD, NOMBRE, APELLIDOS, CORREO) VALUES (?, ?, ?, ?, ?)";
         $params = [$usuario, $hashedPassword, $nombre, $apellidos, $correo];
 
         // Execute the query for usuario table
@@ -80,7 +80,7 @@ function comprobarUsername($username)
 
     try {
         // SQL query to check if the username already exists
-        $sql = "SELECT USUARIO FROM usuario WHERE USUARIO = ?";
+        $sql = "SELECT USUARIO FROM USUARIO WHERE USUARIO = ?";
         $params = [$username];
         $query = DB::executeQuery($sql, $params);
 
@@ -111,7 +111,7 @@ function comprobarEmail($email)
 
     try {
         // SQL query to check if the email already exists
-        $sql = "SELECT CORREO FROM usuario WHERE CORREO = ?";
+        $sql = "SELECT CORREO FROM USUARIO WHERE CORREO = ?";
         $params = [$email];
         $query = DB::executeQuery($sql, $params);
 
@@ -192,7 +192,7 @@ function comprobarlogin($username, $password)
 {
     try {
         // SQL query to fetch the user data by username only
-        $sql = "SELECT USUARIO, HASH_PASSWORD FROM usuario WHERE USUARIO = ?";
+        $sql = "SELECT USUARIO, HASH_PASSWORD FROM USUARIO WHERE USUARIO = ?";
         $params = [$username];
         $query = DB::executeQuery($sql, $params);
 
@@ -245,8 +245,8 @@ function validarFormularioLogin($username, $password)
 function obtenerUsuarioPorId($userId)
 {
     try {
-        $sql = "SELECT u.IDUSUARIO, u.USUARIO, ui.NOMBRE, ui.APELLIDOS, ui.CORREO 
-                FROM usuari 
+        $sql = "SELECT IDUSUARIO, USUARIO, NOMBRE, APELLIDOS, CORREO 
+                FROM USUARIO 
                 WHERE IDUSUARIO = ?";
         $user = DB::getOne($sql, [$userId]);
         return $user;
@@ -260,7 +260,7 @@ function obtenerUsuarioPorId($userId)
 function obtenerUsuarioPorUsername($username)
 {
     try {
-        $sql = "SELECT u.IDUSUARIO FROM usuario u WHERE u.USUARIO = ?";
+        $sql = "SELECT IDUSUARIO FROM USUARIO WHERE USUARIO = ?";
         $user = DB::getOne($sql, [$username]);
         return $user ? $user['IDUSUARIO'] : null;
     } catch (Exception $e) {
@@ -272,14 +272,14 @@ function obtenerUsuarioPorUsername($username)
 // Function to get all the categories from index page
 function obtenerCategorias()
 {
-    $categorias = DB::getAll("SELECT ID_CATEGORIA, CATEGORIA FROM categorias ORDER BY CATEGORIA ASC");
+    $categorias = DB::getAll("SELECT ID_CATEGORIA, CATEGORIA FROM CATEGORIAS ORDER BY CATEGORIA ASC");
     return $categorias;
 }
 
 // Function to get all the games
 function obtenerJuegos()
 {
-    $juegos = DB::getAll("SELECT IDJUEGO, JUEGO, URL_IMAGEN FROM juegos ORDER BY JUEGO ASC");
+    $juegos = DB::getAll("SELECT IDJUEGO, JUEGO, URL_IMAGEN FROM JUEGOS ORDER BY JUEGO ASC");
     return $juegos;
 }
 
@@ -292,7 +292,7 @@ function crearPublicacion($userId, $contenido, $archivo = null, $gameId = null)
         // If there is a file, process it
         if ($archivo && !empty($archivo['name'])) {
             // SQL query to get the username by user ID
-            $sql = "SELECT USUARIO FROM usuario WHERE IDUSUARIO = ?";
+            $sql = "SELECT USUARIO FROM USUARIO WHERE IDUSUARIO = ?";
             $usuario = DB::getOne($sql, [$userId]);
 
             // Check if the user exists

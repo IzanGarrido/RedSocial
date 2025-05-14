@@ -58,7 +58,7 @@ function authenticateWithCookie() {
     try {
         // Find the user in the database based on the token
         $sql = "SELECT IDUSUARIO, USUARIO, NOMBRE, APELLIDOS, CORREO 
-                FROM usuario
+                FROM USUARIO
                 WHERE REMEMBER_TOKEN = ? AND TOKEN_EXPIRY > NOW()";
         $user = DB::getOne($sql, [$token]);
         
@@ -76,7 +76,7 @@ function authenticateWithCookie() {
             // Extends the expiration to 90 days for longer duration
             $expiry = date('Y-m-d H:i:s', strtotime('+90 days'));
             
-            $updateSql = "UPDATE usuario SET REMEMBER_TOKEN = ?, TOKEN_EXPIRY = ? WHERE IDUSUARIO = ?";
+            $updateSql = "UPDATE USUARIO SET REMEMBER_TOKEN = ?, TOKEN_EXPIRY = ? WHERE IDUSUARIO = ?";
             DB::executeQuery($updateSql, [$new_token, $expiry, $user['IDUSUARIO']]);
             
             // Update the cookie with a longer duration (90 days)
@@ -100,7 +100,7 @@ function createUserSession($userId, $rememberMe = false) {
     try {
         // Obtain the user data from the database
         $sql = "SELECT IDUSUARIO, USUARIO, NOMBRE, APELLIDOS, CORREO 
-                FROM usuario
+                FROM USUARIO
                 WHERE IDUSUARIO = ?";
         $user = DB::getOne($sql, [$userId]);
         
@@ -147,7 +147,7 @@ function logoutUser() {
                 require_once __DIR__ . '/config.php';
             }
             
-            $updateSql = "UPDATE usuario SET REMEMBER_TOKEN = NULL, TOKEN_EXPIRY = NULL WHERE IDUSUARIO = ?";
+            $updateSql = "UPDATE USUARIO SET REMEMBER_TOKEN = NULL, TOKEN_EXPIRY = NULL WHERE IDUSUARIO = ?";
             DB::executeQuery($updateSql, [$_SESSION['user_id']]);
         } catch (Exception $e) {
             error_log("Error al eliminar token: " . $e->getMessage());

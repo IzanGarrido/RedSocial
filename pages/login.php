@@ -26,7 +26,7 @@
             if (comprobarLogin($username, $password)) {
                 // Obtain the user ID
                 try {
-                    $sql = "SELECT IDUSUARIO FROM usuario WHERE USUARIO = ?";
+                    $sql = "SELECT IDUSUARIO FROM USUARIO WHERE USUARIO = ?";
                     $params = [$username];
                     $userId = DB::getOne($sql, $params)['IDUSUARIO'];
                     
