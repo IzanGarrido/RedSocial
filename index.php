@@ -382,6 +382,7 @@ if (!isset($_SESSION['user_id'])) {
                           <img src="<?php echo $publicacion['URL']; ?>" class="img-fluid rounded mb-3 w-50" alt="Post image">
                         </div>
 
+                        <!-- Check if the file is a video -->
                       <?php } elseif (in_array(strtolower(pathinfo($publicacion['URL'], PATHINFO_EXTENSION)), ['mp4', 'webm', 'avi', 'mov'])) { ?>
                         <!-- Código para mostrar videos -->
                         <div class="d-flex justify-content-center">
