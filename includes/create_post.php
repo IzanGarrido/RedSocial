@@ -27,6 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $archivo = isset($_FILES['postMedia']) && !empty($_FILES['postMedia']['name']) ? $_FILES['postMedia'] : null;
     $result = crearPublicacion($userId, $contenido, $archivo, $gameId);
+
+    header('Location: ../index.php');
     
 } else {
     header('Location: ../index.php');

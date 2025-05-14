@@ -185,6 +185,25 @@ function creardirectoriobase($username)
     if (!file_exists($directorio)) {
         mkdir($directorio, 0777, true);
     }
+    // Add default profile image
+    $defaultProfileImage = "../assets/img/default_profile.png";
+    $profileImagePath = "$directorio/profile.png";
+    if (!file_exists($profileImagePath)) {
+        copy($defaultProfileImage, $profileImagePath);
+    }
+
+    // Add the url to the database
+    $sql = "UPDATE USUARIO SET URL_IMAGEN = ? WHERE USUARIO = ?";
+    $params = [$profileImagePath, $username];
+    DB::executeQuery($sql, $params);
+}
+
+// Function to get the user profile image
+function getProfileImage($username)
+{
+    $directorio = "./assets/users/$username";
+    $profileImagePath = "$directorio/profile.png";
+    return $profileImagePath;
 }
 
 // Function to check the login
@@ -308,13 +327,6 @@ function crearPublicacion($userId, $contenido, $archivo = null, $gameId = null)
             $userDir = "../assets/users/{$username}";
             $postsDir = "{$userDir}/posts";
 
-            if (!file_exists($userDir)) {
-                mkdir($userDir, 0777, true);
-            }
-            if (!file_exists($postsDir)) {
-                mkdir($postsDir, 0777, true);
-            }
-
             // Generate a unique name for the file using timestamp
             $timestamp = time();
             $fileExtension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
@@ -342,5 +354,29 @@ function crearPublicacion($userId, $contenido, $archivo = null, $gameId = null)
     } catch (Exception $e) {
         error_log("Error al crear publicación: " . $e->getMessage());
         return false;
+    }
+}
+
+// Function to get all posts from the database
+function obtenerPublicaciones()
+{
+    try {
+        // SQL query to get all posts from the database
+        $sql = "SELECT p.ID_PUBLICACION, p.CONTENIDO, p.URL, p.FECHA_CREACION, 
+                 u.USUARIO, u.URL_FOTO AS USER_PHOTO,
+                 j.JUEGO, j.URL_IMAGEN AS GAME_IMAGE,
+                 (SELECT COUNT(*) FROM INTERACCIONES WHERE ID_PUBLICACION = p.ID_PUBLICACION AND TIPO = 'like') AS LIKES_COUNT,
+                 (SELECT COUNT(*) FROM COMENTARIOS WHERE ID_PUBLICACION = p.ID_PUBLICACION) AS COMMENTS_COUNT
+          FROM PUBLICACIONES_USUARIOS p
+          JOIN USUARIO u ON p.IDUSUARIO = u.IDUSUARIO
+          LEFT JOIN JUEGOS j ON p.IDJUEGO = j.IDJUEGO
+          ORDER BY p.FECHA_CREACION DESC
+          LIMIT 10";
+        $posts = DB::getAll($sql);
+
+        return $posts;
+    } catch (Exception $e) {
+        error_log("Error al obtener publicaciones: " . $e->getMessage());
+        return [];
     }
 }

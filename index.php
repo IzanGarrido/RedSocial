@@ -121,7 +121,16 @@ if (!isset($_SESSION['user_id'])) {
           <li class="nav-item mx-2">
             <div class="dropdown">
               <a class="nav-link d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="./assets/App-images/Gameord-logo.webp" alt="User" class="rounded-circle me-1" width="32" height="32">
+                <?php
+                // Get user profile image
+
+                // Include the functions file
+                include_once('includes/functions.php');
+
+                // function to get user profile image
+                $profileImage = getProfileImage($_SESSION['username']);
+                ?>
+                <img src="<?php echo $profileImage; ?>" alt="User" class="rounded-circle me-1" width="32" height="32">
                 <span class="d-none d-lg-block ms-1">
                   <?php echo isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Usuario'; ?>
                 </span>
@@ -315,7 +324,7 @@ if (!isset($_SESSION['user_id'])) {
         <div class="main-content">
           <!-- Posts Section -->
           <section class="content-section">
-            <div class="card mb-3">
+            <!-- <div class="card mb-3">
               <div class="card-header bg-transparent d-flex align-items-center">
                 <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="User">
                 <div>
@@ -336,27 +345,74 @@ if (!isset($_SESSION['user_id'])) {
                   <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-share"></i> Compartir</button>
                 </div>
               </div>
-            </div>
+            </div> -->
 
-            <div class="card mb-3">
-              <div class="card-header bg-transparent d-flex align-items-center">
-                <img src="./assets/App-images/Gameord-logo.webp" class="rounded-circle me-2" width="40" height="40" alt="User">
-                <div>
-                  <h6 class="mb-0">GamerPro</h6>
-                  <small class="text-muted">Hace 5 horas</small>
-                </div>
+            <?php if (count(obtenerPublicaciones()) <= 0) { ?>
+              <div class="text-center">
+                <p class="text-muted">No hay publicaciones para mostrar.</p>
               </div>
-              <div class="card-body">
-                <p class="card-text">¡Acabo de conseguir un logro muy difícil en mi juego favorito! ¿Alguien más lo ha intentado?</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div>
-                    <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> 42</button>
-                    <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat"></i> 15</button>
+            <?php } else { ?>
+              <?php foreach (obtenerPublicaciones() as $publicacion) { ?>
+                <div class="card mb-3">
+                  <div class="card-header bg-transparent d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                      <img src="<?php echo $publicacion['USER_PHOTO']; ?>" class="rounded-circle me-2" width="40" height="40" alt="User">
+                      <div>
+                        <h6 class="mb-0"><?php echo $publicacion['USUARIO']; ?></h6>
+                        <small class="text-muted"><?php echo $publicacion['FECHA_CREACION']; ?></small>
+                      </div>
+                    </div>
+                    <?php if ($publicacion['JUEGO'] != null || $publicacion['JUEGO'] != null) { ?>
+                      <div class="d-flex align-items-center">
+                        <img src="<?php echo $publicacion['GAME_IMAGE']; ?>" class="rounded-circle me-2" width="40" height="40" alt="User">
+                        <div>
+                          <h6 class="mb-0"><?php echo $publicacion['JUEGO']; ?></h6>
+                        </div>
+                      </div>
+                    <?php } ?>
+
                   </div>
-                  <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-share"></i> Compartir</button>
-                </div>
-              </div>
-            </div>
+                  <div class="card-body">
+                    <p class="card-text"><?php echo $publicacion['CONTENIDO']; ?></p>
+                    <?php if ($publicacion['URL'] != '') { ?>
+                      <!-- Check if the file is an image -->
+                      <?php if (in_array(strtolower(pathinfo($publicacion['URL'], PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif'])) { ?>
+
+                        <div class="d-flex justify-content-center">
+                          <img src="<?php echo $publicacion['URL']; ?>" class="img-fluid rounded mb-3 w-50" alt="Post image">
+                        </div>
+
+                      <?php } elseif (in_array(strtolower(pathinfo($publicacion['URL'], PATHINFO_EXTENSION)), ['mp4', 'webm', 'avi', 'mov'])) { ?>
+                        <!-- Código para mostrar videos -->
+                        <div class="d-flex justify-content-center">
+                          <video controls class="img-fluid rounded mb-3 w-50">
+                            <source src="<?php echo $publicacion['URL']; ?>" type="video/mp4">
+                            <source src="<?php echo $publicacion['URL']; ?>" type="video/webm">
+                            <source src="<?php echo $publicacion['URL']; ?>" type="video/avi">
+                            <source src="<?php echo $publicacion['URL']; ?>" type="video/quicktime">
+                          </video>
+                        <?php
+                      } else {
+                        ?>
+
+                        <?php
+                      }
+                        ?>
+
+                      <?php } ?>
+
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> <?php echo $publicacion['LIKES_COUNT']; ?></button>
+                          <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat"></i> <?php echo $publicacion['COMMENTS_COUNT']; ?></button>
+                        </div>
+                        <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-share"></i> Compartir</button>
+                      </div>
+                        </div>
+                  </div>
+                <?php } ?>
+              <?php } ?>
+
           </section>
         </div>
       </div>
