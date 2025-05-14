@@ -193,7 +193,7 @@ function creardirectoriobase($username)
     }
 
     // Add the url to the database
-    $sql = "UPDATE USUARIO SET URL_IMAGEN = ? WHERE USUARIO = ?";
+    $sql = "UPDATE USUARIO SET URL_FOTO = ? WHERE USUARIO = ?";
     $params = [$profileImagePath, $username];
     DB::executeQuery($sql, $params);
 }
