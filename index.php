@@ -132,7 +132,7 @@ if (!isset($_SESSION['user_id'])) {
                 ?>
                 <img src="<?php echo $profileImage; ?>" alt="User" class="rounded-circle me-1" width="32" height="32">
                 <span class="d-none d-lg-block ms-1">
-                  <?php echo isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Usuario'; ?>
+                  <?php echo isset($_SESSION['username']) ? $_SESSION['username'] : 'Usuario'; ?>
                 </span>
               </a>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">

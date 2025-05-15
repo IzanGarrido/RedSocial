@@ -6,6 +6,35 @@
 // Include the config file
 require_once 'config.php';
 
+
+
+// Function to get the base path of the application
+function obtenerRutaBase($tipo = 'absoluta') 
+{
+    switch ($tipo) {
+        case 'absoluta':
+            // Ruta absoluta en el sistema de archivos (para funciones como move_uploaded_file)
+            return realpath(dirname(__FILE__) . '/..') . '/';
+            
+        case 'relativa':
+            // Ruta relativa para URLs en HTML (para src, href, etc.)
+            $directorioActual = dirname($_SERVER['PHP_SELF']);
+            
+            // Si estamos en un subdirectorio como /includes o /pages, subir un nivel
+            if (strpos($directorioActual, '/includes') !== false) {
+                return '..';
+            } elseif (strpos($directorioActual, '/pages') !== false) {
+                return '..';
+            }
+            
+            // Si estamos en el directorio raíz
+            return '.';
+            
+        default:
+            return realpath(dirname(__FILE__) . '/..') . '/';
+    }
+}
+
 // Function to register a new user
 function registrarUsuario($nombre, $apellidos, $usuario, $correo, $password)
 {
@@ -181,28 +210,50 @@ function comprobarContrasena($password, $confirmPassword)
 // Function to create the user directory
 function creardirectoriobase($username)
 {
-    $directorio = "../assets/users/$username";
+    $rutaBase = obtenerRutaBase('absoluta');
+    $directorio = $rutaBase . "assets/users/$username";
+    
     if (!file_exists($directorio)) {
         mkdir($directorio, 0777, true);
+        
+        // Crear también el directorio para posts
+        $postsDir = "$directorio/posts";
+        if (!file_exists($postsDir)) {
+            mkdir($postsDir, 0777, true);
+        }
     }
+    
     // Add default profile image
-    $defaultProfileImage = "../assets/img/default_profile.png";
+    $defaultProfileImage = $rutaBase . "assets/img/default_profile.png";
     $profileImagePath = "$directorio/profile.png";
+    
     if (!file_exists($profileImagePath)) {
         copy($defaultProfileImage, $profileImagePath);
     }
 
+    // URL relativa para la base de datos
+    $urlRelativa = "./assets/users/$username/profile.png";
+    
     // Add the url to the database
     $sql = "UPDATE USUARIO SET URL_FOTO = ? WHERE USUARIO = ?";
-    $params = [$profileImagePath, $username];
+    $params = [$urlRelativa, $username];
     DB::executeQuery($sql, $params);
 }
 
 // Function to get the user profile image
 function getProfileImage($username)
 {
-    $directorio = "./assets/users/$username";
-    $profileImagePath = "$directorio/profile.png";
+    $rutaRelativa = obtenerRutaBase('relativa');
+    $profileImagePath = "$rutaRelativa/assets/users/$username/profile.png";
+    
+    // Comprobar si existe la imagen
+    $rutaAbsoluta = obtenerRutaBase('absoluta') . "assets/users/$username/profile.png";
+    
+    if (!file_exists($rutaAbsoluta)) {
+        // Si no existe, devolver la imagen por defecto
+        return "$rutaRelativa/assets/img/default_profile.png";
+    }
+    
     return $profileImagePath;
 }
 
@@ -323,9 +374,25 @@ function crearPublicacion($userId, $contenido, $archivo = null, $gameId = null)
             // Get the username
             $username = $usuario['USUARIO'];
 
-            // Create the user directory if it doesn't exist
-            $userDir = "../assets/users/{$username}";
+            // Obtener rutas usando la nueva función
+            $rutaBase = obtenerRutaBase('absoluta');
+            $userDir = $rutaBase . "assets/users/{$username}";
             $postsDir = "{$userDir}/posts";
+            
+            // Asegurar que los directorios existan
+            if (!file_exists($userDir)) {
+                if (!mkdir($userDir, 0777, true)) {
+                    error_log("Error: No se pudo crear el directorio $userDir");
+                    return false;
+                }
+            }
+            
+            if (!file_exists($postsDir)) {
+                if (!mkdir($postsDir, 0777, true)) {
+                    error_log("Error: No se pudo crear el directorio $postsDir");
+                    return false;
+                }
+            }
 
             // Generate a unique name for the file using timestamp
             $timestamp = time();
@@ -333,14 +400,22 @@ function crearPublicacion($userId, $contenido, $archivo = null, $gameId = null)
             $fileName = "{$timestamp}.{$fileExtension}";
             $filePath = "{$postsDir}/{$fileName}";
 
-            // Relative path for saving in the database
+            // Ruta relativa para guardar en la base de datos
+            // Usamos un formato consistente para URLs
             $url = "./assets/users/{$username}/posts/{$fileName}";
+
+            // Añadimos logs para depuración
+            error_log("Intentando mover archivo desde: " . $archivo['tmp_name']);
+            error_log("Hacia: " . $filePath);
 
             // Move the uploaded file to the destination
             if (!move_uploaded_file($archivo['tmp_name'], $filePath)) {
                 error_log("Error: No se pudo mover el archivo subido a $filePath");
+                error_log("Error de PHP: " . error_get_last()['message']);
                 return false;
             }
+            
+            error_log("Archivo movido correctamente a: " . $filePath);
         }
 
         // Insert the post in the database
@@ -349,10 +424,17 @@ function crearPublicacion($userId, $contenido, $archivo = null, $gameId = null)
 
         // Execute the query and get the ID
         $postId = DB::insert($sql, $params);
+        
+        if ($postId) {
+            error_log("Publicación creada con éxito, ID: " . $postId);
+        } else {
+            error_log("Error al insertar en la base de datos");
+        }
 
         return $postId;
     } catch (Exception $e) {
         error_log("Error al crear publicación: " . $e->getMessage());
+        error_log("Traza: " . $e->getTraceAsString());
         return false;
     }
 }
