@@ -330,70 +330,68 @@ if (!isset($_SESSION['user_id'])) {
               </div>
             <?php } else { ?>
               <?php foreach (obtenerPublicaciones() as $publicacion) { ?>
-                <div class="card mb-3">
+                <div class="card post-card mb-4 shadow-sm">
                   <div class="card-header bg-transparent d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
-                      <img src="<?php echo $publicacion['USER_PHOTO']; ?>" class="rounded-circle me-2" width="40" height="40" alt="User">
+                      <img src="<?php echo $publicacion['USER_PHOTO']; ?>" class="rounded-circle me-2 user-avatar" width="40" height="40" alt="User">
                       <div>
-                        <h6 class="mb-0"><?php echo $publicacion['USUARIO']; ?></h6>
-                        <small class="text-muted"><?php echo $publicacion['FECHA_CREACION']; ?></small>
+                        <h6 class="mb-0 fw-bold user-name"><?php echo $publicacion['USUARIO']; ?></h6>
+                        <small class="text-muted post-date"><?php echo date("d-m-y H:i", strtotime($publicacion['FECHA_CREACION'])); ?></small>
                       </div>
                     </div>
-                    <?php if ($publicacion['JUEGO'] != null || $publicacion['JUEGO'] != null) { ?>
-                      <div class="d-flex align-items-center">
-                        <img src="<?php echo $publicacion['GAME_IMAGE']; ?>" class="rounded-circle me-2" width="40" height="40" alt="User">
+                    <?php if ($publicacion['JUEGO'] != null) { ?>
+                      <div class="d-flex align-items-center game-info">
+                        <img src="<?php echo $publicacion['GAME_IMAGE']; ?>" class="rounded-circle me-2 game-image" width="40" height="40" alt="Game">
                         <div>
-                          <h6 class="mb-0"><?php echo $publicacion['JUEGO']; ?></h6>
+                          <h6 class="mb-0 game-title"><?php echo $publicacion['JUEGO']; ?></h6>
                         </div>
                       </div>
                     <?php } ?>
-
                   </div>
+
                   <div class="card-body">
-                    <p class="card-text"><?php echo $publicacion['CONTENIDO']; ?></p>
                     <?php if ($publicacion['URL'] != '') { ?>
                       <!-- Check if the file is an image -->
                       <?php if (in_array(strtolower(pathinfo($publicacion['URL'], PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif'])) { ?>
-
-                        <div class="d-flex justify-content-center">
-                          <img src="<?php echo $publicacion['URL']; ?>" class="img-fluid rounded mb-3 w-50" alt="Post image">
+                        <div class="d-flex justify-content-center media-container">
+                          <img src="<?php echo $publicacion['URL']; ?>" class="post-media img-fluid" alt="Post image">
                         </div>
-
                         <!-- Check if the file is a video -->
                       <?php } elseif (in_array(strtolower(pathinfo($publicacion['URL'], PATHINFO_EXTENSION)), ['mp4', 'webm', 'avi', 'mov'])) { ?>
-                        <!-- Código para mostrar videos -->
-                        <div class="d-flex justify-content-center">
-                          <video controls class="img-fluid rounded mb-3 w-50">
+                        <div class="d-flex justify-content-center media-container">
+                          <video controls class="post-media">
                             <source src="<?php echo $publicacion['URL']; ?>" type="video/mp4">
                             <source src="<?php echo $publicacion['URL']; ?>" type="video/webm">
                             <source src="<?php echo $publicacion['URL']; ?>" type="video/avi">
                             <source src="<?php echo $publicacion['URL']; ?>" type="video/quicktime">
+                            Tu navegador no soporta la reproducción de videos.
                           </video>
-                        <?php
-                      } else {
-                        ?>
-
-                        <?php
-                      }
-                        ?>
-
+                        </div>
                       <?php } ?>
+                    <?php } ?>
 
-                      <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                          <button class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-heart"></i> <?php echo $publicacion['LIKES_COUNT']; ?></button>
-                          <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat"></i> <?php echo $publicacion['COMMENTS_COUNT']; ?></button>
-                        </div>
-                        <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-share"></i> Compartir</button>
-                      </div>
-                        </div>
+                    <p class="card-text post-content mt-3"><?php echo $publicacion['CONTENIDO']; ?></p>
                   </div>
-                <?php } ?>
-              <?php } ?>
 
+                  <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+                    <div class="post-stats d-flex align-items-center">
+                      <button class="btn btn-sm btn-outline-primary me-3 like-btn">
+                        <i class="bi bi-heart"></i>
+                        <span class="ms-1"><?php echo $publicacion['LIKES_COUNT']; ?></span>
+                      </button>
+                      <button class="btn btn-sm btn-outline-secondary comment-btn">
+                        <i class="bi bi-chat"></i>
+                        <span class="ms-1"><?php echo $publicacion['COMMENTS_COUNT']; ?></span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              <?php } ?>
+            <?php } ?>
           </section>
         </div>
       </div>
+
     </div>
   </div>
 

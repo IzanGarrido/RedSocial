@@ -68,7 +68,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // Function to validate the file size
   function validateFileSize(file) {
     const minSize = 1024; // 1KB en bytes
-    const maxSize = 52428800; // 50MB en bytes
+    const maxSize = 25 * 1024 * 1024; // 25MB en bytes
+
 
     if (file.size < minSize) {
       showMediaError(`El archivo es demasiado pequeño. Tamaño mínimo: 1KB`);
