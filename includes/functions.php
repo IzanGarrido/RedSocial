@@ -13,21 +13,18 @@ function obtenerRutaBase($tipo = 'absoluta')
 {
     switch ($tipo) {
         case 'absoluta':
-            // Ruta absoluta en el sistema de archivos (para funciones como move_uploaded_file)
+
             return realpath(dirname(__FILE__) . '/..') . '/';
             
         case 'relativa':
-            // Ruta relativa para URLs en HTML (para src, href, etc.)
             $directorioActual = dirname($_SERVER['PHP_SELF']);
             
-            // Si estamos en un subdirectorio como /includes o /pages, subir un nivel
             if (strpos($directorioActual, '/includes') !== false) {
                 return '..';
             } elseif (strpos($directorioActual, '/pages') !== false) {
                 return '..';
             }
             
-            // Si estamos en el directorio raíz
             return '.';
             
         default:
@@ -224,7 +221,7 @@ function creardirectoriobase($username)
     }
     
     // Add default profile image
-    $defaultProfileImage = $rutaBase . "assets/img/default_profile.png";
+    $defaultProfileImage = $rutaBase . "assets/App-images/default_profile.png";
     $profileImagePath = "$directorio/profile.png";
     
     if (!file_exists($profileImagePath)) {
