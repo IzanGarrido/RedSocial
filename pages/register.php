@@ -95,25 +95,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p class="text-muted">Únete a nuestra comunidad gamer y comparte tus experiencias</p>
             </div>
             
-            <?php if (!empty($errores)): ?>
+            <?php if (isset($errores['general'])): ?>
                 <div class="alert alert-danger">
-                    <?php 
-                        if (isset($errores['general'])) {
-                            echo $errores['general'];
-                        } else {
-                            // Display the first error
-                            $primerError = '';
-                            foreach ($errores as $campo => $error) {
-                                if (is_array($error)) {
-                                    $primerError = reset($error);
-                                } else {
-                                    $primerError = $error;
-                                }
-                                break;
-                            }
-                            echo $primerError;
-                        }
-                    ?>
+                    <?php echo $errores['general']; ?>
                 </div>
             <?php endif; ?>
 
@@ -125,10 +109,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label for="name">Nombre</label>
                         <div class="input-with-icon">
                             <i class="bi bi-person"></i>
-                            <input type="text" class="form-control" name="name" id="name" placeholder="Nombre" maxlength="50" required value="<?php echo htmlspecialchars($nombre); ?>">
+                            <input type="text" class="form-control <?php echo isset($errores['nombre']) ? 'is-invalid' : ''; ?>" name="name" id="name" placeholder="Nombre" maxlength="50" required value="<?php echo htmlspecialchars($nombre); ?>">
                         </div>
                         <?php if (isset($errores['nombre'])): ?>
-                            <small class="text-danger"><?php echo $errores['nombre']; ?></small>
+                            <div class="invalid-feedback d-block">
+                                <?php echo $errores['nombre']; ?>
+                            </div>
                         <?php endif; ?>
                     </div>
 
@@ -137,10 +123,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label for="lastname">Apellidos</label>
                         <div class="input-with-icon">
                             <i class="bi bi-person"></i>
-                            <input type="text" class="form-control" name="lastname" id="lastname" placeholder="Apellidos" maxlength="100" required value="<?php echo htmlspecialchars($apellidos); ?>">
+                            <input type="text" class="form-control <?php echo isset($errores['apellidos']) ? 'is-invalid' : ''; ?>" name="lastname" id="lastname" placeholder="Apellidos" maxlength="100" required value="<?php echo htmlspecialchars($apellidos); ?>">
                         </div>
                         <?php if (isset($errores['apellidos'])): ?>
-                            <small class="text-danger"><?php echo $errores['apellidos']; ?></small>
+                            <div class="invalid-feedback d-block">
+                                <?php echo $errores['apellidos']; ?>
+                            </div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -150,10 +138,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="username">Nombre de usuario</label>
                     <div class="input-with-icon">
                         <i class="bi bi-person-badge"></i>
-                        <input type="text" class="form-control" name="username" id="username" placeholder="Nombre de usuario" maxlength="20" required value="<?php echo htmlspecialchars($username); ?>">
+                        <input type="text" class="form-control <?php echo isset($errores['username']) ? 'is-invalid' : ''; ?>" name="username" id="username" placeholder="Nombre de usuario" maxlength="20" required value="<?php echo htmlspecialchars($username); ?>">
                     </div>
                     <?php if (isset($errores['username'])): ?>
-                        <small class="text-danger"><?php echo $errores['username']; ?></small>
+                        <div class="invalid-feedback d-block">
+                            <?php echo $errores['username']; ?>
+                        </div>
                     <?php endif; ?>
                 </div>
 
@@ -162,10 +152,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="email">Correo electrónico</label>
                     <div class="input-with-icon">
                         <i class="bi bi-envelope"></i>
-                        <input type="email" class="form-control" name="email" id="email" placeholder="Correo electrónico" maxlength="100" required value="<?php echo htmlspecialchars($email); ?>">
+                        <input type="email" class="form-control <?php echo isset($errores['email']) ? 'is-invalid' : ''; ?>" name="email" id="email" placeholder="Correo electrónico" maxlength="100" required value="<?php echo htmlspecialchars($email); ?>">
                     </div>
                     <?php if (isset($errores['email'])): ?>
-                        <small class="text-danger"><?php echo $errores['email']; ?></small>
+                        <div class="invalid-feedback d-block">
+                            <?php echo $errores['email']; ?>
+                        </div>
                     <?php endif; ?>
                 </div>
 
@@ -185,17 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label for="password">Contraseña</label>
                         <div class="input-with-icon">
                             <i class="bi bi-lock"></i>
-                            <input type="password" class="form-control" name="password" id="password" placeholder="Contraseña" required>
-                        </div>
-                        <div class="password-requirements">
-                            <small>La contraseña debe tener:</small>
-                            <ul class="ps-3 mb-0">
-                                <li><small>Al menos 8 caracteres</small></li>
-                                <li><small>Al menos una mayúscula</small></li>
-                                <li><small>Al menos una minúscula</small></li>
-                                <li><small>Al menos un número</small></li>
-                                <li><small>Al menos un carácter especial</small></li>
-                            </ul>
+                            <input type="password" class="form-control <?php echo isset($errores['password']) ? 'is-invalid' : ''; ?>" name="password" id="password" placeholder="Contraseña" required>
                         </div>
                     </div>
 
@@ -204,17 +186,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label for="confirmPassword">Confirmar Contraseña</label>
                         <div class="input-with-icon">
                             <i class="bi bi-lock"></i>
-                            <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Confirmar Contraseña" required>
+                            <input type="password" class="form-control <?php echo isset($errores['password']) ? 'is-invalid' : ''; ?>" name="confirmPassword" id="confirmPassword" placeholder="Confirmar Contraseña" required>
                         </div>
                     </div>
                 </div>
                 
                 <?php if (isset($errores['password']) && is_array($errores['password'])): ?>
                     <div class="mb-3">
-                        <div class="alert alert-danger">
-                            <ul class="mb-0">
+                        <div class="text-danger">
+                            <ul class="mb-0 ps-3">
                                 <?php foreach ($errores['password'] as $passwordError): ?>
-                                    <li><?php echo $passwordError; ?></li>
+                                    <li><small><?php echo $passwordError; ?></small></li>
                                 <?php endforeach; ?>
                             </ul>
                         </div>
