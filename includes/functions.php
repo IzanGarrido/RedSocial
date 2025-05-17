@@ -9,24 +9,24 @@ require_once 'config.php';
 
 
 // Function to get the base path of the application
-function obtenerRutaBase($tipo = 'absoluta') 
+function obtenerRutaBase($tipo = 'absoluta')
 {
     switch ($tipo) {
         case 'absoluta':
 
             return realpath(dirname(__FILE__) . '/..') . '/';
-            
+
         case 'relativa':
             $directorioActual = dirname($_SERVER['PHP_SELF']);
-            
+
             if (strpos($directorioActual, '/includes') !== false) {
                 return '..';
             } elseif (strpos($directorioActual, '/pages') !== false) {
                 return '..';
             }
-            
+
             return '.';
-            
+
         default:
             return realpath(dirname(__FILE__) . '/..') . '/';
     }
@@ -209,28 +209,28 @@ function creardirectoriobase($username)
 {
     $rutaBase = obtenerRutaBase('absoluta');
     $directorio = $rutaBase . "assets/users/$username";
-    
+
     if (!file_exists($directorio)) {
         mkdir($directorio, 0777, true);
-        
+
         // Crear también el directorio para posts
         $postsDir = "$directorio/posts";
         if (!file_exists($postsDir)) {
             mkdir($postsDir, 0777, true);
         }
     }
-    
+
     // Add default profile image
     $defaultProfileImage = $rutaBase . "assets/App-images/default_profile.png";
     $profileImagePath = "$directorio/profile.png";
-    
+
     if (!file_exists($profileImagePath)) {
         copy($defaultProfileImage, $profileImagePath);
     }
 
     // URL relativa para la base de datos
     $urlRelativa = "./assets/users/$username/profile.png";
-    
+
     // Add the url to the database
     $sql = "UPDATE USUARIO SET URL_FOTO = ? WHERE USUARIO = ?";
     $params = [$urlRelativa, $username];
@@ -242,15 +242,15 @@ function getProfileImage($username)
 {
     $rutaRelativa = obtenerRutaBase('relativa');
     $profileImagePath = "$rutaRelativa/assets/users/$username/profile.png";
-    
+
     // Comprobar si existe la imagen
     $rutaAbsoluta = obtenerRutaBase('absoluta') . "assets/users/$username/profile.png";
-    
+
     if (!file_exists($rutaAbsoluta)) {
         // Si no existe, devolver la imagen por defecto
         return "$rutaRelativa/assets/img/default_profile.png";
     }
-    
+
     return $profileImagePath;
 }
 
@@ -375,7 +375,7 @@ function crearPublicacion($userId, $contenido, $archivo = null, $gameId = null)
             $rutaBase = obtenerRutaBase('absoluta');
             $userDir = $rutaBase . "assets/users/{$username}";
             $postsDir = "{$userDir}/posts";
-            
+
             // Asegurar que los directorios existan
             if (!file_exists($userDir)) {
                 if (!mkdir($userDir, 0777, true)) {
@@ -383,7 +383,7 @@ function crearPublicacion($userId, $contenido, $archivo = null, $gameId = null)
                     return false;
                 }
             }
-            
+
             if (!file_exists($postsDir)) {
                 if (!mkdir($postsDir, 0777, true)) {
                     error_log("Error: No se pudo crear el directorio $postsDir");
@@ -411,7 +411,7 @@ function crearPublicacion($userId, $contenido, $archivo = null, $gameId = null)
                 error_log("Error de PHP: " . error_get_last()['message']);
                 return false;
             }
-            
+
             error_log("Archivo movido correctamente a: " . $filePath);
         }
 
@@ -421,7 +421,7 @@ function crearPublicacion($userId, $contenido, $archivo = null, $gameId = null)
 
         // Execute the query and get the ID
         $postId = DB::insert($sql, $params);
-        
+
         if ($postId) {
             error_log("Publicación creada con éxito, ID: " . $postId);
         } else {
@@ -457,5 +457,85 @@ function obtenerPublicaciones()
     } catch (Exception $e) {
         error_log("Error al obtener publicaciones: " . $e->getMessage());
         return [];
+    }
+}
+
+// Function to add like to a post
+function darLike($userId, $postId)
+{
+    try {
+        // SQL query to check if the user has already liked the post
+        $sql = "SELECT * FROM INTERACCIONES WHERE ID_PUBLICACION = ? AND IDUSUARIO = ? AND TIPO = 'like'";
+        $params = [$postId, $userId];
+        $query = DB::executeQuery($sql, $params);
+
+        // If the user has already liked the post, return false
+        if ($query->rowCount() > 0) {
+            return false;
+        }
+
+        // Insert the like into the database
+        $sql = "INSERT INTO INTERACCIONES (ID_PUBLICACION, IDUSUARIO, TIPO) VALUES (?, ?, 'like')";
+        $params = [$postId, $userId];
+        DB::insert($sql, $params);
+
+        return true;
+    } catch (Exception $e) {
+        error_log("Error al dar like: " . $e->getMessage());
+        return false;
+    }
+}
+
+// Function to remove like from a post
+function quitarLike($userId, $postId)
+{
+    try {
+        // SQL query to remove the like from the database
+        $sql = "DELETE FROM INTERACCIONES WHERE ID_PUBLICACION = ? AND IDUSUARIO = ? AND TIPO = 'like'";
+        $params = [$postId, $userId];
+        DB::executeQuery($sql, $params);
+
+        return true;
+    } catch (Exception $e) {
+        error_log("Error al quitar like: " . $e->getMessage());
+        return false;
+    }
+}
+
+// Function to check if a user has liked a post
+function comprobarLike($userId, $postId)
+{
+    try {
+        // SQL query to check if the user has liked the post
+        $sql = "SELECT * FROM INTERACCIONES WHERE ID_PUBLICACION = ? AND IDUSUARIO = ? AND TIPO = 'like'";
+        $params = [$postId, $userId];
+        $query = DB::executeQuery($sql, $params);
+
+        // If the user has liked the post, return true
+        if ($query->rowCount() > 0) {
+            return true;
+        }
+    } catch (Exception $e) {
+        error_log("Error al comprobar like: " . $e->getMessage());
+    }
+
+    return false;
+}
+
+// Function to get the number of likes for a post
+function obtenerNumeroLikes($postId)
+{
+    try {
+        // SQL query to count the number of likes for the post
+        $sql = "SELECT COUNT(*) AS LIKES_COUNT FROM INTERACCIONES WHERE ID_PUBLICACION = ? AND TIPO = 'like'";
+        $params = [$postId];
+        $query = DB::executeQuery($sql, $params);
+
+        // Fetch the result
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+        return $result['LIKES_COUNT'];
+    } catch (Exception $e) {
+        error_log("Error al obtener el número de likes: " . $e->getMessage());
+        return 0;
     }
 }

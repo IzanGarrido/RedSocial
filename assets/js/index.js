@@ -217,3 +217,37 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 });
+
+// Function to add or remove a like to a post
+function toggleLike(btn, userId, publicacionId, $numLikes) {
+  const likeado = btn.dataset.likeado === '1' ? 'quitar' : 'dar';
+
+  fetch('includes/likesControl.php', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: `user_id=${userId}&publicacion_id=${publicacionId}&accion=${likeado}&numlikes=${$numLikes}`
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        const span = btn.querySelector('.like-count');
+        span.textContent = data.likes;
+        console.log(data.likes);
+
+        // Cambiar clases
+        if (likeado === 'dar') {
+          btn.classList.remove('like-btn');
+          btn.classList.add('like-btn-red');
+          btn.dataset.likeado = '1';
+        } else {
+          btn.classList.remove('like-btn-red');
+          btn.classList.add('like-btn');
+          btn.dataset.likeado = '0';
+        }
+      } else {
+        console.error('Error:', data.message);
+      }
+    });
+}

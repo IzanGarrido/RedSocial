@@ -319,7 +319,7 @@ if (!isset($_SESSION['user_id'])) {
         </div>
       </div>
 
-      <!-- Main Content Column - cover the entire width on small screens, add margin on large screens -->
+      <!-- Main Content Column -->
       <div class="col-12 col-lg-9 offset-lg-3">
         <div class="main-content">
           <!-- Posts Section -->
@@ -375,14 +375,25 @@ if (!isset($_SESSION['user_id'])) {
 
                   <div class="card-footer bg-white d-flex justify-content-between align-items-center">
                     <div class="post-stats d-flex align-items-center">
-                      <button class="btn btn-sm btn-outline-primary me-3 like-btn">
-                        <i class="bi bi-heart"></i>
-                        <span class="ms-1"><?php echo $publicacion['LIKES_COUNT']; ?></span>
+
+                      <?php
+                      $likeado = comprobarLike($_SESSION['user_id'], $publicacion['ID_PUBLICACION']);
+                      $btnClass = $likeado ? 'like-btn-red' : 'like-btn';
+                      $iconClass = 'bi bi-heart'; // puedes cambiarlo a 'bi-heart-fill' si quieres
+                      ?>
+                      <button class="btn btn-sm me-3 <?php echo $btnClass; ?>"
+                        onclick="toggleLike(this, <?php echo $_SESSION['user_id']; ?>, <?php echo $publicacion['ID_PUBLICACION']; ?>)"
+                        data-likeado="<?php echo $likeado ? '1' : '0'; ?>">
+                        <i class="<?php echo $iconClass; ?>"></i>
+                        <span class="ms-1 like-count"><?php echo $publicacion['LIKES_COUNT']; ?></span>
                       </button>
+
+
                       <button class="btn btn-sm btn-outline-secondary comment-btn">
                         <i class="bi bi-chat"></i>
                         <span class="ms-1"><?php echo $publicacion['COMMENTS_COUNT']; ?></span>
                       </button>
+
                     </div>
                   </div>
                 </div>

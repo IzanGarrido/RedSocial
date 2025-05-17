@@ -403,7 +403,8 @@ input[list]:focus {
 }
 
 .like-btn,
-.comment-btn {
+.comment-btn,
+.like-btn-red {
   padding: 6px 15px;
   border-radius: 20px;
   font-weight: 500;
@@ -418,6 +419,16 @@ input[list]:focus {
 .like-btn:hover {
   background-color: #ff3e6c;
   color: white;
+}
+
+.like-btn-red {
+  background-color: #ff3e6c;
+  color: white;
+}
+
+.like-btn-red:hover {
+  color: #ff3e6c;
+  border-color: #ff3e6c;
 }
 
 .comment-btn {
