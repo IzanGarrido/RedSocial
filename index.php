@@ -194,7 +194,7 @@ if (!isset($_SESSION['user_id'])) {
               </div>
               <input class="form-control d-none" type="file" id="postMedia" name="postMedia" accept="image/*,video/*">
               <div class="file-limits-info">
-                <small>Límites: Tamaño entre 1KB y 50MB. Duración máxima de videos: 2 minutos.</small>
+                <small>Límites: Tamaño entre 1KB y 25MB. Duración máxima de videos: 2 minutos.</small>
               </div>
               <div id="mediaError" class="media-error d-none"></div>
               <div id="mediaPreview" class="preview-container mt-2 d-none">
