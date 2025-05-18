@@ -389,7 +389,7 @@ if (!isset($_SESSION['user_id'])) {
                       </button>
 
 
-                      <button class="btn btn-sm btn-outline-secondary comment-btn">
+                      <button class="btn btn-sm btn-outline-secondary comment-btn" data-bs-toggle="modal" data-bs-target="#commentsModal">
                         <i class="bi bi-chat"></i>
                         <span class="ms-1"><?php echo $publicacion['COMMENTS_COUNT']; ?></span>
                       </button>
@@ -399,6 +399,7 @@ if (!isset($_SESSION['user_id'])) {
                 </div>
               <?php } ?>
             <?php } ?>
+
           </section>
         </div>
       </div>
@@ -407,7 +408,8 @@ if (!isset($_SESSION['user_id'])) {
   </div>
 
   <!-- Scripts -->
-  <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src=" ./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js">
+  </script>
   <script src="./assets/js/index.js"></script>
 </body>
 
