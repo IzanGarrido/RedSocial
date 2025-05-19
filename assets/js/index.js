@@ -216,7 +216,88 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+
+  // Function to open the comments modal and load comments
+  window.openCommentsModal = function (postId) {
+    // Put the post ID in the form
+    document.getElementById('post_id').value = postId;
+
+    // Load comments
+    loadComments(postId);
+
+    // Open the modal
+    var commentsModal = new bootstrap.Modal(document.getElementById('commentsModal'));
+    commentsModal.show();
+  }
+
+  // Function to load comments
+  function loadComments(postId) {
+    const commentsContainer = document.getElementById('comments-container');
+
+    commentsContainer.innerHTML = `
+      <div class="text-center py-3">
+        <div class="text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+      </div>
+    `;
+
+    // Realizar petición AJAX para obtener comentarios
+    fetch('includes/cargar_comentarios.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: 'post_id=' + postId
+    })
+      .then(response => response.text())
+      .then(data => {
+        commentsContainer.innerHTML = data;
+      })
+      .catch(error => {
+        commentsContainer.innerHTML = '<p class="text-danger">Error al cargar los comentarios.</p>';
+        console.error('Error:', error);
+      });
+  }
+
+  // Manejar el envío del formulario de comentarios
+  document.getElementById('commentForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const postId = document.getElementById('post_id').value;
+    const content = document.getElementById('commentContent').value;
+
+    if (!content.trim()) return;
+
+    // Enviar comentario mediante AJAX
+    fetch('includes/guardar_comentario.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: 'post_id=' + postId + '&content=' + encodeURIComponent(content)
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Recargar los comentarios
+          loadComments(postId);
+
+          // Limpiar el campo de texto
+          document.getElementById('commentContent').value = '';
+        } else {
+          alert(data.message || 'Error al guardar el comentario.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error al guardar el comentario.');
+      });
+  });
+
 });
+
+
 
 // Function to add or remove a like to a post
 function toggleLike(btn, userId, publicacionId, $numLikes) {
@@ -236,7 +317,7 @@ function toggleLike(btn, userId, publicacionId, $numLikes) {
         span.textContent = data.likes;
         console.log(data.likes);
 
-        // Cambiar clases
+        // Change classes
         if (likeado === 'dar') {
           btn.classList.remove('like-btn');
           btn.classList.add('like-btn-red');

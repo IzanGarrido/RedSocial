@@ -389,7 +389,7 @@ if (!isset($_SESSION['user_id'])) {
                       </button>
 
 
-                      <button class="btn btn-sm btn-outline-secondary comment-btn" data-bs-toggle="modal" data-bs-target="#commentsModal">
+                      <button class="btn btn-sm btn-outline-secondary comment-btn" onclick="openCommentsModal(<?php echo $publicacion['ID_PUBLICACION']; ?>)">
                         <i class="bi bi-chat"></i>
                         <span class="ms-1"><?php echo $publicacion['COMMENTS_COUNT']; ?></span>
                       </button>
@@ -406,6 +406,44 @@ if (!isset($_SESSION['user_id'])) {
 
     </div>
   </div>
+
+  <!-- Comments Modal -->
+  <div class="modal fade" id="commentsModal" tabindex="-1" aria-labelledby="commentsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="commentsModalLabel">Comentarios</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-0">
+          <div class="comments-scroll-container px-3 py-2">
+            <!-- Comments will be loaded here -->
+            <div id="comments-container" class="mb-2">
+              <div class="text-center py-3">
+                <div class=" text-primary" role="status">
+                  <span class="visually-hidden">Cargando...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form to add a new comment -->
+          <div class="comment-form-container px-3 py-3 border-top bg-white">
+            <form id="commentForm">
+              <input type="hidden" id="post_id" name="post_id" value="">
+              <div class="mb-2">
+                <textarea class="form-control" id="commentContent" name="content" rows="2" placeholder="Escribe tu comentario..." required></textarea>
+              </div>
+              <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Comentar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <!-- Scripts -->
   <script src=" ./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js">

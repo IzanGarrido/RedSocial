@@ -333,6 +333,7 @@ input[list]:focus {
   margin-top: 0.5rem;
 }
 
+/* Styles for the post card */
 .post-card {
   border-radius: 12px;
   overflow: hidden;
@@ -340,16 +341,19 @@ input[list]:focus {
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
+/* Styles for the post card when hovered */
 .post-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
 }
 
+/* Styles for the post card header */
 .card-header {
   padding: 15px 20px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
+/* Styles for the user avatar on the card  */
 .user-avatar,
 .game-image {
   object-fit: cover;
@@ -357,26 +361,31 @@ input[list]:focus {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+/* Styles for the user name */
 .user-name {
   color: #444;
   font-size: 1rem;
 }
 
+/* Styles for the game info */
 .game-info {
   background-color: rgba(0, 0, 0, 0.02);
   padding: 5px 10px;
   border-radius: 20px;
 }
 
+/* Styles for the game title */
 .game-title {
   font-size: 0.9rem;
   color: #666;
 }
 
+/* Styles for the post date */
 .post-date {
   font-size: 0.8rem;
 }
 
+/* Styles for the post content */
 .media-container {
   margin: 15px 0;
   border-radius: 8px;
@@ -384,6 +393,7 @@ input[list]:focus {
   max-height: 500px;
 }
 
+/* Styles for the post media */
 .post-media {
   max-width: 100%;
   max-height: 500px;
@@ -391,17 +401,20 @@ input[list]:focus {
   border-radius: 8px;
 }
 
+/* Styles for the post text */
 .post-content {
   font-size: 1rem;
   line-height: 1.5;
   color: #333;
 }
 
+/* Styles for the post footer */
 .card-footer {
   padding: 12px 20px;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
+/* Styles for the post footer icons */
 .like-btn,
 .comment-btn,
 .like-btn-red {
@@ -411,35 +424,42 @@ input[list]:focus {
   transition: all 0.2s ease;
 }
 
+/* Styles for the like button */
 .like-btn {
   color: #ff3e6c;
   border-color: #ff3e6c;
 }
 
+/* Styles for the like button when hovered */
 .like-btn:hover {
   background-color: #ff3e6c;
   color: white;
 }
 
+/* Styles for the like button when liked */
 .like-btn-red {
   background-color: #ff3e6c;
   color: white;
 }
 
+/* Styles for the like button when hovered */
 .like-btn-red:hover {
   color: #ff3e6c;
   border-color: #ff3e6c;
 }
 
+/* Styles for the comment button */
 .comment-btn {
   color: #6c757d;
 }
 
+/* Styles for the comment button when hovered */
 .comment-btn:hover {
   background-color: #6c757d;
   color: white;
 }
 
+/* Styles for the card header on small screens */
 @media (max-width: 768px) {
   .card-header {
     flex-direction: column;
@@ -450,4 +470,47 @@ input[list]:focus {
     margin-top: 10px;
     align-self: flex-start;
   }
+}
+
+
+/* Styles for the comments scroll container */
+.comments-scroll-container {
+  max-height: 350px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Styles for the comments list */
+.comment-form-container {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+}
+
+/* Styles for the scrollbar */
+.comments-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Styles for the scrollbar track */
+.comments-scroll-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+/* Styles for the scrollbar thumb */
+.comments-scroll-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+/* Styles for the scrollbar thumb when hovered */
+.comments-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Styles for the comment input */
+.comments-list .card {
+  max-width: 100%;
+  word-wrap: break-word;
 }
