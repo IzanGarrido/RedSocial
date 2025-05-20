@@ -443,14 +443,15 @@ function obtenerPublicaciones()
         // SQL query to get all posts from the database
         $sql = "SELECT p.ID_PUBLICACION, p.CONTENIDO, p.URL, p.FECHA_CREACION, 
                  u.USUARIO, u.URL_FOTO AS USER_PHOTO,
-                 j.JUEGO, j.URL_IMAGEN AS GAME_IMAGE,
+                 j.JUEGO, c.CATEGORIA,
+                 j.URL_IMAGEN AS GAME_IMAGE,
                  (SELECT COUNT(*) FROM INTERACCIONES WHERE ID_PUBLICACION = p.ID_PUBLICACION AND TIPO = 'like') AS LIKES_COUNT,
                  (SELECT COUNT(*) FROM COMENTARIOS WHERE ID_PUBLICACION = p.ID_PUBLICACION) AS COMMENTS_COUNT
           FROM PUBLICACIONES_USUARIOS p
           JOIN USUARIO u ON p.IDUSUARIO = u.IDUSUARIO
           LEFT JOIN JUEGOS j ON p.IDJUEGO = j.IDJUEGO
-          ORDER BY p.FECHA_CREACION DESC
-          LIMIT 10";
+          LEFT JOIN CATEGORIAS c ON j.ID_CATEGORIA = c.ID_CATEGORIA
+          ORDER BY p.FECHA_CREACION DESC";
         $posts = DB::getAll($sql);
 
         return $posts;
