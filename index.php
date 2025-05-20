@@ -179,7 +179,7 @@ if (!isset($_SESSION['user_id'])) {
         <div class="modal-body">
           <form id="createPostForm" action="includes/create_post.php" method="post" enctype="multipart/form-data">
             <div class="mb-3">
-              <textarea class="form-control" id="postContent" name="postContent" rows="3" placeholder="¿Qué estás pensando?"></textarea>
+              <textarea class="form-control" id="postContent" name="postContent" rows="3" placeholder="¿Qué estás pensando?" required></textarea>
             </div>
 
             <div class="mb-3">
@@ -192,7 +192,7 @@ if (!isset($_SESSION['user_id'])) {
                   <i class="bi bi-camera-video"></i> Añadir video
                 </button>
               </div>
-              <input class="form-control d-none" type="file" id="postMedia" name="postMedia" accept="image/*,video/*">
+              <input class="form-control d-none" type="file" id="postMedia" name="postMedia" accept="image/*,video/*" required>
               <div class="file-limits-info">
                 <small>Límites: Tamaño entre 1KB y 25MB. Duración máxima de videos: 2 minutos.</small>
               </div>
