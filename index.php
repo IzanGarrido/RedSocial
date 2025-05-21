@@ -35,10 +35,11 @@ if (!isset($_SESSION['user_id'])) {
         <span class="fw-bold fs-4 d-none d-sm-inline">Gameord</span>
       </a>
 
-      <!-- Search - Hide on small screens, show on medium and up -->
+      <!-- Search -->
       <div class="position-relative d-none d-md-block mx-3 flex-grow-1">
         <i class="bi bi-search position-absolute search-icon"></i>
-        <input type="text" class="form-control search-box" placeholder="Buscar juegos, categorías, usuarios...">
+        <input type="text" id="searchInput" class="form-control search-box" placeholder="Buscar juegos, categorías, usuarios..." aria-label="Buscar">
+        <div id="searchResults" class="search-results-list d-none"></div>
       </div>
 
       <!-- Hamburger -->
@@ -137,7 +138,6 @@ if (!isset($_SESSION['user_id'])) {
               </a>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                 <li><a class="dropdown-item" href="./pages/profile.php"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
-                <li><a class="dropdown-item" href="./pages/settings.php"><i class="bi bi-gear me-2"></i>Configuración</a></li>
                 <li>
                   <hr class="dropdown-divider">
                 </li>
