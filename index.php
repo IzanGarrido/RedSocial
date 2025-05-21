@@ -192,7 +192,7 @@ if (!isset($_SESSION['user_id'])) {
                   <i class="bi bi-camera-video"></i> Añadir video
                 </button>
               </div>
-              <input class="form-control d-none" type="file" id="postMedia" name="postMedia" accept="image/*,video/*" required>
+              <input class="form-control d-none" type="file" id="postMedia" name="postMedia" accept="image/*,video/*">
               <div class="file-limits-info">
                 <small>Límites: Tamaño entre 1KB y 25MB. Duración máxima de videos: 2 minutos.</small>
               </div>
@@ -204,9 +204,9 @@ if (!isset($_SESSION['user_id'])) {
             </div>
 
             <div class="mb-3 custom-datalist-container">
-              <label for="gameSelect" class="form-label">Relacionar con un juego (opcional)</label>
+              <label for="gameSelect" class="form-label">Relacionar con un juego</label>
               <div class="position-relative">
-                <select id="gameSelect" class="game-select" name="gameId">
+                <select id="gameSelect" class="game-select" name="gameId" required>
                   <option value="">Selecciona un juego...</option>
                   <?php
                   include_once('includes/functions.php');

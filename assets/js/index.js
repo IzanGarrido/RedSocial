@@ -179,8 +179,13 @@ document.addEventListener('DOMContentLoaded', function () {
       const mediaFile = postMedia.files[0];
 
       // Validate that there is at least content or a media file
-      if (!postContent && !mediaFile) {
-        alert('Por favor, escribe algo o añade una foto o video.');
+      if (!postContent) {
+        showMediaError('Por favor, añade un texto.');
+        return;
+      }
+
+      if (!mediaFile) {
+        showMediaError('Por favor, añade una imagen o un video.');
         return;
       }
 
