@@ -27,6 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($comment_id) {
             echo json_encode(['success' => true, 'message' => 'Comentario guardado correctamente']);
+
+            // Function to add a notification
+            addNotification(getUserIdByPostId($post_id), $user_id, "comentario");
+
         } else {
             echo json_encode(['success' => false, 'message' => 'Error al guardar el comentario']);
         }

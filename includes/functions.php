@@ -540,3 +540,76 @@ function obtenerNumeroLikes($postId)
         return 0;
     }
 }
+
+// Function to get the number of unread notifications for a user
+function obtenerNumeroNotificacionesNoLeidas($userId)
+{
+    try {
+        // SQL query to count the number of notifications unread for the user
+        $sql = "SELECT COUNT(*) AS NOTIFICATIONS_COUNT FROM NOTIFICACIONES WHERE IDUSUARIO_DESTINO = ? AND LEIDA = FALSE";
+        $params = [$userId];
+        $query = DB::executeQuery($sql, $params);
+
+        // Fetch the result
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+        return $result['NOTIFICATIONS_COUNT'];
+    } catch (Exception $e) {
+        error_log("Error al obtener el número de notificaciones: " . $e->getMessage());
+        return 0;
+    }
+}
+
+// Function to get the unred notifications for a user
+function obtenerNotificacionesNoLeidas($userId)
+{
+    try {
+        // SQL query to get the notifications unread for the user
+        $sql = "SELECT n.IDUSUARIO_DESTINO AS IDUSUARIODESTINO, u.USUARIO AS ORIGEN,
+		n.TIPO_NOTIFICACION AS TIPO, n.FECHA_NOTIFICACION AS FECHA,
+	u.URL_FOTO
+		FROM GAMEORD.NOTIFICACIONES as n
+	JOIN USUARIO AS u ON IDUSUARIO_ORIGEN = IDUSUARIO
+    WHERE n.IDUSUARIO_DESTINO = ? AND n.LEIDA = FALSE";
+        $params = [$userId];
+        $query = DB::executeQuery($sql, $params);
+
+        // Fetch the result
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        error_log("Error al obtener las notificaciones: " . $e->getMessage());
+        return [];
+    }
+}
+
+function addNotification($idusuarioDestino, $idusuarioOrigen, $tipo)
+{
+    try {
+        if ($idusuarioDestino != $idusuarioOrigen) {
+
+            // SQL query to insert the notification
+            $sql = "INSERT INTO NOTIFICACIONES (IDUSUARIO_DESTINO, IDUSUARIO_ORIGEN, TIPO_NOTIFICACION) VALUES (?, ?, ?)";
+            $params = [$idusuarioDestino, $idusuarioOrigen, $tipo];
+            DB::insert($sql, $params);
+        }
+    } catch (Exception $e) {
+        error_log("Error al añadir notificación: " . $e->getMessage());
+    }
+}
+
+// Function to get the user ID by post ID
+function getUserIdByPostId($postId)
+{
+    try {
+        // SQL query to get the user ID by post ID
+        $sql = "SELECT IDUSUARIO FROM PUBLICACIONES_USUARIOS WHERE ID_PUBLICACION = ?";
+        $params = [$postId];
+        $query = DB::executeQuery($sql, $params);
+
+        // Fetch the result
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+        return $result['IDUSUARIO'];
+    } catch (Exception $e) {
+        error_log("Error al obtener el ID de usuario por ID de publicación: " . $e->getMessage());
+        return null;
+    }
+}

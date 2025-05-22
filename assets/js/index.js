@@ -1,4 +1,88 @@
 document.addEventListener('DOMContentLoaded', function () {
+
+  const searchInput = document.getElementById('searchInput');
+  const searchResults = document.getElementById('searchResults');
+
+  // Functionality for the search input
+  if (searchInput) {
+    let searchTimeout;
+    // Event listener for keyup on the search input
+    searchInput.addEventListener('keyup', function () {
+      clearTimeout(searchTimeout);
+      const value = this.value.trim();
+      // If the input is empty, hide the results
+      if (value.length < 1) {
+        searchResults.classList.add('d-none');
+        searchResults.innerHTML = '';
+        return;
+      }
+      // Timeout to delay the search
+      searchTimeout = setTimeout(() => {
+        // Fetch the search results
+        fetch('includes/buscar.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: 'term=' + encodeURIComponent(value)
+        })
+          .then(res => res.json())
+          .then(data => {
+            // Clear previous results
+            let html = '';
+            if (data.usuarios && data.usuarios.length) {
+              html += '<div class="px-3 py-1 text-muted small">Usuarios</div>';
+
+              // Iterate over the users and create the HTML for user results
+              data.usuarios.forEach(u => {
+                html += `<div class="result-item" onclick="window.location='./pages/user.php?user=${encodeURIComponent(u.USUARIO)}'">
+                <img src="${u.URL_FOTO || './assets/img/default_profile.png'}" class="rounded-circle me-2" width="28" height="28">
+                ${u.USUARIO}
+              </div>`;
+              });
+            }
+
+            // Iterate over the games and create the HTML for game results
+            if (data.juegos && data.juegos.length) {
+              html += '<div class="px-3 py-1 text-muted small">Juegos</div>';
+              data.juegos.forEach(j => {
+                html += `<div class="result-item" onclick="window.location='./pages/games.php?id=${j.IDJUEGO}'">
+                <img src="${j.URL_IMAGEN}" class="rounded-5 me-2" width="28" height="28">
+                ${j.JUEGO}
+              </div>`;
+              });
+            }
+
+            // Iterate over the categories and create the HTML for category results
+            if (data.categorias && data.categorias.length) {
+              html += '<div class="px-3 py-1 text-muted small">Categorías</div>';
+              data.categorias.forEach(c => {
+                html += `<div class="result-item" onclick="window.location='./pages/categories.php?id=${c.ID_CATEGORIA}'">
+                <i class="bi bi-controller me-2"></i>
+                ${c.CATEGORIA}
+              </div>`;
+              });
+            }
+            // If there are no results, show a message
+            if (!html) html = '<div class="result-item text-muted">Sin resultados</div>';
+            searchResults.innerHTML = html;
+            searchResults.classList.remove('d-none');
+          })
+          .catch(() => {
+            searchResults.innerHTML = '<div class="result-item text-danger">Error en la búsqueda</div>';
+            searchResults.classList.remove('d-none');
+          });
+      }, 100);
+    });
+
+    // Hide results when the input loses focus
+    searchInput.addEventListener('blur', function () {
+      setTimeout(() => searchResults.classList.add('d-none'), 200);
+    });
+    searchInput.addEventListener('focus', function () {
+      if (searchResults.innerHTML) searchResults.classList.remove('d-none');
+    });
+  }
+
+
   // Toggle for showing/hiding categories
   const btnToggleCategories = document.getElementById('btn-toggle-categorias');
   const listaPrincipal = document.getElementById('categorias-lista');
@@ -265,7 +349,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
   }
 
-  // Manejar el envío del formulario de comentarios
+  // Handler for the comment form
   document.getElementById('commentForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
@@ -274,7 +358,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (!content.trim()) return;
 
-    // Enviar comentario mediante AJAX
+    // Send comment
     fetch('includes/guardar_comentario.php', {
       method: 'POST',
       headers: {
@@ -285,10 +369,10 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          // Recargar los comentarios
+          // Load the comments
           loadComments(postId);
 
-          // Limpiar el campo de texto
+          // Clear the text field
           document.getElementById('commentContent').value = '';
         } else {
           alert(data.message || 'Error al guardar el comentario.');
@@ -297,6 +381,30 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch(error => {
         console.error('Error:', error);
         alert('Error al guardar el comentario.');
+      });
+  });
+
+
+  // Mark as read the notifications
+  document.getElementById('Notificaciones').addEventListener('click', function () {
+    // Mark notifications as read
+    fetch('includes/leer_notificaciones.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Data:', data);
+        if (data.success) {
+          console.log('Notificaciones marcadas como leídas.');
+        } else {
+          console.error('Error al marcar las notificaciones como leídas.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
       });
   });
 

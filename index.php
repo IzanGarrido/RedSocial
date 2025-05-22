@@ -35,10 +35,11 @@ if (!isset($_SESSION['user_id'])) {
         <span class="fw-bold fs-4 d-none d-sm-inline">Gameord</span>
       </a>
 
-      <!-- Search - Hide on small screens, show on medium and up -->
+      <!-- Search -->
       <div class="position-relative d-none d-md-block mx-3 flex-grow-1">
         <i class="bi bi-search position-absolute search-icon"></i>
-        <input type="text" class="form-control search-box" placeholder="Buscar juegos, categorías, usuarios...">
+        <input type="text" id="searchInput" class="form-control search-box" placeholder="Buscar juegos, categorías, usuarios..." aria-label="Buscar">
+        <div id="searchResults" class="search-results-list d-none"></div>
       </div>
 
       <!-- Hamburger -->
@@ -67,47 +68,67 @@ if (!isset($_SESSION['user_id'])) {
             <div class="dropdown">
               <a class="nav-link" href="#" id="Notificaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="bi bi-bell nav-icon"></i>
-                <span class="position-absolute top-15 start-25 translate-middle badge rounded-pill bg-danger">
-                  3
-                  <span class="visually-hidden">notificaciones no leídas</span>
-                </span>
+                <!-- Check if there are unread notifications -->
+                <?php include 'includes/functions.php';
+                if (obtenerNumeroNotificacionesNoLeidas($_SESSION['user_id']) > 0) { ?>
+                  <span class="position-absolute top-15 start-25 translate-middle badge rounded-pill bg-danger">
+                    <?php
+                    // Include the functions file
+                    include_once('includes/functions.php');
+                    // function to get the number of unread notifications
+                    echo obtenerNumeroNotificacionesNoLeidas($_SESSION['user_id']);
+                    ?>
+                    <span class="visually-hidden">notificaciones no leídas</span>
+                  </span>
+                <?php } ?>
               </a>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="Notificaciones" style="min-width: 300px;">
-                <li class="px-3 py-2 bg-light fw-bold">Notificaciones</li>
-                <li>
-                  <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item d-flex align-items-center py-2" href="#">
-                    <div class="flex-shrink-0">
-                      <img src="./assets/App-images/Gameord-logo.webp" alt="User" class="rounded-circle" width="40">
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                      <p class="mb-0"><strong>Usuario1</strong> comentó tu publicación</p>
-                      <small class="text-muted">Hace 5 minutos</small>
-                    </div>
-                  </a></li>
-                <li><a class="dropdown-item d-flex align-items-center py-2" href="#">
-                    <div class="flex-shrink-0">
-                      <img src="./assets/App-images/Gameord-logo.webp" alt="User" class="rounded-circle" width="40">
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                      <p class="mb-0"><strong>Usuario2</strong> te envió una solicitud de amistad</p>
-                      <small class="text-muted">Hace 2 horas</small>
-                    </div>
-                  </a></li>
-                <li><a class="dropdown-item d-flex align-items-center py-2" href="#">
-                    <div class="flex-shrink-0">
-                      <img src="./assets/App-images/Gameord-logo.webp" alt="User" class="rounded-circle" width="40">
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                      <p class="mb-0">¡Nuevo evento para <strong>Fortnite</strong>!</p>
-                      <small class="text-muted">Hace 1 día</small>
-                    </div>
-                  </a></li>
-                <li>
-                  <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item text-center text-primary" href="#">Ver todas las notificaciones</a></li>
+                <?php
+                // Include the functions file
+                include_once('includes/functions.php');
+                // function to get the notifications
+                $notificaciones = obtenerNotificacionesNoLeidas($_SESSION['user_id']);
+
+                // Check if there are notifications
+                if (count($notificaciones) > 0) {
+                  foreach ($notificaciones as $notificacion) {
+
+                    switch ($notificacion['TIPO']) {
+                      case 'like':
+                        $text = 'te ha dado un like a tu publicación';
+                        break;
+                      case 'comentario':
+                        $text = 'ha comentado en tu publicación';
+                        break;
+                      case 'seguimiento':
+                        $text = 'te ha seguido';
+                        break;
+                      case 'sistema':
+                        $text = '';
+                        break;
+                      default:
+                        $text = 'te ha enviado una notificación';
+                    }
+                    echo '<li>
+                            <a class="dropdown-item d-flex align-items-center py-2" href="#">
+                              <div class="flex-shrink-0">
+                                <img src="' . getProfileImage($notificacion['ORIGEN']) . '" alt="User" class="rounded-circle" width="40">
+                              </div>
+                              <div class="flex-grow-1 ms-3">
+                                <p class="mb-0"><strong>' . $notificacion['ORIGEN'] . '</strong> ' . $text . '</p>
+                                <small class="text-muted">' . date("d-m-y H:i", strtotime($notificacion['FECHA'])) . '</small>
+                              </div>
+                            </a>
+                          </li>';
+                  }
+                } else {
+                  echo '<li>
+                          <a class="dropdown-item text-center" href="#">
+                            <p class="mb-0">No tienes notificaciones</p>
+                          </a>
+                        </li>';
+                }
+                ?>
               </ul>
             </div>
           </li>
@@ -324,7 +345,7 @@ if (!isset($_SESSION['user_id'])) {
         <div class="main-content">
           <!-- Posts Section -->
           <section class="content-section">
-            <?php if (count(obtenerPublicaciones()) <= 0) { ?>
+            <?php if (count(obtenerPublicaciones($_SESSION['user_id'])) <= 0) { ?>
               <div class="text-center">
                 <p class="text-muted">No hay publicaciones para mostrar.</p>
               </div>
