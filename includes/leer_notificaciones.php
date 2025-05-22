@@ -15,7 +15,7 @@ $userId = $_SESSION['user_id'];
 
 // Query to read notifications
 try {
-    $sql = "UPDATE NOTIFICACIONES SET LEIDA = 1 WHERE IDUSUARIO = ?";
+    $sql = "UPDATE NOTIFICACIONES SET LEIDA = 1 WHERE IDUSUARIO_DESTINO = ?";
     $params = [$userId];
     DB::executeQuery($sql, $params);
     header('Content-Type: application/json');

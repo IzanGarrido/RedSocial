@@ -331,7 +331,7 @@ document.addEventListener('DOMContentLoaded', function () {
       </div>
     `;
 
-    // Realizar petición AJAX para obtener comentarios
+    // Fetch comments from the server
     fetch('includes/cargar_comentarios.php', {
       method: 'POST',
       headers: {
@@ -386,27 +386,36 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
   // Mark as read the notifications
-  document.getElementById('Notificaciones').addEventListener('click', function () {
-    // Mark notifications as read
-    fetch('includes/leer_notificaciones.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Data:', data);
-        if (data.success) {
-          console.log('Notificaciones marcadas como leídas.');
-        } else {
-          console.error('Error al marcar las notificaciones como leídas.');
-        }
+  const notificacionesElement = document.getElementById('Notificaciones');
+  if (notificacionesElement) {
+    notificacionesElement.addEventListener('click', function () {
+      // Mark notifications as read
+      fetch('includes/leer_notificaciones.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
       })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-  });
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Data:', data);
+          if (data.success) {
+            console.log('Notificaciones marcadas como leídas.');
+            
+          } else {
+            console.error('Error al marcar las notificaciones como leídas:', data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error al procesar la respuesta:', error);
+        });
+    });
+  }
 
 });
 

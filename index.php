@@ -76,7 +76,7 @@ if (!isset($_SESSION['user_id'])) {
                     // Include the functions file
                     include_once('includes/functions.php');
                     // function to get the number of unread notifications
-                    echo obtenerNumeroNotificacionesNoLeidas($_SESSION['user_id']);
+                    obtenerNumeroNotificacionesNoLeidas($_SESSION['user_id']) > 9 ? '9+' : obtenerNumeroNotificacionesNoLeidas($_SESSION['user_id']);
                     ?>
                     <span class="visually-hidden">notificaciones no leídas</span>
                   </span>

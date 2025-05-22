@@ -475,6 +475,22 @@ function darLike($userId, $postId)
             return false;
         }
 
+        // Get the user ID of the post owner
+        $postOwnerId = getUserIdByPostId($postId);
+
+        // Check if the user has already liked the post for dont send new notification
+        $sql = "SELECT * FROM INTERACCIONES WHERE ID_PUBLICACION = ? AND IDUSUARIO = ? AND TIPO = 'like'";
+        $params = [$postId, $userId];
+        $query = DB::executeQuery($sql, $params);
+
+        // If the user has already liked the post, do not send notification
+        if ($query->rowCount() <= 0) {
+            // Add notification for the like to the post owner
+            if ($postOwnerId && $postOwnerId != $userId) {
+                addNotification($postOwnerId, $userId, 'like');
+            }
+        }
+
         // Insert the like into the database
         $sql = "INSERT INTO INTERACCIONES (ID_PUBLICACION, IDUSUARIO, TIPO) VALUES (?, ?, 'like')";
         $params = [$postId, $userId];
