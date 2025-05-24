@@ -28,7 +28,7 @@ if (!isset($_SESSION['user_id'])) {
 <body>
   <!-- Navbar -->
   <header class="navbar navbar-expand-lg navbar-dark py-2 sticky-top">
-    <div class="container-fluid">
+    <div class="container-fluid ">
       <!-- Logo and name -->
       <a class="navbar-brand d-flex align-items-center" href="#">
         <img src="./assets/App-images/Gameord-logo.webp" alt="Logo" class="me-2 rounded-2" height="40">
@@ -42,78 +42,71 @@ if (!isset($_SESSION['user_id'])) {
         <div id="searchResults" class="search-results-list d-none"></div>
       </div>
 
-      <!-- Hamburger -->
-      <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <!-- Collapsible content -->
-      <div class="collapse navbar-collapse flex-grow-0" id="navbarContent">
-        <!-- Icons -->
-        <ul class="navbar-nav d-flex align-items-center">
-          <!-- Search button mobile - visible only on small screens -->
-          <li class="nav-item d-md-none mx-1">
-            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#searchModal" title="Buscar">
-              <i class="bi bi-search nav-icon"></i>
+      <!-- Icons -->
+      <ul class="navbar-nav d-flex align-items-center flex-row flex-nowrap">
+        <!-- Search button mobile - visible only on small screens -->
+        <li class="nav-item d-md-none mx-3">
+          <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#searchModal" title="Buscar">
+            <i class="bi bi-search nav-icon"></i>
+          </a>
+        </li>
+        <!-- Chat -->
+        <li class="nav-item mx-3">
+          <a class="nav-link" href="./pages/chat.php" title="Chat">
+            <i class="bi bi-chat nav-icon"></i>
+          </a>
+        </li>
+        <!-- Notifications -->
+        <li class="nav-item mx-3">
+          <div class="dropdown">
+            <a class="nav-link" href="#" id="Notificaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-bell nav-icon"></i>
+              <!-- Check if there are unread notifications -->
+              <?php include 'includes/functions.php';
+              if (obtenerNumeroNotificacionesNoLeidas($_SESSION['user_id']) > 0) { ?>
+                <span class="position-absolute top-15 start-25 translate-middle badge rounded-pill bg-danger">
+                  <?php
+                  // Include the functions file
+                  include_once('includes/functions.php');
+                  // function to get the number of unread notifications
+                  if (obtenerNumeroNotificacionesNoLeidas($_SESSION['user_id']) > 9) {
+                    echo '9+';
+                  } else {
+                    echo obtenerNumeroNotificacionesNoLeidas($_SESSION['user_id']);
+                  }
+                  ?>
+                  <span class="visually-hidden">notificaciones no leídas</span>
+                </span>
+              <?php } ?>
             </a>
-          </li>
-          <!-- Chat -->
-          <li class="nav-item mx-2">
-            <a class="nav-link" href="./pages/chat.php" title="Chat">
-              <i class="bi bi-chat nav-icon"></i>
-            </a>
-          </li>
-          <!-- Notifications -->
-          <li class="nav-item mx-2">
-            <div class="dropdown">
-              <a class="nav-link" href="#" id="Notificaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-bell nav-icon"></i>
-                <!-- Check if there are unread notifications -->
-                <?php include 'includes/functions.php';
-                if (obtenerNumeroNotificacionesNoLeidas($_SESSION['user_id']) > 0) { ?>
-                  <span class="position-absolute top-15 start-25 translate-middle badge rounded-pill bg-danger">
-                    <?php
-                    // Include the functions file
-                    include_once('includes/functions.php');
-                    // function to get the number of unread notifications
-                    if (obtenerNumeroNotificacionesNoLeidas($_SESSION['user_id']) > 9) {
-                      echo '9+';
-                    } else {
-                      echo obtenerNumeroNotificacionesNoLeidas($_SESSION['user_id']);
-                    }
-                    ?>
-                    <span class="visually-hidden">notificaciones no leídas</span>
-                  </span>
-                <?php } ?>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="Notificaciones" style="min-width: 300px;">
-                <?php
-                // Include the functions file
-                include_once('includes/functions.php');
-                // function to get the notifications
-                $notificaciones = obtenerNotificacionesNoLeidas($_SESSION['user_id']);
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="Notificaciones" style="min-width: 300px;">
+              <?php
+              // Include the functions file
+              include_once('includes/functions.php');
+              // function to get the notifications
+              $notificaciones = obtenerNotificacionesNoLeidas($_SESSION['user_id']);
 
-                // Check if there are notifications
-                if (count($notificaciones) > 0) {
-                  foreach ($notificaciones as $notificacion) {
+              // Check if there are notifications
+              if (count($notificaciones) > 0) {
+                foreach ($notificaciones as $notificacion) {
 
-                    switch ($notificacion['TIPO']) {
-                      case 'like':
-                        $text = 'te ha dado un like a tu publicación';
-                        break;
-                      case 'comentario':
-                        $text = 'ha comentado en tu publicación';
-                        break;
-                      case 'seguimiento':
-                        $text = 'te ha seguido';
-                        break;
-                      case 'sistema':
-                        $text = '';
-                        break;
-                      default:
-                        $text = 'te ha enviado una notificación';
-                    }
-                    echo '<li>
+                  switch ($notificacion['TIPO']) {
+                    case 'like':
+                      $text = 'te ha dado un like a tu publicación';
+                      break;
+                    case 'comentario':
+                      $text = 'ha comentado en tu publicación';
+                      break;
+                    case 'seguimiento':
+                      $text = 'te ha seguido';
+                      break;
+                    case 'sistema':
+                      $text = '';
+                      break;
+                    default:
+                      $text = 'te ha enviado una notificación';
+                  }
+                  echo '<li>
                             <a class="dropdown-item d-flex align-items-center py-2" href="#">
                               <div class="flex-shrink-0">
                                 <img src="' . getProfileImage($notificacion['ORIGEN']) . '" alt="User" class="rounded-circle" width="40">
@@ -124,53 +117,52 @@ if (!isset($_SESSION['user_id'])) {
                               </div>
                             </a>
                           </li>';
-                  }
-                } else {
-                  echo '<li>
+                }
+              } else {
+                echo '<li>
                           <a class="dropdown-item text-center" href="#">
                             <p class="mb-0">No tienes notificaciones</p>
                           </a>
                         </li>';
-                }
-                ?>
-              </ul>
-            </div>
-          </li>
-          <!-- Create post -->
-          <li class="nav-item mx-2">
-            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#createPostModal" title="Crear publicación">
-              <i class="bi bi-plus-circle nav-icon"></i>
+              }
+              ?>
+            </ul>
+          </div>
+        </li>
+        <!-- Create post -->
+        <li class="nav-item mx-3">
+          <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#createPostModal" title="Crear publicación">
+            <i class="bi bi-plus-circle nav-icon"></i>
+          </a>
+        </li>
+        <!-- User profile and settings -->
+        <li class="nav-item mx-3">
+          <div class="dropdown">
+            <a class="nav-link d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <?php
+              // Get user profile image
+
+              // Include the functions file
+              include_once('includes/functions.php');
+
+              // function to get user profile image
+              $profileImage = getProfileImage($_SESSION['username']);
+              ?>
+              <img src="<?php echo $profileImage; ?>" alt="User" class="rounded-circle me-1" width="32" height="32">
+              <span class="d-none d-lg-block ms-1">
+                <?php echo isset($_SESSION['username']) ? $_SESSION['username'] : 'Usuario'; ?>
+              </span>
             </a>
-          </li>
-          <!-- User profile and settings -->
-          <li class="nav-item mx-2">
-            <div class="dropdown">
-              <a class="nav-link d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <?php
-                // Get user profile image
-
-                // Include the functions file
-                include_once('includes/functions.php');
-
-                // function to get user profile image
-                $profileImage = getProfileImage($_SESSION['username']);
-                ?>
-                <img src="<?php echo $profileImage; ?>" alt="User" class="rounded-circle me-1" width="32" height="32">
-                <span class="d-none d-lg-block ms-1">
-                  <?php echo isset($_SESSION['username']) ? $_SESSION['username'] : 'Usuario'; ?>
-                </span>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                <li><a class="dropdown-item" href="./pages/profile.php"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
-                <li>
-                  <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item" href="./pages/logout.php"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a></li>
-              </ul>
-            </div>
-          </li>
-        </ul>
-      </div>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+              <li><a class="dropdown-item" href="./pages/profile.php"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item" href="./pages/logout.php"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a></li>
+            </ul>
+          </div>
+        </li>
+      </ul>
     </div>
   </header>
 
@@ -260,7 +252,7 @@ if (!isset($_SESSION['user_id'])) {
   <div class="container-fluid">
     <div class="row">
       <!-- Sidebar Column - visible in lg and xl, hidden in sm and xs -->
-      <div class="col-lg-3 d-none d-lg-block p-0 position-fixed">
+      <div class="col-lg-3 d-none d-lg-block p-0 position-fixed ">
         <div class="sidebar-wrapper">
           <!-- Categories Section -->
           <div class="mx-3 mb-4 mt-3">
