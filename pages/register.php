@@ -1,4 +1,6 @@
 <?php
+// Actualizar el archivo pages/register.php - Solo la parte de validación del servidor
+
 // Include the functions file
 require_once '../includes/functions.php';
 
@@ -25,36 +27,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($validacionNombre !== true) {
             $errores['nombre'] = $validacionNombre;
         }
-        
+
         // Check last name
         $validacionApellidos = comprobarApellidos($apellidos);
         if ($validacionApellidos !== true) {
             $errores['apellidos'] = $validacionApellidos;
         }
-        
+
         // Check username
         $validacionUsername = comprobarUsername($username);
         if ($validacionUsername !== true) {
             $errores['username'] = $validacionUsername;
         }
-        
+
         // Check email
         $validacionEmail = comprobarEmail($email);
         if ($validacionEmail !== true) {
             $errores['email'] = $validacionEmail;
         }
-        
+
+        // Check birthdate (NUEVA VALIDACIÓN)
+        $validacionFechaNacimiento = comprobarFechaNacimiento($birthdate);
+        if ($validacionFechaNacimiento !== true) {
+            $errores['birthdate'] = $validacionFechaNacimiento;
+        }
+
         // Check password
         $validacionPassword = comprobarContrasena($password, $confirmPassword);
         if (!$validacionPassword['valido']) {
             $errores['password'] = $validacionPassword['errores'];
         }
-        
+
         // If no errors, register the user and create the directory for save the posts and profile image
         if (empty($errores)) {
-            $userId = registrarUsuario($nombre, $apellidos, $username, $email, $password);
+            // Pasar la fecha de nacimiento a la función de registro
+            $userId = registrarUsuario($nombre, $apellidos, $username, $email, $password, $birthdate);
             creardirectoriobase($username);
-            
+
             if ($userId > 0) {
                 // Redirect to login page with success parameter
                 header("Location: login.php?registro=exitoso");
@@ -67,6 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errores['general'] = "Todos los campos son obligatorios.";
     }
 }
+// Get the date range for the birthdate input
+$rangoFechas = obtenerRangoFechas();
 ?>
 
 <!DOCTYPE html>
@@ -82,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../node_modules/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="shortcut icon" href="../assets/App-images/Gameord-logo.webp" type="image/x-icon">
-    
+
     <link rel="stylesheet" href="../assets/css/register.css">
 </head>
 
@@ -94,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <h2 class="text-primary">Crear una cuenta</h2>
                 <p class="text-muted">Únete a nuestra comunidad gamer y comparte tus experiencias</p>
             </div>
-            
+
             <?php if (isset($errores['general'])): ?>
                 <div class="alert alert-danger">
                     <?php echo $errores['general']; ?>
@@ -166,9 +177,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="birthdate">Fecha de nacimiento</label>
                     <div class="input-with-icon">
                         <i class="bi bi-calendar"></i>
-                        <input type="date" name="birthdate" id="birthdate" class="form-control" required value="<?php echo htmlspecialchars($birthdate); ?>">
+                        <input type="date"
+                            name="birthdate"
+                            id="birthdate"
+                            class="form-control <?php echo isset($errores['birthdate']) ? 'is-invalid' : ''; ?>"
+                            min="<?php echo $rangoFechas['min']; ?>"
+                            max="<?php echo $rangoFechas['max']; ?>"
+                            required
+                            value="<?php echo htmlspecialchars($birthdate); ?>">
                     </div>
-                    <small class="form-text text-muted">Debes tener al menos 16 años para registrarte.</small>
+                    <?php if (isset($errores['birthdate'])): ?>
+                        <div class="invalid-feedback d-block">
+                            <?php echo $errores['birthdate']; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <div class="row">
@@ -190,7 +212,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     </div>
                 </div>
-                
+
                 <?php if (isset($errores['password']) && is_array($errores['password'])): ?>
                     <div class="mb-3">
                         <div class="text-danger">

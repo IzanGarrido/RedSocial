@@ -33,15 +33,15 @@ function obtenerRutaBase($tipo = 'absoluta')
 }
 
 // Function to register a new user
-function registrarUsuario($nombre, $apellidos, $usuario, $correo, $password)
+function registrarUsuario($nombre, $apellidos, $usuario, $correo, $password, $fechaNacimiento)
 {
     try {
         // Hash the password
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         // SQL query to insert user in table usuario 
-        $sql = "INSERT INTO USUARIO (USUARIO, HASH_PASSWORD, NOMBRE, APELLIDOS, CORREO) VALUES (?, ?, ?, ?, ?)";
-        $params = [$usuario, $hashedPassword, $nombre, $apellidos, $correo];
+        $sql = "INSERT INTO USUARIO (USUARIO, HASH_PASSWORD, NOMBRE, APELLIDOS, CORREO, FECHA_NACIMIENTO) VALUES (?, ?, ?, ?, ?, ?)";
+        $params = [$usuario, $hashedPassword, $nombre, $apellidos, $correo, $fechaNacimiento];
 
         // Execute the query for usuario table
         $userId = DB::insert($sql, $params);
@@ -51,6 +51,71 @@ function registrarUsuario($nombre, $apellidos, $usuario, $correo, $password)
         error_log("Error en registrar Usuario: " . $e->getMessage());
         return 0;
     }
+}
+
+function comprobarFechaNacimiento($fechaNacimiento)
+{
+    // Check if empty
+    if (empty($fechaNacimiento)) {
+        return "La fecha de nacimiento es obligatoria.";
+    }
+
+    // Validate date format
+    $fecha = DateTime::createFromFormat('Y-m-d', $fechaNacimiento);
+    if (!$fecha || $fecha->format('Y-m-d') !== $fechaNacimiento) {
+        return "El formato de fecha no es válido.";
+    }
+
+    $hoy = new DateTime();
+    $edad = $hoy->diff($fecha)->y;
+
+    // Check minimum age (16 years)
+    if ($edad < 16) {
+        return "Debes tener al menos 16 años para registrarte.";
+    }
+
+    // Check maximum age (100 years)
+    if ($edad > 100) {
+        return "La edad máxima permitida es de 100 años.";
+    }
+
+    // Validate that the date is not in the future
+    if ($fecha > $hoy) {
+        return "La fecha de nacimiento no puede ser en el futuro.";
+    }
+
+    return true;
+}
+
+function calcularEdad($fechaNacimiento)
+{
+    if (empty($fechaNacimiento)) {
+        return null;
+    }
+
+    $fecha = new DateTime($fechaNacimiento);
+    $hoy = new DateTime();
+    $edad = $hoy->diff($fecha)->y;
+
+    return $edad;
+}
+
+function obtenerRangoFechas()
+{
+    $hoy = new DateTime();
+
+    // Fecha mínima: hace 100 años
+    $fechaMinima = clone $hoy;
+    $fechaMinima->modify('-100 years');
+
+    // Fecha máxima: hace 16 años
+    $fechaMaxima = clone $hoy;
+    $fechaMaxima->modify('-16 years');
+
+    return [
+        'min' => $fechaMinima->format('Y-m-d'),
+        'max' => $fechaMaxima->format('Y-m-d')
+    ];
 }
 
 // Function to check the name of the register form
@@ -312,7 +377,7 @@ function validarFormularioLogin($username, $password)
 function obtenerUsuarioPorId($userId)
 {
     try {
-        $sql = "SELECT IDUSUARIO, USUARIO, NOMBRE, APELLIDOS, CORREO 
+        $sql = "SELECT IDUSUARIO, USUARIO, NOMBRE, APELLIDOS, CORREO, FECHA_NACIMIENTO
                 FROM USUARIO 
                 WHERE IDUSUARIO = ?";
         $user = DB::getOne($sql, [$userId]);
@@ -583,7 +648,7 @@ function obtenerNotificacionesNoLeidas($userId)
         $sql = "SELECT n.IDUSUARIO_DESTINO AS IDUSUARIODESTINO, u.USUARIO AS ORIGEN,
 		n.TIPO_NOTIFICACION AS TIPO, n.FECHA_NOTIFICACION AS FECHA,
 	u.URL_FOTO
-		FROM NOTIFICACIONES as n
+		FROM    NOTIFICACIONES as n
 	JOIN USUARIO AS u ON IDUSUARIO_ORIGEN = IDUSUARIO
     WHERE n.IDUSUARIO_DESTINO = ? AND n.LEIDA = FALSE";
         $params = [$userId];
