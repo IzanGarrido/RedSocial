@@ -694,3 +694,18 @@ function getUserIdByPostId($postId)
         return null;
     }
 }
+
+// Función para obtener el número total de mensajes no leídos de un usuario
+function obtenerNumeroMensajesNoLeidos($userId)
+{
+    try {
+        $sql = "SELECT COUNT(*) AS total_no_leidos 
+                FROM MENSAJES 
+                WHERE IDUSUARIO_DESTINO = ? AND LEIDO = FALSE";
+        $result = DB::getOne($sql, [$userId]);
+        return $result['total_no_leidos'] ?? 0;
+    } catch (Exception $e) {
+        error_log("Error al obtener número de mensajes no leídos: " . $e->getMessage());
+        return 0;
+    }
+}
