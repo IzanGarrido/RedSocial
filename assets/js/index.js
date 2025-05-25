@@ -164,6 +164,29 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // **NUEVA FUNCIONALIDAD**: Event listeners para categorías y juegos del aside
+  // Redirect functionality for sidebar categories
+  document.addEventListener('click', function (e) {
+    // Handle category clicks
+    if (e.target.closest('.category-item')) {
+      e.preventDefault();
+      const categoryItem = e.target.closest('.category-item');
+      const categoryId = categoryItem.getAttribute('data-id');
+      if (categoryId) {
+        window.location.href = `./pages/categories.php?id=${categoryId}`;
+      }
+    }
+
+    // Handle game clicks
+    if (e.target.closest('.game-item')) {
+      e.preventDefault();
+      const gameItem = e.target.closest('.game-item');
+      const gameId = gameItem.getAttribute('data-id');
+      if (gameId) {
+        window.location.href = `./pages/games.php?id=${gameId}`;
+      }
+    }
+  });
 
   // Toggle for showing/hiding categories
   const btnToggleCategories = document.getElementById('btn-toggle-categorias');

@@ -32,7 +32,7 @@ if (!isset($_SESSION['user_id'])) {
 
       <div class="d-flex align-items-center">
         <!-- Logo and name -->
-        <a class="navbar-brand d-flex align-items-center" href="#">
+        <a class="navbar-brand d-flex align-items-center" href="index.php">
           <img src="./assets/App-images/Gameord-logo.webp" alt="Logo" class="me-2 rounded-2" height="40">
           <span class="fw-bold fs-4 d-none d-sm-inline">Gameord</span>
         </a>
@@ -354,7 +354,7 @@ if (!isset($_SESSION['user_id'])) {
 
                 // Show only some categories
                 for ($i = 0; $i < min($categoriasVisibles, $totalCategorias); $i++) {
-                  echo '<li><a href="#" class="category-item" data-id="' . $categorias[$i]['ID_CATEGORIA'] . '"><i class="bi bi-controller category-icon"></i> ' . $categorias[$i]['CATEGORIA'] . '</a></li>';
+                  echo '<li><a href="./pages/categories.php?id=' . $categorias[$i]['ID_CATEGORIA'] . '" class="category-item" data-id="' . $categorias[$i]['ID_CATEGORIA'] . '"><i class="bi bi-controller category-icon"></i> ' . $categorias[$i]['CATEGORIA'] . '</a></li>';
                 }
                 ?>
               </ul>
@@ -364,7 +364,7 @@ if (!isset($_SESSION['user_id'])) {
                 <ul class="list-unstyled" id="categorias-todas" style="display: none;">
                   <?php
                   foreach ($categorias as $categoria) {
-                    echo '<li><a href="#" class="category-item" data-id="' . $categoria['ID_CATEGORIA'] . '"><i class="bi bi-controller category-icon"></i> ' . $categoria['CATEGORIA'] . '</a></li>';
+                    echo '<li><a href="./pages/categories.php?id=' . $categoria['ID_CATEGORIA'] . '" class="category-item" data-id="' . $categoria['ID_CATEGORIA'] . '"><i class="bi bi-controller category-icon"></i> ' . $categoria['CATEGORIA'] . '</a></li>';
                   }
                   ?>
                 </ul>
@@ -393,7 +393,7 @@ if (!isset($_SESSION['user_id'])) {
 
                 // Show only some games
                 for ($i = 0; $i < min($juegosVisibles, $totalJuegos); $i++) {
-                  echo '<li><a href="#" class="game-item" data-id="' . $juegos[$i]['IDJUEGO'] . '"><img src="' . $juegos[$i]['URL_IMAGEN'] . '" class="rounded-5 game-img" alt="Game image">' . $juegos[$i]['JUEGO'] . '</a></li>';
+                  echo '<li><a href="./pages/games.php?id=' . $juegos[$i]['IDJUEGO'] . '" class="game-item" data-id="' . $juegos[$i]['IDJUEGO'] . '"><img src="' . $juegos[$i]['URL_IMAGEN'] . '" class="rounded-5 game-img" alt="Game image">' . $juegos[$i]['JUEGO'] . '</a></li>';
                 }
                 ?>
               </ul>
@@ -403,7 +403,7 @@ if (!isset($_SESSION['user_id'])) {
                 <ul class="list-unstyled" id="juegos-todos" style="display: none;">
                   <?php
                   foreach ($juegos as $juego) {
-                    echo '<li><a href="#" class="game-item" data-id="' . $juego['IDJUEGO'] . '"><img src="' . $juego['URL_IMAGEN'] . '" class="rounded-5 game-img" alt="Game image">' . $juego['JUEGO'] . '</a></li>';
+                    echo '<li><a href="./pages/games.php?id=' . $juego['IDJUEGO'] . '" class="game-item" data-id="' . $juego['IDJUEGO'] . '"><img src="' . $juego['URL_IMAGEN'] . '" class="rounded-5 game-img" alt="Game image">' . $juego['JUEGO'] . '</a></li>';
                   }
                   ?>
                 </ul>
