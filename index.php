@@ -28,12 +28,20 @@ if (!isset($_SESSION['user_id'])) {
 <body>
   <!-- Navbar -->
   <header class="navbar navbar-expand-lg navbar-dark py-2 sticky-top">
-    <div class="container-fluid ">
-      <!-- Logo and name -->
-      <a class="navbar-brand d-flex align-items-center" href="#">
-        <img src="./assets/App-images/Gameord-logo.webp" alt="Logo" class="me-2 rounded-2" height="40">
-        <span class="fw-bold fs-4 d-none d-sm-inline">Gameord</span>
-      </a>
+    <div class="container-fluid">
+
+      <div class="d-flex align-items-center">
+        <!-- Logo and name -->
+        <a class="navbar-brand d-flex align-items-center" href="#">
+          <img src="./assets/App-images/Gameord-logo.webp" alt="Logo" class="me-2 rounded-2" height="40">
+          <span class="fw-bold fs-4 d-none d-sm-inline">Gameord</span>
+        </a>
+
+        <button class="btn btn-outline-light d-lg-none ms-2" type="button" data-bs-toggle="modal" data-bs-target="#mobileMenuModal" title="Menú">
+          <i class="bi bi-list fs-5"></i>
+        </button>
+      </div>
+
 
       <!-- Search -->
       <div class="position-relative d-none d-md-block mx-3 flex-grow-1">
@@ -45,26 +53,28 @@ if (!isset($_SESSION['user_id'])) {
       <!-- Icons -->
       <ul class="navbar-nav d-flex align-items-center flex-row flex-nowrap">
         <!-- Search button mobile - visible only on small screens -->
-        <li class="nav-item d-md-none mx-3">
+        <li class="nav-item d-md-none mx-2">
           <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#searchModal" title="Buscar">
             <i class="bi bi-search nav-icon"></i>
           </a>
         </li>
+
         <!-- Chat -->
-        <li class="nav-item mx-3">
+        <li class="nav-item mx-2">
           <a class="nav-link" href="./pages/chat.php" title="Chat">
             <i class="bi bi-chat nav-icon"></i>
           </a>
         </li>
+
         <!-- Notifications -->
-        <li class="nav-item mx-3">
+        <li class="nav-item mx-2 position-static">
           <div class="dropdown">
-            <a class="nav-link" href="#" id="Notificaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link position-relative" href="#" id="Notificaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
               <i class="bi bi-bell nav-icon"></i>
               <!-- Check if there are unread notifications -->
               <?php include 'includes/functions.php';
               if (obtenerNumeroNotificacionesNoLeidas($_SESSION['user_id']) > 0) { ?>
-                <span class="position-absolute top-15 start-25 translate-middle badge rounded-pill bg-danger">
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6em;">
                   <?php
                   // Include the functions file
                   include_once('includes/functions.php');
@@ -79,7 +89,7 @@ if (!isset($_SESSION['user_id'])) {
                 </span>
               <?php } ?>
             </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="Notificaciones" style="min-width: 300px;">
+            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="Notificaciones" style="min-width: 300px; max-height: 400px; overflow-y: auto;">
               <?php
               // Include the functions file
               include_once('includes/functions.php');
@@ -89,7 +99,6 @@ if (!isset($_SESSION['user_id'])) {
               // Check if there are notifications
               if (count($notificaciones) > 0) {
                 foreach ($notificaciones as $notificacion) {
-
                   switch ($notificacion['TIPO']) {
                     case 'like':
                       $text = 'te ha dado un like a tu publicación';
@@ -107,44 +116,44 @@ if (!isset($_SESSION['user_id'])) {
                       $text = 'te ha enviado una notificación';
                   }
                   echo '<li>
-                            <a class="dropdown-item d-flex align-items-center py-2" href="#">
-                              <div class="flex-shrink-0">
-                                <img src="' . getProfileImage($notificacion['ORIGEN']) . '" alt="User" class="rounded-circle" width="40">
-                              </div>
-                              <div class="flex-grow-1 ms-3">
-                                <p class="mb-0"><strong>' . $notificacion['ORIGEN'] . '</strong> ' . $text . '</p>
-                                <small class="text-muted">' . date("d-m-y H:i", strtotime($notificacion['FECHA'])) . '</small>
-                              </div>
-                            </a>
-                          </li>';
+                        <a class="dropdown-item d-flex align-items-start py-3 px-3 border-bottom" href="#">
+                          <div class="flex-shrink-0">
+                            <img src="' . getProfileImage($notificacion['ORIGEN']) . '" alt="User" class="rounded-circle" width="40" height="40">
+                          </div>
+                          <div class="flex-grow-1 ms-3 overflow-hidden">
+                            <p class="mb-1 text-wrap"><strong>' . $notificacion['ORIGEN'] . '</strong> ' . $text . '</p>
+                            <small class="text-muted">' . date("d-m-y H:i", strtotime($notificacion['FECHA'])) . '</small>
+                          </div>
+                        </a>
+                      </li>';
                 }
               } else {
                 echo '<li>
-                          <a class="dropdown-item text-center" href="#">
-                            <p class="mb-0">No tienes notificaciones</p>
-                          </a>
-                        </li>';
+                      <div class="dropdown-item text-center py-4">
+                        <i class="bi bi-bell-slash text-muted" style="font-size: 2rem;"></i>
+                        <p class="mb-0 mt-2 text-muted">No tienes notificaciones</p>
+                      </div>
+                    </li>';
               }
               ?>
             </ul>
           </div>
         </li>
+
         <!-- Create post -->
-        <li class="nav-item mx-3">
+        <li class="nav-item mx-2">
           <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#createPostModal" title="Crear publicación">
             <i class="bi bi-plus-circle nav-icon"></i>
           </a>
         </li>
+
         <!-- User profile and settings -->
-        <li class="nav-item mx-3">
+        <li class="nav-item mx-2 position-static">
           <div class="dropdown">
-            <a class="nav-link d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
               <?php
               // Get user profile image
-
-              // Include the functions file
               include_once('includes/functions.php');
-
               // function to get user profile image
               $profileImage = getProfileImage($_SESSION['username']);
               ?>
@@ -153,12 +162,22 @@ if (!isset($_SESSION['user_id'])) {
                 <?php echo isset($_SESSION['username']) ? $_SESSION['username'] : 'Usuario'; ?>
               </span>
             </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-              <li><a class="dropdown-item" href="./pages/profile.php"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
+            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="userDropdown" style="min-width: 200px;">
+              <li class="px-3 py-2 border-bottom">
+                <div class="d-flex align-items-center">
+                  <img src="<?php echo $profileImage; ?>" alt="User" class="rounded-circle me-2" width="40" height="40">
+                  <div>
+                    <div class="fw-bold"><?php echo $_SESSION['username']; ?></div>
+                    <small class="text-muted"><?php echo $_SESSION['user_email']; ?></small>
+                  </div>
+                </div>
+              </li>
+              <li><a class="dropdown-item py-2" href="./pages/profile.php"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
+              <li><a class="dropdown-item py-2" href="./pages/settings.php"><i class="bi bi-gear me-2"></i>Configuración</a></li>
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <li><a class="dropdown-item" href="./pages/logout.php"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a></li>
+              <li><a class="dropdown-item py-2 text-danger" href="./pages/logout.php"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a></li>
             </ul>
           </div>
         </li>
@@ -166,19 +185,84 @@ if (!isset($_SESSION['user_id'])) {
     </div>
   </header>
 
+  <!-- Modal for mobile menu -->
+  <div class="modal fade" id="mobileMenuModal" tabindex="-1" aria-labelledby="mobileMenuModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-gradient" style="background: linear-gradient(to right, var(--primary-color), var(--secondary-color));">
+          <h5 class="modal-title text-white fw-bold" id="mobileMenuModalLabel">
+            <i class="bi bi-controller me-2"></i>Explorar
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-0">
+          <ul class="nav nav-tabs nav-fill border-0" id="mobileMenuTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active px-4 py-3 fw-semibold" id="categories-tab" data-bs-toggle="tab" data-bs-target="#categories-content" type="button" role="tab">
+                <i class="bi bi-grid-3x3-gap-fill me-2"></i>Categorías
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link px-4 py-3 fw-semibold" id="games-tab" data-bs-toggle="tab" data-bs-target="#games-content" type="button" role="tab">
+                <i class="bi bi-joystick me-2"></i>Juegos
+              </button>
+            </li>
+          </ul>
+
+          <!-- Tabs Content -->
+          <div class="tab-content" id="mobileMenuTabContent">
+            <!-- Categorías Tab -->
+            <div class="tab-pane fade show active" id="categories-content" role="tabpanel">
+              <div class="p-3">
+                <div class="row g-2" id="mobile-categories-container">
+                  <!-- The categories will be loaded here dynamically -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Games Tab -->
+            <div class="tab-pane fade" id="games-content" role="tabpanel">
+              <div class="p-3">
+                <!-- Search bar for games -->
+                <div class="mb-3">
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">
+                      <i class="bi bi-search text-muted"></i>
+                    </span>
+                    <input type="text" id="mobile-games-search" class="form-control border-start-0" placeholder="Buscar juegos..." autocomplete="off">
+                  </div>
+                </div>
+
+                <div class="row g-2" id="mobile-games-container" style="max-height: 400px; overflow-y: auto;">
+                  <!-- The games will be loaded here dynamically -->
+                </div>
+
+                <!-- Loading indicator -->
+                <div id="mobile-games-loading" class="text-center py-4 d-none">
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Search Modal for mobile -->
   <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="searchModalLabel">Buscar</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-search"></i></span>
-            <input type="text" class="form-control" placeholder="Buscar juegos, categorías, usuarios...">
-          </div>
+          <i class="bi bi-search position-absolute search-icon ms-3"></i>
+          <input type="text" id="searchInput2" class="form-control search-box" placeholder="Buscar juegos, categorías, usuarios..." aria-label="Buscar">
+          <div id="searchResults2" class="search-results-list d-none"></div>
         </div>
       </div>
     </div>
@@ -462,7 +546,7 @@ if (!isset($_SESSION['user_id'])) {
 
 
   <!-- Scripts -->
-  <script src=" ./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js">
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js">
   </script>
   <script src="./assets/js/index.js"></script>
 </body>

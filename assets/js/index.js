@@ -82,6 +82,88 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  const searchInput2 = document.getElementById('searchInput2');
+  const searchResults2 = document.getElementById('searchResults2');
+
+  // Functionality for the search input on the mobile version
+  if (searchInput2) {
+    let searchTimeout;
+    // Event listener for keyup on the search input
+    searchInput2.addEventListener('keyup', function () {
+      clearTimeout(searchTimeout);
+      const value = this.value.trim();
+      // If the input is empty, hide the results
+      if (value.length < 1) {
+        searchResults2.classList.add('d-none');
+        searchResults2.innerHTML = '';
+        return;
+      }
+      // Timeout to delay the search
+      searchTimeout = setTimeout(() => {
+        // Fetch the search results
+        fetch('includes/buscar.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: 'term=' + encodeURIComponent(value)
+        })
+          .then(res => res.json())
+          .then(data => {
+            // Clear previous results
+            let html = '';
+            if (data.usuarios && data.usuarios.length) {
+              html += '<div class="px-3 py-1 text-muted small">Usuarios</div>';
+
+              // Iterate over the users and create the HTML for user results
+              data.usuarios.forEach(u => {
+                html += `<div class="result-item" onclick="window.location='./pages/user.php?user=${encodeURIComponent(u.USUARIO)}'">
+                <img src="${u.URL_FOTO || './assets/img/default_profile.png'}" class="rounded-circle me-2" width="28" height="28">
+                ${u.USUARIO}
+              </div>`;
+              });
+            }
+
+            // Iterate over the games and create the HTML for game results
+            if (data.juegos && data.juegos.length) {
+              html += '<div class="px-3 py-1 text-muted small">Juegos</div>';
+              data.juegos.forEach(j => {
+                html += `<div class="result-item" onclick="window.location='./pages/games.php?id=${j.IDJUEGO}'">
+                <img src="${j.URL_IMAGEN}" class="rounded-5 me-2" width="28" height="28">
+                ${j.JUEGO}
+              </div>`;
+              });
+            }
+
+            // Iterate over the categories and create the HTML for category results
+            if (data.categorias && data.categorias.length) {
+              html += '<div class="px-3 py-1 text-muted small">Categorías</div>';
+              data.categorias.forEach(c => {
+                html += `<div class="result-item" onclick="window.location='./pages/categories.php?id=${c.ID_CATEGORIA}'">
+                <i class="bi bi-controller me-2"></i>
+                ${c.CATEGORIA}
+              </div>`;
+              });
+            }
+            // If there are no results, show a message
+            if (!html) html = '<div class="result-item text-muted">Sin resultados</div>';
+            searchResults2.innerHTML = html;
+            searchResults2.classList.remove('d-none');
+          })
+          .catch(() => {
+            searchResults2.innerHTML = '<div class="result-item text-danger">Error en la búsqueda</div>';
+            searchResults2.classList.remove('d-none');
+          });
+      }, 100);
+    });
+
+    // Hide results when the input loses focus
+    searchInput.addEventListener('blur', function () {
+      setTimeout(() => searchResults2.classList.add('d-none'), 200);
+    });
+    searchInput.addEventListener('focus', function () {
+      if (searchResults2.innerHTML) searchResults2.classList.remove('d-none');
+    });
+  }
+
 
   // Toggle for showing/hiding categories
   const btnToggleCategories = document.getElementById('btn-toggle-categorias');
@@ -406,7 +488,7 @@ document.addEventListener('DOMContentLoaded', function () {
           console.log('Data:', data);
           if (data.success) {
             console.log('Notificaciones marcadas como leídas.');
-            
+
           } else {
             console.error('Error al marcar las notificaciones como leídas:', data.message);
           }
@@ -417,9 +499,158 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // Variables for the mobile menu modal 
+  // Categories and games
+  const mobileMenuModal = document.getElementById('mobileMenuModal');
+  const categoriesContainer = document.getElementById('mobile-categories-container');
+  const gamesContainer = document.getElementById('mobile-games-container');
+  const gamesSearch = document.getElementById('mobile-games-search');
+  const gamesLoading = document.getElementById('mobile-games-loading');
+
+  let allGames = [];
+  let categoriesLoaded = false;
+  let gamesLoaded = false;
+
+  if (mobileMenuModal) {
+    // Event listener for when the modal is shown
+    mobileMenuModal.addEventListener('shown.bs.modal', function () {
+      if (!categoriesLoaded) {
+        loadMobileCategories();
+      }
+      if (!gamesLoaded) {
+        loadMobileGames();
+      }
+    });
+
+    // Event listener for when a tab is shown
+    const tabButtons = document.querySelectorAll('#mobileMenuTabs button[data-bs-toggle="tab"]');
+    tabButtons.forEach(button => {
+      button.addEventListener('shown.bs.tab', function (event) {
+        if (event.target.getAttribute('data-bs-target') === '#games-content' && !gamesLoaded) {
+          loadMobileGames();
+        }
+      });
+    });
+  }
+
+  // Function to load categories
+  function loadMobileCategories() {
+    if (!categoriesContainer) return;
+
+    // Loading categories with a shimmer effect
+    categoriesContainer.innerHTML = Array(8).fill(0).map(() =>
+      '<div class="col-6 col-sm-4 col-md-3"><div class="mobile-category-card loading-shimmer" style="height: 100px;"></div></div>'
+    ).join('');
+
+    // Using fetch to get categories
+    fetch('includes/get_categories.php')
+      .then(response => response.json())
+      .then(categories => {
+        if (categories.error) {
+          throw new Error(categories.error);
+        }
+
+        let html = '';
+        categories.forEach(category => {
+          html += `
+            <div class="col-6 col-sm-4 col-md-3">
+              <a href="./pages/categories.php?id=${category.id}" class="mobile-category-card" onclick="closeMobileMenu()">
+                <i class="bi ${category.icon}"></i>
+                <span class="category-name">${category.name}</span>
+              </a>
+            </div>
+          `;
+        });
+
+        categoriesContainer.innerHTML = html;
+        categoriesLoaded = true;
+      })
+      .catch(error => {
+        console.error('Error cargando categorías:', error);
+        categoriesContainer.innerHTML = '<div class="col-12 text-center text-danger py-4">Error al cargar las categorías</div>';
+      });
+  }
+
+  // Function to load games
+  function loadMobileGames() {
+    if (!gamesContainer) return;
+
+    gamesLoading.classList.remove('d-none');
+
+    // Fetch to get games
+    fetch('includes/get_games.php')
+      .then(response => response.json())
+      .then(games => {
+        if (games.error) {
+          throw new Error(games.error);
+        }
+
+        allGames = games;
+        displayGames(games);
+        gamesLoaded = true;
+        gamesLoading.classList.add('d-none');
+      })
+      .catch(error => {
+        console.error('Error cargando juegos:', error);
+        gamesContainer.innerHTML = '<div class="col-12 text-center text-danger py-4">Error al cargar los juegos</div>';
+        gamesLoading.classList.add('d-none');
+      });
+  }
+
+  // Function to display games in the mobile menu
+  function displayGames(games) {
+    if (!gamesContainer) return;
+
+    if (!games || games.length === 0) {
+      gamesContainer.innerHTML = '<div class="col-12 text-center text-muted py-4">No se encontraron juegos</div>';
+      return;
+    }
+
+    let html = '';
+    games.forEach(game => {
+      html += `
+        <div class="col-12">
+          <a href="./pages/games.php?id=${game.id}" class="mobile-game-card" onclick="closeMobileMenu()">
+            <img src="${game.image || game.URL_IMAGEN}" alt="${game.name || game.JUEGO}" onerror="this.src='./assets/img/default-game.png'">
+            <span class="game-name">${game.name || game.JUEGO}</span>
+          </a>
+        </div>
+      `;
+    });
+
+    gamesContainer.innerHTML = html;
+  }
+
+  // Functionality for the search input in the mobile games section
+  if (gamesSearch) {
+    let searchTimeout;
+    gamesSearch.addEventListener('input', function () {
+      clearTimeout(searchTimeout);
+      const searchTerm = this.value.toLowerCase().trim();
+
+      searchTimeout = setTimeout(() => {
+        if (searchTerm === '') {
+          displayGames(allGames);
+        } else {
+          const filteredGames = allGames.filter(game => {
+            const gameName = (game.name || game.JUEGO || '').toLowerCase();
+            return gameName.includes(searchTerm);
+          });
+          displayGames(filteredGames);
+        }
+      }, 300);
+    });
+  }
+
 });
 
-
+// Function to close the mobile menu modal
+function closeMobileMenu() {
+  const modal = bootstrap.Modal.getInstance(document.getElementById('mobileMenuModal'));
+  if (modal) {
+    modal.hide();
+  }
+}
 
 // Function to add or remove a like to a post
 function toggleLike(btn, userId, publicacionId, $numLikes) {
