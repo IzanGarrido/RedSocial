@@ -695,7 +695,7 @@ function getUserIdByPostId($postId)
     }
 }
 
-// Función para obtener el número total de mensajes no leídos de un usuario
+// Function to get the number of unread messages for a user
 function obtenerNumeroMensajesNoLeidos($userId)
 {
     try {

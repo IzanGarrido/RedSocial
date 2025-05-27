@@ -69,12 +69,12 @@ if (!isset($_SESSION['user_id'])) {
         <!-- Notifications -->
         <li class="nav-item mx-2 position-static">
           <div class="dropdown">
-            <a class="nav-link position-relative" href="#" id="Notificaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+            <a class="nav-link position-relative " href="#" id="Notificaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
               <i class="bi bi-bell nav-icon"></i>
               <!-- Check if there are unread notifications -->
               <?php include 'includes/functions.php';
               if (obtenerNumeroNotificacionesNoLeidas($_SESSION['user_id']) > 0) { ?>
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6em;">
+                <span class="position-absolute top-40 start-60 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6em;">
                   <?php
                   // Include the functions file
                   include_once('includes/functions.php');
@@ -110,7 +110,10 @@ if (!isset($_SESSION['user_id'])) {
                       $text = 'te ha seguido';
                       break;
                     case 'sistema':
-                      $text = '';
+                      $text = 'Tienes un mensaje del sistema';
+                      break;
+                    case 'mensaje':
+                      $text = 'Te ha enviado un mensaje';
                       break;
                     default:
                       $text = 'te ha enviado una notificación';

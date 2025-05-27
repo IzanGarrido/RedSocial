@@ -1,6 +1,24 @@
-let currentContact = window.currentContact
+let currentContact = null
 
-// Auto-resize textarea
+function getCorrectImagePath(imagePath) {
+    if (!imagePath || imagePath === '') {
+        return '../assets/App-images/default_profile.png';
+    }
+
+    // If the path starts with ./ we convert it to ../
+    if (imagePath.startsWith('./')) {
+        return imagePath.replace('./', '../');
+    }
+
+    // If the path starts with /, http, or ../ we return it as is
+    if (!imagePath.startsWith('/') && !imagePath.startsWith('http') && !imagePath.startsWith('../')) {
+        return '../' + imagePath;
+    }
+
+    return imagePath;
+}
+
+// Auto-resize input
 const messageInput = document.getElementById('messageInput');
 if (messageInput) {
     messageInput.addEventListener('input', function () {
@@ -9,7 +27,7 @@ if (messageInput) {
     });
 }
 
-// Función para manejar Enter en el textarea
+// Function to handle Enter key press in the message input
 function handleKeyPress(event) {
     if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault();
@@ -17,49 +35,76 @@ function handleKeyPress(event) {
     }
 }
 
-// Función para enviar mensaje
+// Function to send message
 function sendMessage(event) {
     event.preventDefault();
 
+    console.log('Función sendMessage llamada');
+    console.log('currentContact:', currentContact);
+
+    // Verify that there is a selected contact
     if (!currentContact) {
+        console.log('No hay contacto seleccionado');
         return;
     }
 
     const input = document.getElementById('messageInput');
     const message = input.value.trim();
 
-    console.log('Enviando mensaje:', message);
-    console.log('Contacto actual:', currentContact);
-    if (message === '') return;
+    console.log('Mensaje a enviar:', message);
 
-    // Enviar mensaje vía AJAX
+    if (message === '') {
+        console.log('Mensaje vacío');
+        return;
+    }
+
+    // Disable the send button and change its text to a loading icon
+    const sendButton = document.querySelector('.send-button');
+    const originalText = sendButton.innerHTML;
+    sendButton.disabled = true;
+    sendButton.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+
+    // Send the message to the server
     fetch('../includes/chat_send_message.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: `contact=${currentContact}&mensaje=${encodeURIComponent(message)}`
+        body: `contact=${encodeURIComponent(currentContact)}&mensaje=${encodeURIComponent(message)}`
     })
-        .then(response => response.json())
+        .then(response => {
+            console.log('Respuesta recibida:', response);
+            return response.json();
+        })
         .then(data => {
+            console.log('Datos de respuesta:', data);
+
             if (data.success) {
-                // Agregar mensaje al chat
+                // Add message to chat
                 addMessage(message, true, data.fecha);
-                // Limpiar input
+                // Clear the input and reset its height
                 input.value = '';
                 input.style.height = 'auto';
+                console.log('Mensaje enviado correctamente');
+            } else {
+                console.error('Error del servidor:', data.error);
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('Error de red:', error);
+        })
+        .finally(() => {
+            // Enable the send button and restore its original text
+            sendButton.disabled = false;
+            sendButton.innerHTML = originalText;
         });
 }
 
-// Función para agregar mensaje al chat
+// Function to  add a message to the chat
 function addMessage(text, isOwn, time = null) {
     const messagesContainer = document.getElementById('messagesContainer');
 
-    // Remover mensaje de chat vacío si existe
+    // Remove empty chat message if it exists
     const emptyChat = messagesContainer.querySelector('.empty-chat');
     if (emptyChat) {
         emptyChat.remove();
@@ -75,61 +120,110 @@ function addMessage(text, isOwn, time = null) {
 
     if (isOwn) {
         messageDiv.innerHTML = `
-                    <div>
-                        <div class="message-bubble">
-                            ${text}
-                        </div>
-                        <div class="message-time">${timeString}</div>
-                    </div>
-                `;
+            <div>
+                <div class="message-bubble">
+                    ${text}
+                </div>
+                <div class="message-time">${timeString}</div>
+            </div>
+        `;
     } else {
+        // For other users' messages, get the image of the active contact
+        const activeContact = document.querySelector('.contact-item.active');
+        let contactImage = '../assets/App-images/default_profile.png';
+
+        if (activeContact) {
+            const dataImage = activeContact.getAttribute('data-contact-image');
+            contactImage = getCorrectImagePath(dataImage);
+        }
+
         messageDiv.innerHTML = `
-                    <img src="../assets/App-images/default_profile.png" alt="Contact" class="message-avatar">
-                    <div>
-                        <div class="message-bubble">
-                            ${text}
-                        </div>
-                        <div class="message-time">${timeString}</div>
-                    </div>
-                `;
+            <img src="${contactImage}" 
+                 alt="Contact" 
+                 class="message-avatar"
+                 onerror="this.src='../assets/App-images/default_profile.png'">
+            <div>
+                <div class="message-bubble">
+                    ${text}
+                </div>
+                <div class="message-time">${timeString}</div>
+            </div>
+        `;
     }
 
     messagesContainer.appendChild(messageDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
-// Función para seleccionar contacto
+// Function to select a contact and load their messages
 function selectContact(userId, userName, userAvatar) {
+    console.log('Seleccionando contacto:', userId, userName, userAvatar);
+
+    // Establish current contact
     currentContact = userId;
+    window.currentContact = userId;
     document.getElementById('currentContactId').value = userId;
 
-    // Actualizar header del chat
-    document.getElementById('chatUserName').textContent = userName;
-    document.getElementById('chatAvatar').src = userAvatar;
+    // Correct image path 
+    const correctedAvatar = getCorrectImagePath(userAvatar);
 
-    // Actualizar contacto activo
+    // Update chat header with user name and avatar
+    document.getElementById('chatUserName').textContent = userName;
+    const chatAvatar = document.getElementById('chatAvatar');
+    chatAvatar.src = correctedAvatar;
+
+    // Update the active contact in the sidebar
     document.querySelectorAll('.contact-item').forEach(item => {
         item.classList.remove('active');
     });
-    event.currentTarget.classList.add('active');
 
-    // Cargar mensajes del contacto
-    loadContactMessages(userId);
+    // Find the clicked contact and mark it as active
+    const clickedContact = event?.currentTarget || document.querySelector(`[data-contact-id="${userId}"]`);
+    if (clickedContact) {
+        clickedContact.classList.add('active');
+        clickedContact.setAttribute('data-contact-image', correctedAvatar);
+    }
 
-    // Habilitar input
+    // Enable message input and send button
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.querySelector('.send-button');
+    const moreOptionsBtn = document.querySelector('.btn[title="Más opciones"]');
+
     messageInput.disabled = false;
     messageInput.placeholder = 'Escribe tu mensaje...';
     sendButton.disabled = false;
+    if (moreOptionsBtn) moreOptionsBtn.disabled = false;
 
-    // Cerrar sidebar en móvil
+    // Load messages for the selected contact
+    loadContactMessages(userId);
+
+    // Close the sidebar if on mobile
     if (window.innerWidth <= 768) {
         toggleSidebar();
     }
+
+    console.log('Contacto seleccionado correctamente. currentContact:', currentContact);
 }
 
-// Función para cargar mensajes del contacto
+document.addEventListener('DOMContentLoaded', function () {
+    const messageForm = document.getElementById('messageForm');
+    if (messageForm) {
+        messageForm.addEventListener('submit', sendMessage);
+        console.log('Event listener agregado al formulario');
+    }
+
+    // Add event listener to the send button
+    const sendButton = document.querySelector('.send-button');
+    if (sendButton) {
+        sendButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            sendMessage(e);
+        });
+        console.log('Event listener agregado al botón');
+    }
+});
+
+// Function to load messages for the selected contact
 function loadContactMessages(userId) {
     const messagesContainer = document.getElementById('messagesContainer');
     messagesContainer.innerHTML = '<div class="text-center py-3"><div class="spinner-border text-primary" role="status"></div></div>';
@@ -152,35 +246,39 @@ function loadContactMessages(userId) {
 
                     if (msg.es_propio) {
                         messageDiv.innerHTML = `
-                                <div>
-                                    <div class="message-bubble">
-                                        ${msg.contenido}
-                                    </div>
-                                    <div class="message-time">${msg.fecha}</div>
-                                </div>
-                            `;
+                        <div>
+                            <div class="message-bubble">
+                                ${msg.contenido}
+                            </div>
+                            <div class="message-time">${msg.fecha}</div>
+                        </div>
+                    `;
                     } else {
+                        const correctImagePath = getCorrectImagePath(msg.foto_origen);
                         messageDiv.innerHTML = `
-                                <img src="${msg.foto_origen}" alt="${msg.usuario_origen}" class="message-avatar">
-                                <div>
-                                    <div class="message-bubble">
-                                        ${msg.contenido}
-                                    </div>
-                                    <div class="message-time">${msg.fecha}</div>
-                                </div>
-                            `;
+                        <img src="${correctImagePath}" 
+                             alt="${msg.usuario_origen}" 
+                             class="message-avatar"
+                             onerror="this.src='../assets/App-images/default_profile.png'">
+                        <div>
+                            <div class="message-bubble">
+                                ${msg.contenido}
+                            </div>
+                            <div class="message-time">${msg.fecha}</div>
+                        </div>
+                    `;
                     }
 
                     messagesContainer.appendChild(messageDiv);
                 });
             } else {
                 messagesContainer.innerHTML = `
-                        <div class="empty-chat">
-                            <i class="bi bi-chat-square-text"></i>
-                            <p>No hay mensajes en esta conversación</p>
-                            <small>Envía el primer mensaje para empezar</small>
-                        </div>
-                    `;
+                <div class="empty-chat">
+                    <i class="bi bi-chat-square-text"></i>
+                    <p>No hay mensajes en esta conversación</p>
+                    <small>Envía el primer mensaje para empezar</small>
+                </div>
+            `;
             }
 
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -188,21 +286,20 @@ function loadContactMessages(userId) {
         .catch(error => {
             console.error('Error:', error);
             messagesContainer.innerHTML = `
-                    <div class="empty-chat">
-                        <i class="bi bi-exclamation-triangle text-danger"></i>
-                        <p>Error al cargar mensajes</p>
-                    </div>
-                `;
+            <div class="empty-chat">
+                <i class="bi bi-exclamation-triangle text-danger"></i>
+                <p>Error al cargar mensajes</p>
+            </div>
+        `;
         });
 }
 
-// Función para toggle del sidebar en móvil
+// Function to toggle the sidebar in mobile view
 function toggleSidebar() {
     const sidebar = document.getElementById('contactsSidebar');
     sidebar.classList.toggle('show');
 }
-
-// Función para toggle de búsqueda de usuarios
+// Function to toggle user search dropdown
 function toggleUserSearch() {
     const dropdown = document.getElementById('userSearchDropdown');
     const isVisible = dropdown.style.display !== 'none';
@@ -213,9 +310,18 @@ function toggleUserSearch() {
     }
 }
 
-// Función para buscar usuarios
+// Function to search users
 function searchUsers(query) {
     const resultsDiv = document.getElementById('userSearchResults');
+
+    // Obtain existing contacts from the sidebar
+    const existingContacts = Array.from(document.querySelectorAll('.contact-item')).map(item => {
+        const contactName = item.querySelector('.contact-name');
+        return contactName ? contactName.textContent.trim() : '';
+    }).filter(name => name !== '');
+
+    // Obtain the current username from the session
+    const currentUsername = document.querySelector('#userDropdown span')?.textContent?.trim() || '';
 
     fetch(`../includes/buscar.php`, {
         method: 'POST',
@@ -227,17 +333,43 @@ function searchUsers(query) {
         .then(response => response.json())
         .then(data => {
             if (data.usuarios && data.usuarios.length > 0) {
-                let html = '';
-                data.usuarios.forEach(user => {
-                    const userImage = "." + user.URL_FOTO || '../assets/App-images/default_profile.png';
-                    html += `
-                            <div class="d-flex align-items-center py-2 px-2 border-bottom cursor-pointer" onclick="startConversation('${user.USUARIO}', '${user.USUARIO}', '${userImage}')" style="cursor: pointer;">
-                                <img src="${userImage}" alt="${user.USUARIO}" class="rounded-circle me-2" width="32" height="32">
+                // Filter out existing contacts and the current user
+                const filteredUsers = data.usuarios.filter(user => {
+                    return !existingContacts.includes(user.USUARIO) &&
+                        user.USUARIO !== currentUsername;
+                });
+
+                if (filteredUsers.length > 0) {
+                    let html = '';
+                    filteredUsers.forEach(user => {
+                        const userImage = user.URL_FOTO ?
+                            (user.URL_FOTO.startsWith('./') ? user.URL_FOTO.replace('./', '../') : user.URL_FOTO) :
+                            '../assets/App-images/default_profile.png';
+
+                        html += `
+                            <div class="d-flex align-items-center py-2 px-2 border-bottom cursor-pointer search-user-item" 
+                                 onclick="startConversation('${user.IDUSUARIO || user.USUARIO}', '${user.USUARIO}', '${userImage}')" 
+                                 style="cursor: pointer; transition: background-color 0.2s;">
+                                <img src="${userImage}" alt="${user.USUARIO}" class="rounded-circle me-2" width="32" height="32" 
+                                     onerror="this.src='../assets/App-images/default_profile.png'">
                                 <span>${user.USUARIO}</span>
                             </div>
                         `;
-                });
-                resultsDiv.innerHTML = html;
+                    });
+                    resultsDiv.innerHTML = html;
+
+                    // Add hover effect to search results
+                    document.querySelectorAll('.search-user-item').forEach(item => {
+                        item.addEventListener('mouseenter', function () {
+                            this.style.backgroundColor = '#f8f9fa';
+                        });
+                        item.addEventListener('mouseleave', function () {
+                            this.style.backgroundColor = '';
+                        });
+                    });
+                } else {
+                    resultsDiv.innerHTML = '<small class="text-muted">No se encontraron usuarios nuevos</small>';
+                }
             } else {
                 resultsDiv.innerHTML = '<small class="text-muted">No se encontraron usuarios</small>';
             }
@@ -248,13 +380,13 @@ function searchUsers(query) {
         });
 }
 
-// Función para iniciar conversación con un usuario nuevo
+// Function to start a conversation with a new user
 function startConversation(userId, userName, userAvatar) {
-    // Cerrar búsqueda
+    // Close user search dropdown 
     document.getElementById('userSearchDropdown').style.display = 'none';
     document.getElementById('userSearchInput').value = '';
 
-    // Obtener el ID del usuario usando su nombre de usuario
+    // Obtain the user ID from the server
     fetch('../includes/buscar.php', {
         method: 'POST',
         headers: {
@@ -267,20 +399,20 @@ function startConversation(userId, userName, userAvatar) {
             if (data.usuarios && data.usuarios.length > 0) {
                 const user = data.usuarios.find(u => u.USUARIO === userName);
                 if (user) {
-                    // Seleccionar como contacto actual usando el ID obtenido
+                    // Select current contact
                     currentContact = user.IDUSUARIO || userId;
                     document.getElementById('currentContactId').value = currentContact;
 
-                    // Actualizar header
+                    // Update header
                     document.getElementById('chatUserName').textContent = userName;
                     document.getElementById('chatAvatar').src = userAvatar;
 
-                    // Limpiar selección activa
+                    // Clear active contact
                     document.querySelectorAll('.contact-item').forEach(item => {
                         item.classList.remove('active');
                     });
 
-                    // Mostrar chat vacío
+                    // Show empty chat message
                     const messagesContainer = document.getElementById('messagesContainer');
                     messagesContainer.innerHTML = `
                             <div class="empty-chat">
@@ -290,7 +422,7 @@ function startConversation(userId, userName, userAvatar) {
                             </div>
                         `;
 
-                    // Habilitar input
+                    // Enable message input and send button
                     const messageInput = document.getElementById('messageInput');
                     const sendButton = document.querySelector('.send-button');
                     messageInput.disabled = false;
@@ -305,7 +437,7 @@ function startConversation(userId, userName, userAvatar) {
         });
 }
 
-// Cerrar sidebar al hacer click fuera en móvil
+// Close sidebar when clicking outside in mobile view
 document.addEventListener('click', function (event) {
     const sidebar = document.getElementById('contactsSidebar');
     const menuBtn = document.querySelector('.mobile-menu-btn');
@@ -318,13 +450,13 @@ document.addEventListener('click', function (event) {
         sidebar.classList.remove('show');
     }
 
-    // Cerrar búsqueda de usuarios si se hace click fuera
+    // Close user search if clicked outside
     if (!userSearch.contains(event.target) && !event.target.closest('.btn[onclick="toggleUserSearch()"]')) {
         userSearch.style.display = 'none';
     }
 });
 
-// Función de búsqueda de contactos
+// Function to search contacts in the sidebar
 document.getElementById('searchContacts').addEventListener('input', function () {
     const searchTerm = this.value.toLowerCase();
     const contacts = document.querySelectorAll('.contact-item');
@@ -339,7 +471,7 @@ document.getElementById('searchContacts').addEventListener('input', function () 
     });
 });
 
-// Auto scroll al final de los mensajes
+// Auto scroll to the bottom of the messages container when it loads
 document.addEventListener('DOMContentLoaded', function () {
     const messagesContainer = document.getElementById('messagesContainer');
     if (messagesContainer) {
@@ -347,7 +479,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// Marcar notificaciones como leídas al hacer click
+// Set as read notifications when clicking on the notifications icon
 const notificacionesElement = document.getElementById('Notificaciones');
 if (notificacionesElement) {
     notificacionesElement.addEventListener('click', function () {

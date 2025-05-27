@@ -1,4 +1,4 @@
-* Chat specific styles */ body {
+body {
     height: 100vh;
     overflow: hidden;
 }
@@ -167,7 +167,6 @@
 }
 
 .message-bubble {
-    max-width: 70%;
     padding: 12px 16px;
     border-radius: 18px;
     position: relative;
@@ -224,6 +223,9 @@
     padding: 12px 20px;
     resize: none;
     max-height: 120px;
+    /* hide scrollbar */
+    overflow-y: auto;
+    font-size: 0.9rem;
 }
 
 .message-input:focus {

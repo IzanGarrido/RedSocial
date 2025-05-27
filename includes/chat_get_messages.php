@@ -23,8 +23,8 @@ if (!$contactId) {
 
 try {
     $userId = $_SESSION['user_id'];
-    
-    // Obtener mensajes entre los dos usuarios
+
+    // Obtain messages between the two users
     $sql = "SELECT m.ID_MENSAJE, m.CONTENIDO, m.FECHA_MENSAJE, m.IDUSUARIO_ORIGEN,
                    u.USUARIO, u.URL_FOTO
             FROM MENSAJES m
@@ -33,27 +33,47 @@ try {
                OR (m.IDUSUARIO_ORIGEN = ? AND m.IDUSUARIO_DESTINO = ?)
             ORDER BY m.FECHA_MENSAJE ASC
             LIMIT 100";
-    
+
     $mensajes = DB::getAll($sql, [$userId, $contactId, $contactId, $userId]);
-    
-    // Marcar mensajes del contacto como leídos
+
+    // Set messages as read for the current user
     DB::executeQuery(
-        "UPDATE MENSAJES SET LEIDO = TRUE WHERE IDUSUARIO_ORIGEN = ? AND IDUSUARIO_DESTINO = ? AND LEIDO = FALSE", 
+        "UPDATE MENSAJES SET LEIDO = TRUE WHERE IDUSUARIO_ORIGEN = ? AND IDUSUARIO_DESTINO = ? AND LEIDO = FALSE",
         [$contactId, $userId]
     );
-    
-    // Formatear mensajes para el frontend
-    $mensajesFormateados = array_map(function($mensaje) use ($userId) {
+
+    //Function to correct image paths
+    function correctImagePath($imagePath)
+    {
+        if (empty($imagePath)) {
+            return '../assets/App-images/default_profile.png';
+        }
+
+        // If the path starts with ./ we convert it to ../
+        if (strpos($imagePath, './') === 0) {
+            return str_replace('./', '../', $imagePath);
+        }
+
+        // If the path does not start with /, http, or ../, we prepend ../
+        if (strpos($imagePath, '/') !== 0 && strpos($imagePath, 'http') !== 0 && strpos($imagePath, '../') !== 0) {
+            return '../' . $imagePath;
+        }
+
+        return $imagePath;
+    }
+
+    // Format messages for the frontend
+    $mensajesFormateados = array_map(function ($mensaje) use ($userId) {
         return [
             'id' => $mensaje['ID_MENSAJE'],
             'contenido' => htmlspecialchars($mensaje['CONTENIDO']),
-            'fecha' => date('H:i', strtotime($mensaje['FECHA_MENSAJE'])),
+            'fecha' => date('d-m H:i', strtotime($mensaje['FECHA_MENSAJE'])),
             'es_propio' => $mensaje['IDUSUARIO_ORIGEN'] == $userId,
             'usuario_origen' => $mensaje['USUARIO'],
-            'foto_origen' => $mensaje['URL_FOTO'] ?: '../assets/img/default_profile.png'
+            'foto_origen' => correctImagePath($mensaje['URL_FOTO'])
         ];
     }, $mensajes);
-    
+
     echo json_encode(['success' => true, 'mensajes' => $mensajesFormateados]);
 } catch (Exception $e) {
     error_log("Error en chat_get_messages.php: " . $e->getMessage());

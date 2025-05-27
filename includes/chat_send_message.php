@@ -4,56 +4,80 @@ require_once 'functions.php';
 
 header('Content-Type: application/json');
 
+// Log for debug
+error_log("chat_send_message.php - Inicio");
+
 if (!isset($_SESSION['user_id'])) {
-    echo json_encode(['error' => 'No hay sesión activa']);
+    error_log("No hay sesión activa");
+    echo json_encode(['success' => false, 'error' => 'No hay sesión activa']);
     exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode(['error' => 'Método no permitido']);
+    error_log("Método no permitido: " . $_SERVER['REQUEST_METHOD']);
+    echo json_encode(['success' => false, 'error' => 'Método no permitido']);
     exit;
 }
 
 $contact = isset($_POST['contact']) ? $_POST['contact'] : '';
 $mensaje = isset($_POST['mensaje']) ? trim($_POST['mensaje']) : '';
 
+error_log("Datos recibidos - contact: $contact, mensaje: $mensaje");
+
 if (!$contact || empty($mensaje)) {
-    echo json_encode(['error' => 'Datos incompletos' . $contact . ' ' . $mensaje]);
+    error_log("Datos incompletos - contact: $contact, mensaje: $mensaje");
+    echo json_encode(['success' => false, 'error' => 'Datos incompletos']);
     exit;
 }
 
 try {
     $userId = $_SESSION['user_id'];
 
-    // Verificar que el usuario destino existe
-    $contactRow = DB::getOne("SELECT IDUSUARIO FROM USUARIO WHERE USUARIO = ?", [$contact]);
+    // The contact can be a user ID or a username
+    $contactId = null;
 
-    if (!$contactRow || !isset($contactRow['IDUSUARIO'])) {
-        echo json_encode(['error' => 'Usuario no encontrado']);
+    // If is numeric, it is an ID
+    if (is_numeric($contact)) {
+        $contactId = (int)$contact;
+        // Verify that the user exists
+        $contactRow = DB::getOne("SELECT IDUSUARIO FROM USUARIO WHERE IDUSUARIO = ?", [$contactId]);
+    } else {
+        $contactRow = DB::getOne("SELECT IDUSUARIO FROM USUARIO WHERE USUARIO = ?", [$contact]);
+        if ($contactRow) {
+            $contactId = $contactRow['IDUSUARIO'];
+        }
+    }
+
+    if (!$contactRow || !$contactId) {
+        error_log("Usuario no encontrado: $contact");
+        echo json_encode(['success' => false, 'error' => 'Usuario no encontrado']);
         exit;
     }
-    $contactId = $contactRow['IDUSUARIO'];
 
-    // Insertar el mensaje
+    error_log("Usuario encontrado - contactId: $contactId");
+
+    // Insert the message into the database
     $sql = "INSERT INTO MENSAJES (IDUSUARIO_ORIGEN, IDUSUARIO_DESTINO, CONTENIDO) VALUES (?, ?, ?)";
     $params = [$userId, $contactId, $mensaje];
     $mensajeId = DB::insert($sql, $params);
 
     if ($mensajeId) {
-        // Crear notificación para el destinatario si no es el mismo usuario
+        // Create notification
         if ($contactId != $userId) {
-            addNotification($contactId, $userId, 'sistema');
+            addNotification($contactId, $userId, 'mensaje');
         }
 
+        error_log("Mensaje enviado correctamente - ID: $mensajeId");
         echo json_encode([
             'success' => true,
             'mensaje_id' => $mensajeId,
             'fecha' => date('H:i')
         ]);
     } else {
-        echo json_encode(['error' => 'Error al enviar el mensaje']);
+        error_log("Error al insertar mensaje en la base de datos");
+        echo json_encode(['success' => false, 'error' => 'Error al enviar el mensaje']);
     }
 } catch (Exception $e) {
     error_log("Error en chat_send_message.php: " . $e->getMessage());
-    echo json_encode(['error' => 'Error del servidor']);
+    echo json_encode(['success' => false, 'error' => 'Error del servidor: ' . $e->getMessage()]);
 }

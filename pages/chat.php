@@ -32,6 +32,24 @@ GROUP BY contact_id, u.USUARIO, u.URL_FOTO
 ORDER BY ultima_fecha DESC";
 
 $contacts = DB::getAll($contactsQuery, [$userId, $userId, $userId, $userId]);
+
+
+function getCorrectProfileImage($profileUrl)
+{
+    if (empty($profileUrl)) {
+        return '../assets/App-images/default_profile.png';
+    }
+
+    // If the URL starts with ./, we replace it with ../
+    if (strpos($profileUrl, './') === 0) {
+        return str_replace('./', '../', $profileUrl);
+    }
+    if (!strpos($profileUrl, '/') === 0 && !strpos($profileUrl, 'http') === 0) {
+        return '../' . $profileUrl;
+    }
+
+    return $profileUrl;
+}
 ?>
 
 <!DOCTYPE html>
@@ -62,17 +80,9 @@ $contacts = DB::getAll($contactsQuery, [$userId, $userId, $userId, $userId]);
                     <span class="fw-bold fs-4 d-none d-sm-inline">Gameord</span>
                 </a>
             </div>
-
-            <!-- Navegación -->
             <ul class="navbar-nav d-flex align-items-center flex-row flex-nowrap">
-                <!-- Home -->
-                <li class="nav-item mx-2">
-                    <a class="nav-link" href="../index.php" title="Inicio">
-                        <i class="bi bi-house nav-icon"></i>
-                    </a>
-                </li>
 
-                <!-- Chat (activo) -->
+                <!-- Chat (active) -->
                 <li class="nav-item mx-2">
                     <a class="nav-link" href="#" title="Chat">
                         <i class="bi bi-chat-fill nav-icon" style="color: var(--accent-color) !important;"></i>
@@ -85,7 +95,7 @@ $contacts = DB::getAll($contactsQuery, [$userId, $userId, $userId, $userId]);
                         <a class="nav-link position-relative" href="#" id="Notificaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                             <i class="bi bi-bell nav-icon"></i>
                             <?php if (obtenerNumeroNotificacionesNoLeidas($userId) > 0) { ?>
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6em;">
+                                <span class="position-absolute top-40 start-60 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6em;">
                                     <?php echo obtenerNumeroNotificacionesNoLeidas($userId) > 9 ? '9+' : obtenerNumeroNotificacionesNoLeidas($userId); ?>
                                     <span class="visually-hidden">notificaciones no leídas</span>
                                 </span>
@@ -100,6 +110,8 @@ $contacts = DB::getAll($contactsQuery, [$userId, $userId, $userId, $userId]);
                                         'like' => 'te ha dado un like a tu publicación',
                                         'comentario' => 'ha comentado en tu publicación',
                                         'seguimiento' => 'te ha seguido',
+                                        'sistema' => 'Tienes un mensaje del sistema',
+                                        'mensaje' => 'te ha enviado un mensaje',
                                         default => 'te ha enviado una notificación'
                                     };
 
@@ -188,46 +200,53 @@ $contacts = DB::getAll($contactsQuery, [$userId, $userId, $userId, $userId]);
                             <small class="text-muted">Busca usuarios arriba para empezar a chatear</small>
                           </div>';
                 } else {
-                    $firstContact = true;
                     foreach ($contacts as $contact) {
-                        // Obtener el último mensaje con este contacto
+                        // Obtain the last message with this contact
                         $lastMessageQuery = "SELECT CONTENIDO, FECHA_MENSAJE 
-                                           FROM MENSAJES 
-                                           WHERE (IDUSUARIO_ORIGEN = ? AND IDUSUARIO_DESTINO = ?) 
-                                              OR (IDUSUARIO_ORIGEN = ? AND IDUSUARIO_DESTINO = ?)
-                                           ORDER BY FECHA_MENSAJE DESC 
-                                           LIMIT 1";
+                           FROM MENSAJES 
+                           WHERE (IDUSUARIO_ORIGEN = ? AND IDUSUARIO_DESTINO = ?) 
+                              OR (IDUSUARIO_ORIGEN = ? AND IDUSUARIO_DESTINO = ?)
+                           ORDER BY FECHA_MENSAJE DESC 
+                           LIMIT 1";
                         $lastMessage = DB::getOne($lastMessageQuery, [$userId, $contact['contact_id'], $contact['contact_id'], $userId]);
 
-                        // Contar mensajes no leídos de este contacto
+                        // Count unread messages from this contact
                         $unreadQuery = "SELECT COUNT(*) as unread_count 
-                                       FROM MENSAJES 
-                                       WHERE IDUSUARIO_ORIGEN = ? AND IDUSUARIO_DESTINO = ? AND LEIDO = FALSE";
+                       FROM MENSAJES 
+                       WHERE IDUSUARIO_ORIGEN = ? AND IDUSUARIO_DESTINO = ? AND LEIDO = FALSE";
                         $unreadResult = DB::getOne($unreadQuery, [$contact['contact_id'], $userId]);
                         $unreadCount = $unreadResult['unread_count'] ?? 0;
 
-                        $profileImage = $contact['URL_FOTO'] ?: '../assets/App-images/default_profile.png';
-                        $activeClass = $firstContact ? 'active' : '';
-                        $timeFormatted = date('H:i', strtotime($lastMessage['FECHA_MENSAJE']));
+                        // Edit profile image URL
+                        $profileImage = $contact['URL_FOTO'];
+                        if (empty($profileImage)) {
+                            $profileImage = '../assets/App-images/default_profile.png';
+                        } else if (strpos($profileImage, './') === 0) {
+                            $profileImage = str_replace('./', '../', $profileImage);
+                        }
+
+                        $timeFormatted = date('d-m H:i', strtotime($lastMessage['FECHA_MENSAJE']));
                         $lastMessageContent = $lastMessage ? htmlspecialchars(substr($lastMessage['CONTENIDO'], 0, 50) . (strlen($lastMessage['CONTENIDO']) > 50 ? '...' : '')) : 'Sin mensajes';
 
-                        echo '<div class="contact-item ' . $activeClass . '" onclick="selectContact(' . $contact['contact_id'] . ', \'' . htmlspecialchars($contact['USUARIO']) . '\', \'' . $profileImage . '\')">
-                                <img src="' . $profileImage . '" alt="' . htmlspecialchars($contact['USUARIO']) . '" class="contact-avatar">
-                                <div class="contact-info">
-                                    <div class="contact-name">' . htmlspecialchars($contact['USUARIO']) . '</div>
-                                    <div class="contact-preview">' . $lastMessageContent . '</div>
-                                </div>
-                                <div class="d-flex flex-column align-items-end">
-                                    <div class="contact-time">' . $timeFormatted . '</div>';
+                        echo '<div class="contact-item" 
+                        data-contact-id="' . $contact['contact_id'] . '"
+                        data-contact-name="' . htmlspecialchars($contact['USUARIO']) . '"
+                        data-contact-image="' . $profileImage . '"
+                        onclick="selectContact(' . $contact['contact_id'] . ', \'' . htmlspecialchars($contact['USUARIO']) . '\', \'' . $profileImage . '\')">
+                        <img src="' . $profileImage . '" alt="' . htmlspecialchars($contact['USUARIO']) . '" class="contact-avatar">
+                        <div class="contact-info">
+                            <div class="contact-name">' . htmlspecialchars($contact['USUARIO']) . '</div>
+                            <div class="contact-preview">' . $lastMessageContent . '</div>
+                        </div>
+                        <div class="d-flex flex-column align-items-end">
+                            <div class="contact-time">' . $timeFormatted . '</div>';
 
                         if ($unreadCount > 0) {
                             echo '<div class="unread-badge">' . $unreadCount . '</div>';
                         }
 
                         echo '</div>
-                              </div>';
-
-                        $firstContact = false;
+              </div>';
                     }
                 }
                 ?>
@@ -243,107 +262,41 @@ $contacts = DB::getAll($contactsQuery, [$userId, $userId, $userId, $userId]);
                 </button>
 
                 <div class="chat-user-info">
-                    <?php
-                    // Obtener información del primer contacto si existe
-                    if (!empty($contacts)) {
-                        $firstContact = $contacts[0];
-                        $firstContactImage = $firstContact['URL_FOTO'] ?: '../assets/App-images/default_profile.png';
-                        echo '<img src="' . $firstContactImage . '" alt="' . htmlspecialchars($firstContact['USUARIO']) . '" class="chat-avatar" id="chatAvatar">
-                              <div>
-                                  <div class="chat-user-name" id="chatUserName">' . htmlspecialchars($firstContact['USUARIO']) . '</div>
-                                  <div class="chat-user-status">Usuario</div>
-                              </div>';
-                    } else {
-                        echo '<img src="../assets/App-images/default_profile.png" alt="Usuario" class="chat-avatar" id="chatAvatar">
-                              <div>
-                                  <div class="chat-user-name" id="chatUserName">Selecciona una conversación</div>
-                                  <div class="chat-user-status">-</div>
-                              </div>';
-                    }
-                    ?>
+                    <img src="../assets/App-images/default_profile.png" alt="Usuario" class="chat-avatar" id="chatAvatar">
+                    <div>
+                        <div class="chat-user-name" id="chatUserName">Selecciona una conversación</div>
+                    </div>
                 </div>
 
-                <div class="d-flex gap-2">
-                    <button class="btn btn-outline-secondary btn-sm" title="Más opciones">
-                        <i class="bi bi-three-dots-vertical"></i>
-                    </button>
-                </div>
             </div>
 
             <!-- Messages Container -->
             <div class="messages-container" id="messagesContainer">
-                <?php
-                if (!empty($contacts)) {
-                    // Cargar mensajes del primer contacto
-                    $firstContactId = $contacts[0]['contact_id'];
-                    $messagesQuery = "SELECT m.CONTENIDO, m.FECHA_MENSAJE, m.IDUSUARIO_ORIGEN,
-                                             u.USUARIO, u.URL_FOTO
-                                      FROM MENSAJES m
-                                      JOIN USUARIO u ON m.IDUSUARIO_ORIGEN = u.IDUSUARIO
-                                      WHERE (m.IDUSUARIO_ORIGEN = ? AND m.IDUSUARIO_DESTINO = ?)
-                                         OR (m.IDUSUARIO_ORIGEN = ? AND m.IDUSUARIO_DESTINO = ?)
-                                      ORDER BY m.FECHA_MENSAJE ASC";
-                    $messages = DB::getAll($messagesQuery, [$userId, $firstContactId, $firstContactId, $userId]);
-
-                    // Marcar mensajes como leídos
-                    DB::executeQuery("UPDATE MENSAJES SET LEIDO = TRUE WHERE IDUSUARIO_ORIGEN = ? AND IDUSUARIO_DESTINO = ?", [$firstContactId, $userId]);
-
-                    if (empty($messages)) {
-                        echo '<div class="empty-chat">
-                                <i class="bi bi-chat-square-text"></i>
-                                <p>No hay mensajes en esta conversación</p>
-                                <small>Envía el primer mensaje para empezar</small>
-                              </div>';
-                    } else {
-                        foreach ($messages as $message) {
-                            $isOwn = $message['IDUSUARIO_ORIGEN'] == $userId;
-                            $messageClass = $isOwn ? 'own' : 'other';
-                            $timeFormatted = date('H:i', strtotime($message['FECHA_MENSAJE']));
-                            $userImage = $message['URL_FOTO'] ?: '../assets/App-images/default_profile.png';
-
-                            echo '<div class="message ' . $messageClass . '">';
-
-                            if (!$isOwn) {
-                                echo '<img src="' . $userImage . '" alt="' . htmlspecialchars($message['USUARIO']) . '" class="message-avatar">';
-                            }
-
-                            echo '<div>
-                                    <div class="message-bubble">
-                                        ' . htmlspecialchars($message['CONTENIDO']) . '
-                                    </div>
-                                    <div class="message-time">' . $timeFormatted . '</div>
-                                  </div>
-                                </div>';
-                        }
-                    }
-                } else {
-                    echo '<div class="empty-chat">
-                            <i class="bi bi-chat-square-text"></i>
-                            <p>No tienes conversaciones aún</p>
-                            <small>Busca usuarios para empezar a chatear</small>
-                          </div>';
-                }
-                ?>
+                <div class="empty-chat">
+                    <i class="bi bi-chat-square-text"></i>
+                    <p>Bienvenido a tu chat</p>
+                    <small>Selecciona una conversación de la izquierda o busca un usuario para empezar</small>
+                </div>
             </div>
 
             <!-- Message Input -->
             <div class="message-input-container">
-                <form class="message-input-form" onsubmit="sendMessage(event)" id="messageForm">
-                    <input type="hidden" id="currentContactId" value="<?php echo !empty($contacts) ? $contacts[0]['contact_id'] : ''; ?>">
+                <form class="message-input-form" id="messageForm" onsubmit="sendMessage(event)">
+                    <input type="hidden" id="currentContactId" value="">
 
                     <button type="button" class="btn btn-link p-0" title="Buscar usuarios" onclick="toggleUserSearch()">
                         <i class="bi bi-person-plus fs-5" style="color: var(--primary-color);"></i>
                     </button>
 
-                    <textarea
+                    <input type="text"
                         id="messageInput"
-                        class="form-control message-input"
-                        placeholder="<?php echo !empty($contacts) ? 'Escribe tu mensaje...' : 'Selecciona una conversación o busca un usuario'; ?>"
-                        rows="1"
+                        class="form-control message-input "
+                        placeholder="Selecciona una conversación o busca un usuario para empezar a chatear"
                         onkeydown="handleKeyPress(event)"
-                        <?php echo empty($contacts) ? 'disabled' : ''; ?>></textarea>
+                        
+                        disabled>
 
-                    <button type="submit" class="send-button" title="Enviar mensaje" <?php echo empty($contacts) ? 'disabled' : ''; ?>>
+                    <button type="submit" class="send-button" title="Enviar mensaje" disabled>
                         <i class="bi bi-send"></i>
                     </button>
                 </form>
@@ -357,15 +310,11 @@ $contacts = DB::getAll($contactsQuery, [$userId, $userId, $userId, $userId]);
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Scripts -->
-    <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../assets/js/chat.js"></script>
-    <script>
-        // Variables globales
-        window.currentContact = <?php echo !empty($contacts) ? (int)$contacts[0]['contact_id'] : 'null'; ?>;
-    </script>
+        <!-- Scripts -->
+        <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="../assets/js/chat.js"></script>
+
 </body>
 
 </html>
