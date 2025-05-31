@@ -306,17 +306,23 @@ function creardirectoriobase($username)
 function getProfileImage($username)
 {
     $rutaRelativa = obtenerRutaBase('relativa');
-    $profileImagePath = "$rutaRelativa/assets/users/$username/profile.png";
+    $rutaAbsoluta = obtenerRutaBase('absoluta');
 
-    // Comprobar si existe la imagen
-    $rutaAbsoluta = obtenerRutaBase('absoluta') . "assets/users/$username/profile.png";
+    // Possible extensions for the profile image
+    $extensions = ['png', 'jpg', 'jpeg', 'gif'];
 
-    if (!file_exists($rutaAbsoluta)) {
-        // Si no existe, devolver la imagen por defecto
-        return "$rutaRelativa/assets/img/default_profile.png";
+    // Find the profile image with any of the extensions
+    foreach ($extensions as $ext) {
+        $profileImagePath = "$rutaRelativa/assets/users/$username/profile.$ext";
+        $rutaAbsolutaImg = "$rutaAbsoluta/assets/users/$username/profile.$ext";
+
+        if (file_exists($rutaAbsolutaImg)) {
+            return $profileImagePath;
+        }
     }
 
-    return $profileImagePath;
+    // If no image is found, return the default image
+    return "$rutaRelativa/assets/App-images/default_profile.png";
 }
 
 // Function to check the login
@@ -709,3 +715,5 @@ function obtenerNumeroMensajesNoLeidos($userId)
         return 0;
     }
 }
+
+
