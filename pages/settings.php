@@ -421,7 +421,7 @@ function obtenerUsuarioCompleto($userId)
                                     </div>
                                 </div>
                             </li>
-                            <li><a class="dropdown-item py-2" href="./profile.php"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
+                            <li><a class="dropdown-item py-2" href="./user.php?user=<?php echo urlencode($username); ?>"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
                             <li><a class="dropdown-item py-2 bg-light" href="./settings.php"><i class="bi bi-gear me-2"></i>Configuración</a></li>
                             <li>
                                 <hr class="dropdown-divider">

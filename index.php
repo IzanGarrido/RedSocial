@@ -175,7 +175,7 @@ if (!isset($_SESSION['user_id'])) {
                   </div>
                 </div>
               </li>
-              <li><a class="dropdown-item py-2" href="./pages/profile.php"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
+              <li><a class="dropdown-item py-2" href="./pages/user.php?user=<?php echo urlencode($_SESSION['username']); ?>"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
               <li><a class="dropdown-item py-2" href="./pages/settings.php"><i class="bi bi-gear me-2"></i>Configuración</a></li>
               <li>
                 <hr class="dropdown-divider">
@@ -438,7 +438,11 @@ if (!isset($_SESSION['user_id'])) {
                     <div class="d-flex align-items-center">
                       <img src="<?php echo $publicacion['USER_PHOTO']; ?>" class="rounded-circle me-2 user-avatar" width="40" height="40" alt="User">
                       <div>
-                        <h6 class="mb-0 fw-bold user-name"><?php echo $publicacion['USUARIO']; ?></h6>
+                        <h6 class="mb-0 fw-bold user-name">
+                          <a href="./pages/user.php?user=<?php echo urlencode($publicacion['USUARIO']); ?>" class="text-decoration-none text-dark">
+                            <?php echo $publicacion['USUARIO']; ?>
+                          </a>
+                        </h6>
                         <small class="text-muted post-date"><?php echo date("d-m-y H:i", strtotime($publicacion['FECHA_CREACION'])); ?></small>
                       </div>
                     </div>
@@ -446,7 +450,11 @@ if (!isset($_SESSION['user_id'])) {
                       <div class="d-flex align-items-center game-info">
                         <img src="<?php echo $publicacion['GAME_IMAGE']; ?>" class="rounded-circle me-2 game-image" width="40" height="40" alt="Game">
                         <div>
-                          <h6 class="mb-0 game-title"><?php echo $publicacion['JUEGO']; ?></h6>
+                          <h6 class="mb-0 game-title">
+                            <a href="./pages/games.php?id=<?php echo $publicacion['IDJUEGO'] ?? ''; ?>" class="text-decoration-none text-dark">
+                              <?php echo $publicacion['JUEGO']; ?>
+                            </a>
+                          </h6>
                         </div>
                       </div>
                     <?php } ?>

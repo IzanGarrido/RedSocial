@@ -3,10 +3,9 @@
 /**
  * @author Izan Garrido Quintana
  */
+
 // Include the config file
 require_once 'config.php';
-
-
 
 // Function to get the base path of the application
 function obtenerRutaBase($tipo = 'absoluta')
@@ -716,4 +715,160 @@ function obtenerNumeroMensajesNoLeidos($userId)
     }
 }
 
+// Function to follow a user
+function seguirUsuario($seguidorId, $seguidoId)
+{
+    try {
+        // Verify if the user is trying to follow themselves
+        if ($seguidorId == $seguidoId) {
+            return false;
+        }
 
+        // Verify if the user already follows the other user
+        $sql = "SELECT * FROM SEGUIDORES WHERE IDUSUARIO_SEGUIDOR = ? AND IDUSUARIO_SEGUIDO = ?";
+        $existingSeguimiento = DB::getOne($sql, [$seguidorId, $seguidoId]);
+
+        if ($existingSeguimiento) {
+            return false; // Ya lo sigue
+        }
+
+        // Insert into the SEGUIDORES table
+        $sql = "INSERT INTO SEGUIDORES (IDUSUARIO_SEGUIDOR, IDUSUARIO_SEGUIDO) VALUES (?, ?)";
+        DB::executeQuery($sql, [$seguidorId, $seguidoId]);
+
+        // Create a notification for the followed user
+        addNotification($seguidoId, $seguidorId, 'seguimiento');
+
+        return true;
+    } catch (Exception $e) {
+        error_log("Error al seguir usuario: " . $e->getMessage());
+        return false;
+    }
+}
+
+// Function to unfollow a user
+function dejarDeSeguir($seguidorId, $seguidoId)
+{
+    try {
+        $sql = "DELETE FROM SEGUIDORES WHERE IDUSUARIO_SEGUIDOR = ? AND IDUSUARIO_SEGUIDO = ?";
+        DB::executeQuery($sql, [$seguidorId, $seguidoId]);
+        return true;
+    } catch (Exception $e) {
+        error_log("Error al dejar de seguir usuario: " . $e->getMessage());
+        return false;
+    }
+}
+
+// Function to check if a user follows another user
+function estaSiguiendo($seguidorId, $seguidoId)
+{
+    try {
+        $sql = "SELECT * FROM SEGUIDORES WHERE IDUSUARIO_SEGUIDOR = ? AND IDUSUARIO_SEGUIDO = ?";
+        $result = DB::getOne($sql, [$seguidorId, $seguidoId]);
+        return $result !== null;
+    } catch (Exception $e) {
+        error_log("Error al comprobar seguimiento: " . $e->getMessage());
+        return false;
+    }
+}
+
+// Function to add a game to favorites
+function agregarJuegoFavorito($userId, $gameId)
+{
+    try {
+        // Verify if the game is already in favorites
+        $sql = "SELECT * FROM USUARIOS_JUEGOS WHERE IDUSUARIO = ? AND IDJUEGO = ?";
+        $existingFavorito = DB::getOne($sql, [$userId, $gameId]);
+
+        if ($existingFavorito) {
+            return false;
+        }
+
+        // Insert to favorites
+        $sql = "INSERT INTO USUARIOS_JUEGOS (IDUSUARIO, IDJUEGO) VALUES (?, ?)";
+        DB::executeQuery($sql, [$userId, $gameId]);
+
+        return true;
+    } catch (Exception $e) {
+        error_log("Error al agregar juego a favoritos: " . $e->getMessage());
+        return false;
+    }
+}
+
+// Function to remove a game from favorites
+function quitarJuegoFavorito($userId, $gameId)
+{
+    try {
+        $sql = "DELETE FROM USUARIOS_JUEGOS WHERE IDUSUARIO = ? AND IDJUEGO = ?";
+        DB::executeQuery($sql, [$userId, $gameId]);
+        return true;
+    } catch (Exception $e) {
+        error_log("Error al quitar juego de favoritos: " . $e->getMessage());
+        return false;
+    }
+}
+
+// Function to check if a game is in favorites
+function juegoEnFavoritos($userId, $gameId)
+{
+    try {
+        $sql = "SELECT * FROM USUARIOS_JUEGOS WHERE IDUSUARIO = ? AND IDJUEGO = ?";
+        $result = DB::getOne($sql, [$userId, $gameId]);
+        return $result !== null;
+    } catch (Exception $e) {
+        error_log("Error al comprobar juego favorito: " . $e->getMessage());
+        return false;
+    }
+}
+
+// Function to get favorite games of a user
+function obtenerJuegosFavoritos($userId)
+{
+    try {
+        $sql = "SELECT j.IDJUEGO, j.JUEGO, j.URL_IMAGEN, c.CATEGORIA
+                FROM USUARIOS_JUEGOS uj
+                JOIN JUEGOS j ON uj.IDJUEGO = j.IDJUEGO
+                LEFT JOIN CATEGORIAS c ON j.ID_CATEGORIA = c.ID_CATEGORIA
+                WHERE uj.IDUSUARIO = ?
+                ORDER BY j.JUEGO ASC";
+
+        return DB::getAll($sql, [$userId]);
+    } catch (Exception $e) {
+        error_log("Error al obtener juegos favoritos: " . $e->getMessage());
+        return [];
+    }
+}
+
+// Function to get followers of a user
+function obtenerSeguidores($userId)
+{
+    try {
+        $sql = "SELECT u.IDUSUARIO, u.USUARIO, u.URL_FOTO, s.FECHA_SEGUIMIENTO
+                FROM SEGUIDORES s
+                JOIN USUARIO u ON s.IDUSUARIO_SEGUIDOR = u.IDUSUARIO
+                WHERE s.IDUSUARIO_SEGUIDO = ?
+                ORDER BY s.FECHA_SEGUIMIENTO DESC";
+
+        return DB::getAll($sql, [$userId]);
+    } catch (Exception $e) {
+        error_log("Error al obtener seguidores: " . $e->getMessage());
+        return [];
+    }
+}
+
+// Function to get users that a user follows
+function obtenerSiguiendo($userId)
+{
+    try {
+        $sql = "SELECT u.IDUSUARIO, u.USUARIO, u.URL_FOTO, s.FECHA_SEGUIMIENTO
+                FROM SEGUIDORES s
+                JOIN USUARIO u ON s.IDUSUARIO_SEGUIDO = u.IDUSUARIO
+                WHERE s.IDUSUARIO_SEGUIDOR = ?
+                ORDER BY s.FECHA_SEGUIMIENTO DESC";
+
+        return DB::getAll($sql, [$userId]);
+    } catch (Exception $e) {
+        error_log("Error al obtener usuarios seguidos: " . $e->getMessage());
+        return [];
+    }
+}
