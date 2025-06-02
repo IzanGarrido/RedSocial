@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_follow']) && !
                 "DELETE FROM SEGUIDORES WHERE IDUSUARIO_SEGUIDOR = ? AND IDUSUARIO_SEGUIDO = ?",
                 [$currentUserId, $targetUserId]
             );
-            $mensaje = "Has dejado de seguir a " . htmlspecialchars($targetUsername);
+            $_SESSION['mensaje'] = "Has dejado de seguir a " . htmlspecialchars($targetUsername);
             error_log("ACCIÓN: Dejó de seguir");
         } else {
             // Follow user
@@ -70,13 +70,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_follow']) && !
             // Create notification for the target user
             addNotification($targetUserId, $currentUserId, 'seguimiento');
 
-            $mensaje = "Ahora sigues a " . htmlspecialchars($targetUsername);
+            $_SESSION['mensaje'] = "Ahora sigues a " . htmlspecialchars($targetUsername);
             error_log("ACCIÓN: Empezó a seguir");
         }
 
+        // Redirect to the same page to prevent form resubmission
+        header("Location: user.php?user=" . urlencode($targetUsername));
         exit;
     } catch (Exception $e) {
         error_log("Error al toggle seguimiento: " . $e->getMessage());
+        $_SESSION['error'] = "Error al actualizar seguimiento";
+        header("Location: user.php?user=" . urlencode($targetUsername));
+        exit;
     }
 }
 

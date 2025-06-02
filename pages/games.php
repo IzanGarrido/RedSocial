@@ -56,16 +56,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_favorite'])) {
         if ($esFavorito) {
             // Remove the game from favorites
             DB::executeQuery("DELETE FROM USUARIOS_JUEGOS WHERE IDUSUARIO = ? AND IDJUEGO = ?", [$userId, $gameId]);
-            $mensaje = "Juego eliminado de favoritos";
+            $_SESSION['mensaje'] = "Juego eliminado de favoritos";
         } else {
             // Add the game to favorites
             DB::executeQuery("INSERT INTO USUARIOS_JUEGOS (IDUSUARIO, IDJUEGO) VALUES (?, ?)", [$userId, $gameId]);
-            $mensaje = "Juego agregado a favoritos";
+            $_SESSION['mensaje'] = "Juego agregado a favoritos";
         }
 
+        // Redirect to the same page to prevent form resubmission
+        header("Location: games.php?id=" . $gameId);
         exit;
     } catch (Exception $e) {
         error_log("Error al toggle favorito: " . $e->getMessage());
+        $_SESSION['error'] = "Error al actualizar favoritos";
+        header("Location: games.php?id=" . $gameId);
+        exit;
     }
 }
 
