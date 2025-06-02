@@ -76,8 +76,8 @@ function obtenerPublicacionesPorJuego($gameId)
 {
     try {
         $sql = "SELECT p.ID_PUBLICACION, p.CONTENIDO, p.URL, p.FECHA_CREACION, 
-                 u.USUARIO, u.URL_FOTO AS USER_PHOTO,
-                 j.JUEGO, c.CATEGORIA,
+                 u.USUARIO, u.URL_FOTO AS USER_PHOTO, j.IDJUEGO,
+                 j.JUEGO, c.CATEGORIA, c.ID_CATEGORIA,
                  j.URL_IMAGEN AS GAME_IMAGE,
                  (SELECT COUNT(*) FROM INTERACCIONES WHERE ID_PUBLICACION = p.ID_PUBLICACION AND TIPO = 'like') AS LIKES_COUNT,
                  (SELECT COUNT(*) FROM COMENTARIOS WHERE ID_PUBLICACION = p.ID_PUBLICACION) AS COMMENTS_COUNT
@@ -183,13 +183,6 @@ function getCorrectPostImage($imagePath)
                     <img src="../assets/App-images/Gameord-logo.webp" alt="Logo" class="me-2 rounded-2" height="40">
                     <span class="fw-bold fs-4 d-none d-sm-inline">Gameord</span>
                 </a>
-            </div>
-
-            <!-- Search -->
-            <div class="position-relative d-none d-md-block mx-3 flex-grow-1">
-                <i class="bi bi-search position-absolute search-icon"></i>
-                <input type="text" id="searchInput" class="form-control search-box" placeholder="Buscar juegos, categorías, usuarios..." aria-label="Buscar">
-                <div id="searchResults" class="search-results-list d-none"></div>
             </div>
 
             <!-- Icons -->
@@ -359,10 +352,26 @@ function getCorrectPostImage($imagePath)
                                         <small class="text-muted post-date"><?php echo date("d-m-y H:i", strtotime($publicacion['FECHA_CREACION'])); ?></small>
                                     </div>
                                 </div>
-                                <div class="d-flex align-items-center game-info">
-                                    <img src="<?php echo getCorrectGameImagePath($publicacion['GAME_IMAGE']); ?>" class="rounded-circle me-2 game-image" width="40" height="40" alt="Game" onerror="this.src='../assets/App-images/default_game.png'">
-                                    <div>
-                                        <h6 class="mb-0 game-title"><?php echo $publicacion['JUEGO']; ?></h6>
+                                <div class="d-flex align-items-center justify-content-end">
+                                    <div class="d-flex align-items-center game-info me-3">
+                                        <img src="<?php echo getCorrectGameImagePath($publicacion['GAME_IMAGE']); ?>" class="rounded-circle me-2 game-image" width="40" height="40" alt="Game">
+                                        <div>
+                                            <h6 class="mb-0 game-title">
+                                                <a href="./games.php?id=<?php echo $publicacion['IDJUEGO'] ?? ''; ?>" class="text-decoration-none text-dark">
+                                                    <?php echo $publicacion['JUEGO']; ?>
+                                                </a>
+                                            </h6>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center game-info">
+                                        <i class="bi bi-controller category-icon me-2"></i>
+                                        <div>
+                                            <h6 class="mb-0 game-title">
+                                                <a href="./categories.php?id=<?php echo $publicacion['ID_CATEGORIA'] ?? ''; ?>" class="text-decoration-none text-body-tertiary">
+                                                    <?php echo $publicacion['CATEGORIA']; ?>
+                                                </a>
+                                            </h6>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -423,15 +432,17 @@ function getCorrectPostImage($imagePath)
                 </div>
                 <div class="modal-body p-0">
                     <div class="comments-scroll-container px-3 py-2">
+                        <!-- Comments will be loaded here -->
                         <div id="comments-container" class="mb-2">
                             <div class="text-center py-3">
-                                <div class="text-primary" role="status">
+                                <div class=" text-primary" role="status">
                                     <span class="visually-hidden">Cargando...</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Form to add a new comment -->
                     <div class="comment-form-container px-3 py-3 border-top bg-white">
                         <form id="commentForm">
                             <input type="hidden" id="post_id" name="post_id" value="">
@@ -448,9 +459,10 @@ function getCorrectPostImage($imagePath)
         </div>
     </div>
 
+
     <!-- Scripts -->
     <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../assets/js/index.js"></script>
+    <script src="../assets/js/user_categories_games.js"></script>
 </body>
 
 </html>

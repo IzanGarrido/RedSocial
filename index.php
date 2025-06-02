@@ -446,8 +446,8 @@ if (!isset($_SESSION['user_id'])) {
                         <small class="text-muted post-date"><?php echo date("d-m-y H:i", strtotime($publicacion['FECHA_CREACION'])); ?></small>
                       </div>
                     </div>
-                    <?php if ($publicacion['JUEGO'] != null) { ?>
-                      <div class="d-flex align-items-center game-info">
+                    <div class="d-flex align-items-center justify-content-end">
+                      <div class="d-flex align-items-center game-info me-3">
                         <img src="<?php echo $publicacion['GAME_IMAGE']; ?>" class="rounded-circle me-2 game-image" width="40" height="40" alt="Game">
                         <div>
                           <h6 class="mb-0 game-title">
@@ -457,7 +457,18 @@ if (!isset($_SESSION['user_id'])) {
                           </h6>
                         </div>
                       </div>
-                    <?php } ?>
+                      <div class="d-flex align-items-center game-info">
+                        <i class="bi bi-controller category-icon me-2"></i>
+                        <div>
+                          <h6 class="mb-0 game-title">
+                            <a href="./pages/categories.php?id=<?php echo $publicacion['ID_CATEGORIA'] ?? ''; ?>" class="text-decoration-none text-body-tertiary">
+                              <?php echo $publicacion['CATEGORIA']; ?>
+                            </a>
+                          </h6>
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
 
                   <div class="card-body">
