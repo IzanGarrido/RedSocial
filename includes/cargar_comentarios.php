@@ -32,9 +32,8 @@ function getCorrectUserImage($imagePath)
         return $imagePath;
     }
     // If the path is relative, prepend the base path of the project
-    return '/redsocial/' . ltrim($imagePath, './');
+    return "../" . $imagePath;
 }
-
 
 // Function to display comments in HTML format
 function mostrarComentarios($post_id)
