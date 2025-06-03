@@ -38,23 +38,16 @@ function handleKeyPress(event) {
 // Function to send message
 function sendMessage(event) {
     event.preventDefault();
-
-    console.log('Función sendMessage llamada');
-    console.log('currentContact:', currentContact);
-
+    
     // Verify that there is a selected contact
     if (!currentContact) {
-        console.log('No hay contacto seleccionado');
         return;
     }
 
     const input = document.getElementById('messageInput');
     const message = input.value.trim();
 
-    console.log('Mensaje a enviar:', message);
-
     if (message === '') {
-        console.log('Mensaje vacío');
         return;
     }
 
@@ -73,11 +66,9 @@ function sendMessage(event) {
         body: `contact=${encodeURIComponent(currentContact)}&mensaje=${encodeURIComponent(message)}`
     })
         .then(response => {
-            console.log('Respuesta recibida:', response);
             return response.json();
         })
         .then(data => {
-            console.log('Datos de respuesta:', data);
 
             if (data.success) {
                 // Add message to chat
@@ -85,13 +76,8 @@ function sendMessage(event) {
                 // Clear the input and reset its height
                 input.value = '';
                 input.style.height = 'auto';
-                console.log('Mensaje enviado correctamente');
             } else {
-                console.error('Error del servidor:', data.error);
             }
-        })
-        .catch(error => {
-            console.error('Error de red:', error);
         })
         .finally(() => {
             // Enable the send button and restore its original text
@@ -101,7 +87,7 @@ function sendMessage(event) {
 }
 
 // Function to  add a message to the chat
-function addMessage(text, isOwn, time = null) {
+function addMessage(text, isOwn) {
     const messagesContainer = document.getElementById('messagesContainer');
 
     // Remove empty chat message if it exists
@@ -111,10 +97,7 @@ function addMessage(text, isOwn, time = null) {
     }
 
     const messageDiv = document.createElement('div');
-    const timeString = time || new Date().toLocaleTimeString('es-ES', {
-        hour: '2-digit',
-        minute: '2-digit'
-    });
+
 
     messageDiv.className = `message ${isOwn ? 'own' : 'other'}`;
 
@@ -124,7 +107,6 @@ function addMessage(text, isOwn, time = null) {
                 <div class="message-bubble">
                     ${text}
                 </div>
-                <div class="message-time">${timeString}</div>
             </div>
         `;
     } else {
@@ -146,7 +128,7 @@ function addMessage(text, isOwn, time = null) {
                 <div class="message-bubble">
                     ${text}
                 </div>
-                <div class="message-time">${timeString}</div>
+
             </div>
         `;
     }
@@ -157,7 +139,6 @@ function addMessage(text, isOwn, time = null) {
 
 // Function to select a contact and load their messages
 function selectContact(userId, userName, userAvatar) {
-    console.log('Seleccionando contacto:', userId, userName, userAvatar);
 
     // Establish current contact
     currentContact = userId;
@@ -202,14 +183,12 @@ function selectContact(userId, userName, userAvatar) {
         toggleSidebar();
     }
 
-    console.log('Contacto seleccionado correctamente. currentContact:', currentContact);
 }
 
 document.addEventListener('DOMContentLoaded', function () {
     const messageForm = document.getElementById('messageForm');
     if (messageForm) {
         messageForm.addEventListener('submit', sendMessage);
-        console.log('Event listener agregado al formulario');
     }
 
     // Add event listener to the send button
@@ -219,7 +198,6 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
             sendMessage(e);
         });
-        console.log('Event listener agregado al botón');
     }
 });
 
@@ -250,7 +228,6 @@ function loadContactMessages(userId) {
                             <div class="message-bubble">
                                 ${msg.contenido}
                             </div>
-                            <div class="message-time">${msg.fecha}</div>
                         </div>
                     `;
                     } else {
@@ -264,7 +241,6 @@ function loadContactMessages(userId) {
                             <div class="message-bubble">
                                 ${msg.contenido}
                             </div>
-                            <div class="message-time">${msg.fecha}</div>
                         </div>
                     `;
                     }
@@ -284,7 +260,6 @@ function loadContactMessages(userId) {
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         })
         .catch(error => {
-            console.error('Error:', error);
             messagesContainer.innerHTML = `
             <div class="empty-chat">
                 <i class="bi bi-exclamation-triangle text-danger"></i>
@@ -375,7 +350,6 @@ function searchUsers(query) {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             resultsDiv.innerHTML = '<small class="text-danger">Error en la búsqueda</small>';
         });
 }
@@ -433,7 +407,6 @@ function startConversation(userId, userName, userAvatar) {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
         });
 }
 
@@ -491,14 +464,7 @@ if (notificacionesElement) {
         })
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    console.log('Notificaciones marcadas como leídas.');
-                } else {
-                    console.error('Error al marcar las notificaciones como leídas:', data.message);
-                }
+
             })
-            .catch(error => {
-                console.error('Error al procesar la respuesta:', error);
-            });
     });
 }

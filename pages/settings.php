@@ -182,7 +182,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $exito = 'Perfil actualizado correctamente.';
             } catch (Exception $e) {
-                error_log("Error updating profile: " . $e->getMessage());
                 $errores['general'] = 'Error al actualizar el perfil. Inténtalo de nuevo.';
             }
         }
@@ -204,7 +203,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 DB::executeQuery($updateBioQuery, [$newBio, $userId]);
                 $exito = 'Información adicional actualizada correctamente.';
             } catch (Exception $e) {
-                error_log("Error updating bio: " . $e->getMessage());
                 $errores['bio'] = 'Error al actualizar la biografía. Inténtalo de nuevo.';
             }
         }
@@ -283,7 +281,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     header('Location: login.php?account_deleted=1');
                     exit;
                 } catch (Exception $e) {
-                    error_log("Error deleting account: " . $e->getMessage());
                     $errores['delete_password'] = 'Error al eliminar la cuenta. Inténtalo de nuevo.';
                 }
             }
@@ -305,7 +302,6 @@ function obtenerUsuarioCompleto($userId)
         $user = DB::getOne($sql, [$userId]);
         return $user;
     } catch (Exception $e) {
-        error_log("Error en obtenerUsuarioCompleto: " . $e->getMessage());
         return null;
     }
 }

@@ -35,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['success' => false, 'message' => 'Error al guardar el comentario']);
         }
     } catch (Exception $e) {
-        error_log("Error al guardar comentario: " . $e->getMessage());
         echo json_encode(['success' => false, 'message' => 'Error en el servidor']);
     }
 } else {

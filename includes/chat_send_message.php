@@ -4,17 +4,12 @@ require_once 'functions.php';
 
 header('Content-Type: application/json');
 
-// Log for debug
-error_log("chat_send_message.php - Inicio");
-
 if (!isset($_SESSION['user_id'])) {
-    error_log("No hay sesión activa");
     echo json_encode(['success' => false, 'error' => 'No hay sesión activa']);
     exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    error_log("Método no permitido: " . $_SERVER['REQUEST_METHOD']);
     echo json_encode(['success' => false, 'error' => 'Método no permitido']);
     exit;
 }
@@ -22,10 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $contact = isset($_POST['contact']) ? $_POST['contact'] : '';
 $mensaje = isset($_POST['mensaje']) ? trim($_POST['mensaje']) : '';
 
-error_log("Datos recibidos - contact: $contact, mensaje: $mensaje");
-
 if (!$contact || empty($mensaje)) {
-    error_log("Datos incompletos - contact: $contact, mensaje: $mensaje");
     echo json_encode(['success' => false, 'error' => 'Datos incompletos']);
     exit;
 }
@@ -49,12 +41,9 @@ try {
     }
 
     if (!$contactRow || !$contactId) {
-        error_log("Usuario no encontrado: $contact");
         echo json_encode(['success' => false, 'error' => 'Usuario no encontrado']);
         exit;
     }
-
-    error_log("Usuario encontrado - contactId: $contactId");
 
     // Insert the message into the database
     $sql = "INSERT INTO MENSAJES (IDUSUARIO_ORIGEN, IDUSUARIO_DESTINO, CONTENIDO) VALUES (?, ?, ?)";
@@ -67,17 +56,15 @@ try {
             addNotification($contactId, $userId, 'mensaje');
         }
 
-        error_log("Mensaje enviado correctamente - ID: $mensajeId");
         echo json_encode([
             'success' => true,
             'mensaje_id' => $mensajeId,
             'fecha' => date('H:i')
         ]);
     } else {
-        error_log("Error al insertar mensaje en la base de datos");
         echo json_encode(['success' => false, 'error' => 'Error al enviar el mensaje']);
     }
 } catch (Exception $e) {
-    error_log("Error en chat_send_message.php: " . $e->getMessage());
+
     echo json_encode(['success' => false, 'error' => 'Error del servidor: ' . $e->getMessage()]);
 }

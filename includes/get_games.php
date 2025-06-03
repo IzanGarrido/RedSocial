@@ -18,6 +18,5 @@ try {
 
     echo json_encode($formattedGames);
 } catch (Exception $e) {
-    error_log("Error en get_games.php: " . $e->getMessage());
     echo json_encode(['error' => 'Error al obtener los juegos']);
 }

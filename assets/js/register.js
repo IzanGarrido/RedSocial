@@ -42,8 +42,6 @@ document.addEventListener('DOMContentLoaded', function () {
             this.setCustomValidity('');
         }
 
-        console.log('Edad calculada:', edad);
-
     });
 
 });

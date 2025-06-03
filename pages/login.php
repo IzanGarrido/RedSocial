@@ -50,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     exit;
                 }
             } catch (Exception $e) {
-                error_log("Error al obtener usuario: " . $e->getMessage());
                 $error = "Error al iniciar sesión. Inténtalo de nuevo.";
             }
         } else {

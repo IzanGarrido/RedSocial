@@ -47,7 +47,6 @@ function registrarUsuario($nombre, $apellidos, $usuario, $correo, $password, $fe
 
         return $userId;
     } catch (Exception $e) {
-        error_log("Error en registrar Usuario: " . $e->getMessage());
         return 0;
     }
 }
@@ -179,7 +178,6 @@ function comprobarUsername($username)
             return "El nombre de usuario ya existe.";
         }
     } catch (Exception $e) {
-        error_log("Error al comprobar el nombre de usuario: " . $e->getMessage());
         return "Error al verificar el nombre de usuario.";
     }
 
@@ -210,7 +208,6 @@ function comprobarEmail($email)
             return "El correo ya existe.";
         }
     } catch (Exception $e) {
-        error_log("Error en comprobarEmail: " . $e->getMessage());
         return "Error al verificar el correo electrónico.";
     }
 
@@ -345,7 +342,6 @@ function comprobarlogin($username, $password)
             }
         }
     } catch (Exception $e) {
-        error_log("Error en comprobarlogin: " . $e->getMessage());
     }
     return false;
 }
@@ -388,7 +384,6 @@ function obtenerUsuarioPorId($userId)
         $user = DB::getOne($sql, [$userId]);
         return $user;
     } catch (Exception $e) {
-        error_log("Error en obtenerUsuarioPorId: " . $e->getMessage());
         return null;
     }
 }
@@ -401,7 +396,6 @@ function obtenerUsuarioPorUsername($username)
         $user = DB::getOne($sql, [$username]);
         return $user ? $user['IDUSUARIO'] : null;
     } catch (Exception $e) {
-        error_log("Error en obtenerUsuarioPorUsername: " . $e->getMessage());
         return null;
     }
 }
@@ -434,7 +428,6 @@ function crearPublicacion($userId, $contenido, $archivo = null, $gameId = null)
 
             // Check if the user exists
             if (!$usuario) {
-                error_log("Error: No se encontró el usuario con ID $userId");
                 return false;
             }
 
@@ -449,14 +442,12 @@ function crearPublicacion($userId, $contenido, $archivo = null, $gameId = null)
             // Asegurar que los directorios existan
             if (!file_exists($userDir)) {
                 if (!mkdir($userDir, 0777, true)) {
-                    error_log("Error: No se pudo crear el directorio $userDir");
                     return false;
                 }
             }
 
             if (!file_exists($postsDir)) {
                 if (!mkdir($postsDir, 0777, true)) {
-                    error_log("Error: No se pudo crear el directorio $postsDir");
                     return false;
                 }
             }
@@ -471,18 +462,11 @@ function crearPublicacion($userId, $contenido, $archivo = null, $gameId = null)
             // Usamos un formato consistente para URLs
             $url = "./assets/users/{$username}/posts/{$fileName}";
 
-            // Añadimos logs para depuración
-            error_log("Intentando mover archivo desde: " . $archivo['tmp_name']);
-            error_log("Hacia: " . $filePath);
-
             // Move the uploaded file to the destination
             if (!move_uploaded_file($archivo['tmp_name'], $filePath)) {
-                error_log("Error: No se pudo mover el archivo subido a $filePath");
-                error_log("Error de PHP: " . error_get_last()['message']);
                 return false;
             }
 
-            error_log("Archivo movido correctamente a: " . $filePath);
         }
 
         // Insert the post in the database
@@ -492,16 +476,8 @@ function crearPublicacion($userId, $contenido, $archivo = null, $gameId = null)
         // Execute the query and get the ID
         $postId = DB::insert($sql, $params);
 
-        if ($postId) {
-            error_log("Publicación creada con éxito, ID: " . $postId);
-        } else {
-            error_log("Error al insertar en la base de datos");
-        }
-
         return $postId;
     } catch (Exception $e) {
-        error_log("Error al crear publicación: " . $e->getMessage());
-        error_log("Traza: " . $e->getTraceAsString());
         return false;
     }
 }
@@ -526,7 +502,6 @@ function obtenerPublicaciones()
 
         return $posts;
     } catch (Exception $e) {
-        error_log("Error al obtener publicaciones: " . $e->getMessage());
         return [];
     }
 }
@@ -568,7 +543,6 @@ function darLike($userId, $postId)
 
         return true;
     } catch (Exception $e) {
-        error_log("Error al dar like: " . $e->getMessage());
         return false;
     }
 }
@@ -584,7 +558,6 @@ function quitarLike($userId, $postId)
 
         return true;
     } catch (Exception $e) {
-        error_log("Error al quitar like: " . $e->getMessage());
         return false;
     }
 }
@@ -603,7 +576,6 @@ function comprobarLike($userId, $postId)
             return true;
         }
     } catch (Exception $e) {
-        error_log("Error al comprobar like: " . $e->getMessage());
     }
 
     return false;
@@ -622,7 +594,6 @@ function obtenerNumeroLikes($postId)
         $result = $query->fetch(PDO::FETCH_ASSOC);
         return $result['LIKES_COUNT'];
     } catch (Exception $e) {
-        error_log("Error al obtener el número de likes: " . $e->getMessage());
         return 0;
     }
 }
@@ -640,7 +611,6 @@ function obtenerNumeroNotificacionesNoLeidas($userId)
         $result = $query->fetch(PDO::FETCH_ASSOC);
         return $result['NOTIFICATIONS_COUNT'];
     } catch (Exception $e) {
-        error_log("Error al obtener el número de notificaciones: " . $e->getMessage());
         return 0;
     }
 }
@@ -662,7 +632,6 @@ function obtenerNotificacionesNoLeidas($userId)
         // Fetch the result
         return $query->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
-        error_log("Error al obtener las notificaciones: " . $e->getMessage());
         return [];
     }
 }
@@ -678,7 +647,6 @@ function addNotification($idusuarioDestino, $idusuarioOrigen, $tipo)
             DB::insert($sql, $params);
         }
     } catch (Exception $e) {
-        error_log("Error al añadir notificación: " . $e->getMessage());
     }
 }
 
@@ -695,7 +663,6 @@ function getUserIdByPostId($postId)
         $result = $query->fetch(PDO::FETCH_ASSOC);
         return $result['IDUSUARIO'];
     } catch (Exception $e) {
-        error_log("Error al obtener el ID de usuario por ID de publicación: " . $e->getMessage());
         return null;
     }
 }
@@ -710,7 +677,6 @@ function obtenerNumeroMensajesNoLeidos($userId)
         $result = DB::getOne($sql, [$userId]);
         return $result['total_no_leidos'] ?? 0;
     } catch (Exception $e) {
-        error_log("Error al obtener número de mensajes no leídos: " . $e->getMessage());
         return 0;
     }
 }
@@ -741,7 +707,6 @@ function seguirUsuario($seguidorId, $seguidoId)
 
         return true;
     } catch (Exception $e) {
-        error_log("Error al seguir usuario: " . $e->getMessage());
         return false;
     }
 }
@@ -754,7 +719,6 @@ function dejarDeSeguir($seguidorId, $seguidoId)
         DB::executeQuery($sql, [$seguidorId, $seguidoId]);
         return true;
     } catch (Exception $e) {
-        error_log("Error al dejar de seguir usuario: " . $e->getMessage());
         return false;
     }
 }
@@ -767,7 +731,6 @@ function estaSiguiendo($seguidorId, $seguidoId)
         $result = DB::getOne($sql, [$seguidorId, $seguidoId]);
         return $result !== null;
     } catch (Exception $e) {
-        error_log("Error al comprobar seguimiento: " . $e->getMessage());
         return false;
     }
 }
@@ -790,7 +753,6 @@ function agregarJuegoFavorito($userId, $gameId)
 
         return true;
     } catch (Exception $e) {
-        error_log("Error al agregar juego a favoritos: " . $e->getMessage());
         return false;
     }
 }
@@ -803,7 +765,6 @@ function quitarJuegoFavorito($userId, $gameId)
         DB::executeQuery($sql, [$userId, $gameId]);
         return true;
     } catch (Exception $e) {
-        error_log("Error al quitar juego de favoritos: " . $e->getMessage());
         return false;
     }
 }
@@ -816,7 +777,6 @@ function juegoEnFavoritos($userId, $gameId)
         $result = DB::getOne($sql, [$userId, $gameId]);
         return $result !== null;
     } catch (Exception $e) {
-        error_log("Error al comprobar juego favorito: " . $e->getMessage());
         return false;
     }
 }
@@ -834,7 +794,6 @@ function obtenerJuegosFavoritos($userId)
 
         return DB::getAll($sql, [$userId]);
     } catch (Exception $e) {
-        error_log("Error al obtener juegos favoritos: " . $e->getMessage());
         return [];
     }
 }
@@ -851,7 +810,6 @@ function obtenerSeguidores($userId)
 
         return DB::getAll($sql, [$userId]);
     } catch (Exception $e) {
-        error_log("Error al obtener seguidores: " . $e->getMessage());
         return [];
     }
 }
@@ -868,7 +826,6 @@ function obtenerSiguiendo($userId)
 
         return DB::getAll($sql, [$userId]);
     } catch (Exception $e) {
-        error_log("Error al obtener usuarios seguidos: " . $e->getMessage());
         return [];
     }
 }

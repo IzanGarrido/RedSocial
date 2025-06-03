@@ -76,6 +76,5 @@ try {
 
     echo json_encode(['success' => true, 'mensajes' => $mensajesFormateados]);
 } catch (Exception $e) {
-    error_log("Error en chat_get_messages.php: " . $e->getMessage());
     echo json_encode(['error' => 'Error al obtener mensajes']);
 }

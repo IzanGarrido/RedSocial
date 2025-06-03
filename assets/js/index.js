@@ -450,7 +450,6 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .catch(error => {
         commentsContainer.innerHTML = '<p class="text-danger">Error al cargar los comentarios.</p>';
-        console.error('Error:', error);
       });
   }
 
@@ -480,12 +479,9 @@ document.addEventListener('DOMContentLoaded', function () {
           // Clear the text field
           document.getElementById('commentContent').value = '';
         } else {
-          alert(data.message || 'Error al guardar el comentario.');
         }
       })
       .catch(error => {
-        console.error('Error:', error);
-        alert('Error al guardar el comentario.');
       });
   });
 
@@ -508,17 +504,7 @@ document.addEventListener('DOMContentLoaded', function () {
           return response.json();
         })
         .then(data => {
-          console.log('Data:', data);
-          if (data.success) {
-            console.log('Notificaciones marcadas como leídas.');
-
-          } else {
-            console.error('Error al marcar las notificaciones como leídas:', data.message);
-          }
         })
-        .catch(error => {
-          console.error('Error al procesar la respuesta:', error);
-        });
     });
   }
 
@@ -589,7 +575,6 @@ document.addEventListener('DOMContentLoaded', function () {
         categoriesLoaded = true;
       })
       .catch(error => {
-        console.error('Error cargando categorías:', error);
         categoriesContainer.innerHTML = '<div class="col-12 text-center text-danger py-4">Error al cargar las categorías</div>';
       });
   }
@@ -614,7 +599,6 @@ document.addEventListener('DOMContentLoaded', function () {
         gamesLoading.classList.add('d-none');
       })
       .catch(error => {
-        console.error('Error cargando juegos:', error);
         gamesContainer.innerHTML = '<div class="col-12 text-center text-danger py-4">Error al cargar los juegos</div>';
         gamesLoading.classList.add('d-none');
       });
@@ -691,7 +675,6 @@ function toggleLike(btn, userId, publicacionId, $numLikes) {
       if (data.success) {
         const span = btn.querySelector('.like-count');
         span.textContent = data.likes;
-        console.log(data.likes);
 
         // Change classes
         if (likeado === 'dar') {
@@ -704,7 +687,6 @@ function toggleLike(btn, userId, publicacionId, $numLikes) {
           btn.dataset.likeado = '0';
         }
       } else {
-        console.error('Error:', data.message);
       }
     });
 }

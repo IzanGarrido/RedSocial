@@ -37,11 +37,9 @@ function comprobarJuegoFavorito($userId, $gameId)
         $result = DB::getOne($sql, [$userId, $gameId]);
 
         $count = isset($result['count']) ? (int)$result['count'] : 0;
-        error_log("Debug Favorito - UserID: $userId, GameID: $gameId, Count: $count");
 
         return $count > 0;
     } catch (Exception $e) {
-        error_log("Error al comprobar juego favorito: " . $e->getMessage());
         return false;
     }
 }
@@ -50,8 +48,6 @@ function comprobarJuegoFavorito($userId, $gameId)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_favorite'])) {
     try {
         $esFavorito = comprobarJuegoFavorito($userId, $gameId);
-
-        error_log("Debug Games - UserID: $userId, GameID: $gameId, EsFavorito: " . ($esFavorito ? 'true' : 'false'));
 
         if ($esFavorito) {
             // Remove the game from favorites
@@ -67,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_favorite'])) {
         header("Location: games.php?id=" . $gameId);
         exit;
     } catch (Exception $e) {
-        error_log("Error al toggle favorito: " . $e->getMessage());
+
         $_SESSION['error'] = "Error al actualizar favoritos";
         header("Location: games.php?id=" . $gameId);
         exit;
@@ -95,7 +91,6 @@ function obtenerPublicacionesPorJuego($gameId)
 
         return DB::getAll($sql, [$gameId]);
     } catch (Exception $e) {
-        error_log("Error al obtener publicaciones por juego: " . $e->getMessage());
         return [];
     }
 }

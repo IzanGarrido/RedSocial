@@ -18,6 +18,5 @@ try {
 
     echo json_encode($formattedCategories);
 } catch (Exception $e) {
-    error_log("Error en get_categories.php: " . $e->getMessage());
     echo json_encode(['error' => 'Error al obtener las categorías']);
 }

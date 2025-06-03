@@ -76,18 +76,15 @@ if (notificacionesElement) {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    console.log('Notificaciones marcadas como leídas.');
                     // Hide notification badge
                     const badge = document.querySelector('.badge.bg-danger');
                     if (badge) {
                         badge.style.display = 'none';
                     }
                 } else {
-                    console.error('Error al marcar las notificaciones como leídas:', data.message);
                 }
             })
             .catch(error => {
-                console.error('Error al procesar la respuesta:', error);
             });
     });
 }

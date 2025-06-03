@@ -85,7 +85,6 @@ function authenticateWithCookie() {
             return true;
         }
     } catch (Exception $e) {
-        error_log("Error en authenticateWithCookie: " . $e->getMessage());
     }
 
     // If we get here, authentication failed
@@ -131,7 +130,6 @@ function createUserSession($userId, $rememberMe = false) {
             return true;
         }
     } catch (Exception $e) {
-        error_log("Error en createUserSession: " . $e->getMessage());
     }
     
     return false;
@@ -150,7 +148,6 @@ function logoutUser() {
             $updateSql = "UPDATE USUARIO SET REMEMBER_TOKEN = NULL, TOKEN_EXPIRY = NULL WHERE IDUSUARIO = ?";
             DB::executeQuery($updateSql, [$_SESSION['user_id']]);
         } catch (Exception $e) {
-            error_log("Error al eliminar token: " . $e->getMessage());
         }
         
         // Delete the cookie

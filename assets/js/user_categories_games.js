@@ -14,11 +14,9 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                console.log('Notificaciones marcadas como leídas.');
                             }
                         })
                         .catch(error => {
-                            console.error('Error:', error);
                         });
                 });
             }
@@ -88,7 +86,6 @@
                 })
                 .catch(error => {
                     commentsContainer.innerHTML = '<p class="text-danger">Error al cargar los comentarios.</p>';
-                    console.error('Error:', error);
                 });
         }
 
@@ -114,11 +111,8 @@
                         loadComments(postId);
                         document.getElementById('commentContent').value = '';
                     } else {
-                        alert(data.message || 'Error al guardar el comentario.');
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error al guardar el comentario.');
                 });
         });

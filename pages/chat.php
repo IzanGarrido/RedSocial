@@ -122,7 +122,6 @@ function getCorrectProfileImage($profileUrl)
                                                 </div>
                                                 <div class="flex-grow-1 ms-3 overflow-hidden">
                                                     <p class="mb-1 text-wrap"><strong>' . $notificacion['ORIGEN'] . '</strong> ' . $text . '</p>
-                                                    <small class="text-muted">' . date("d-m-y H:i", strtotime($notificacion['FECHA'])) . '</small>
                                                 </div>
                                             </a>
                                           </li>';
@@ -238,8 +237,7 @@ function getCorrectProfileImage($profileUrl)
                             <div class="contact-name">' . htmlspecialchars($contact['USUARIO']) . '</div>
                             <div class="contact-preview">' . $lastMessageContent . '</div>
                         </div>
-                        <div class="d-flex flex-column align-items-end">
-                            <div class="contact-time">' . $timeFormatted . '</div>';
+                        <div class="d-flex flex-column align-items-end">';
 
                         if ($unreadCount > 0) {
                             echo '<div class="unread-badge">' . $unreadCount . '</div>';

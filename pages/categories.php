@@ -42,7 +42,6 @@ function obtenerPublicacionesPorCategoria($categoryId)
 
         return DB::getAll($sql, [$categoryId]);
     } catch (Exception $e) {
-        error_log("Error al obtener publicaciones por categoría: " . $e->getMessage());
         return [];
     }
 }

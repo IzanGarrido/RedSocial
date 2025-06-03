@@ -36,7 +36,6 @@ function comprobarSeguimiento($seguidorId, $seguidoId)
         $result = DB::getOne($sql, [$seguidorId, $seguidoId]);
         return $result !== null;
     } catch (Exception $e) {
-        error_log("Error al comprobar seguimiento: " . $e->getMessage());
         return false;
     }
 }
@@ -50,8 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_follow']) && !
         $checkRow = $checkResult->fetch(PDO::FETCH_ASSOC);
         $estaSiguiendo = isset($checkRow['total']) && (int)$checkRow['total'] > 0;
 
-        error_log("POST TOGGLE - Estado actual: " . ($estaSiguiendo ? 'SIGUIENDO' : 'NO SIGUIENDO'));
-
         if ($estaSiguiendo) {
             // Unfollow user
             DB::executeQuery(
@@ -59,7 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_follow']) && !
                 [$currentUserId, $targetUserId]
             );
             $_SESSION['mensaje'] = "Has dejado de seguir a " . htmlspecialchars($targetUsername);
-            error_log("ACCIÓN: Dejó de seguir");
         } else {
             // Follow user
             DB::executeQuery(
@@ -71,14 +67,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_follow']) && !
             addNotification($targetUserId, $currentUserId, 'seguimiento');
 
             $_SESSION['mensaje'] = "Ahora sigues a " . htmlspecialchars($targetUsername);
-            error_log("ACCIÓN: Empezó a seguir");
         }
 
         // Redirect to the same page to prevent form resubmission
         header("Location: user.php?user=" . urlencode($targetUsername));
         exit;
     } catch (Exception $e) {
-        error_log("Error al toggle seguimiento: " . $e->getMessage());
         $_SESSION['error'] = "Error al actualizar seguimiento";
         header("Location: user.php?user=" . urlencode($targetUsername));
         exit;
@@ -96,11 +90,9 @@ if (!$isOwnProfile) {
         if ($seguimientoResult) {
             $row = $seguimientoResult->fetch(PDO::FETCH_ASSOC);
             $siguiendo = isset($row['total']) && (int)$row['total'] > 0;
-
-            error_log("VERIFICACIÓN DIRECTA - CurrentUser: $currentUserId, TargetUser: $targetUserId, Total: " . $row['total'] . ", Siguiendo: " . ($siguiendo ? 'SI' : 'NO'));
         }
     } catch (Exception $e) {
-        error_log("Error en verificación directa: " . $e->getMessage());
+
         $siguiendo = false;
     }
 }
@@ -125,7 +117,6 @@ function obtenerEstadisticasUsuario($userId)
 
         return $stats;
     } catch (Exception $e) {
-        error_log("Error al obtener estadísticas: " . $e->getMessage());
         return ['publicaciones' => 0, 'seguidores' => 0, 'siguiendo' => 0, 'juegos_favoritos' => 0];
     }
 }
@@ -149,7 +140,6 @@ function obtenerPublicacionesUsuario($userId)
 
         return DB::getAll($sql, [$userId]);
     } catch (Exception $e) {
-        error_log("Error al obtener publicaciones del usuario: " . $e->getMessage());
         return [];
     }
 }
