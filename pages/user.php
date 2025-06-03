@@ -429,7 +429,7 @@ function getCorrectPostImage($imagePath)
                 <?php } else { ?>
                     <?php foreach ($publicaciones as $publicacion) { ?>
                         <div class="card post-card mb-4 shadow-sm">
-                            <div class="card-header bg-transparent d-flex align-items-center justify-content-between">
+                            <div class="card-header bg-transparent d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between">
                                 <div class="d-flex align-items-center">
                                     <img src="<?php echo getCorrectUserImage($publicacion['USER_PHOTO']); ?>" class="rounded-circle me-2 user-avatar" width="40" height="40" alt="User" onerror="this.src='../assets/App-images/default_profile.png'">
                                     <div>

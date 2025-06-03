@@ -824,3 +824,30 @@ input[list]:focus {
     background-position: 200% 0;
   }
 }
+
+/* Style for dropdown positioning in tablet */
+@media (max-width: 991.98px) and (min-width: 768px) {
+  .navbar .dropdown-menu[aria-labelledby="userDropdown"] {
+    right: 0 !important;
+    left: auto !important;
+    position: absolute !important;
+  }
+}
+
+/* Style for card header in mobile */
+@media (max-width: 767.98px) {
+  .post-card .card-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+
+  }
+
+  .post-card .card-header .justify-content-end {
+    justify-content: flex-start !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
