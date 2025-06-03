@@ -28,7 +28,7 @@ function obtenerPublicacionesPorCategoria($categoryId)
 {
     try {
         $sql = "SELECT p.ID_PUBLICACION, p.CONTENIDO, p.URL, p.FECHA_CREACION, 
-                 u.USUARIO, u.URL_FOTO AS USER_PHOTO, J.IDJUEGO,
+                 u.USUARIO, u.URL_FOTO AS USER_PHOTO, j.IDJUEGO,
                  j.JUEGO, c.CATEGORIA, c.ID_CATEGORIA,
                  j.URL_IMAGEN AS GAME_IMAGE,
                  (SELECT COUNT(*) FROM INTERACCIONES WHERE ID_PUBLICACION = p.ID_PUBLICACION AND TIPO = 'like') AS LIKES_COUNT,
@@ -304,7 +304,7 @@ function getCorrectPostImage($imagePath)
 
                             <div class="card-body">
                                 <?php if ($publicacion['URL'] != '') { ?>
-                                    <?php if (in_array(strtolower(pathinfo($publicacion['URL'], PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif'])) { ?>
+                                    <?php if (in_array(strtolower(pathinfo($publicacion['URL'], PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) { ?>
                                         <div class="d-flex justify-content-center media-container">
                                             <img src="<?php echo getCorrectPostImage($publicacion['URL']); ?>" class="post-media img-fluid" alt="Post image" onerror="this.style.display='none'">
                                         </div>

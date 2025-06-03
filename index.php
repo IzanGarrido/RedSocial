@@ -474,7 +474,7 @@ if (!isset($_SESSION['user_id'])) {
                   <div class="card-body">
                     <?php if ($publicacion['URL'] != '') { ?>
                       <!-- Check if the file is an image -->
-                      <?php if (in_array(strtolower(pathinfo($publicacion['URL'], PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif'])) { ?>
+                      <?php if (in_array(strtolower(pathinfo($publicacion['URL'], PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) { ?>
                         <div class="d-flex justify-content-center media-container">
                           <img src="<?php echo $publicacion['URL']; ?>" class="post-media img-fluid" alt="Post image">
                         </div>

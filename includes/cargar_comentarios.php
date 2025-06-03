@@ -26,7 +26,7 @@ function obtenerComentarios($post_id)
 function getCorrectUserImage($imagePath)
 {
     if (empty($imagePath)) {
-        return '/redsocial/assets/App-images/default_profile.png';
+        return obtenerRutaBase() . '/assets/App-images/default_profile.png';
     }
     if (preg_match('/^(\/|http|data:)/', $imagePath)) {
         return $imagePath;
@@ -34,6 +34,7 @@ function getCorrectUserImage($imagePath)
     // If the path is relative, prepend the base path of the project
     return '/redsocial/' . ltrim($imagePath, './');
 }
+
 
 // Function to display comments in HTML format
 function mostrarComentarios($post_id)

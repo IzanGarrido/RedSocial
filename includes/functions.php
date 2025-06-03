@@ -308,7 +308,7 @@ function getProfileImage($username)
     $rutaAbsoluta = obtenerRutaBase('absoluta');
 
     // Possible extensions for the profile image
-    $extensions = ['png', 'jpg', 'jpeg', 'gif'];
+    $extensions = ['png', 'jpg', 'jpeg', 'gif', 'webp'];
 
     // Find the profile image with any of the extensions
     foreach ($extensions as $ext) {

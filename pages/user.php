@@ -467,7 +467,7 @@ function getCorrectPostImage($imagePath)
 
                             <div class="card-body">
                                 <?php if ($publicacion['URL'] != '') { ?>
-                                    <?php if (in_array(strtolower(pathinfo($publicacion['URL'], PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif'])) { ?>
+                                    <?php if (in_array(strtolower(pathinfo($publicacion['URL'], PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) { ?>
                                         <div class="d-flex justify-content-center media-container">
                                             <img src="<?php echo getCorrectPostImage($publicacion['URL']); ?>" class="post-media img-fluid" alt="Post image" onerror="this.style.display='none'">
                                         </div>

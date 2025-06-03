@@ -33,13 +33,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($file['error'] === UPLOAD_ERR_OK) {
             // Validate file
-            $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
             $fileType = $file['type'];
             $fileSize = $file['size'];
             $maxSize = 5 * 1024 * 1024; // 5MB
 
             if (!in_array($fileType, $allowedTypes)) {
-                $errores['profile_image'] = 'Solo se permiten archivos JPG, PNG o GIF.';
+                $errores['profile_image'] = 'Solo se permiten archivos JPG, PNG, GIF o WEBP .';
             } elseif ($fileSize > $maxSize) {
                 $errores['profile_image'] = 'El archivo es demasiado grande. Máximo 5MB.';
             } else {
@@ -484,7 +484,7 @@ function obtenerUsuarioCompleto($userId)
                         <div class="mt-3">
                             <small class="text-muted">
                                 <i class="bi bi-info-circle me-1"></i>
-                                Formatos admitidos: JPG, PNG, GIF • Tamaño máximo: 5MB • Dimensiones recomendadas: 400x400px
+                                Formatos admitidos: JPG, PNG, GIF, WEBP • Tamaño máximo: 5MB • Dimensiones recomendadas: 400x400px
                             </small>
                         </div>
                     </div>
