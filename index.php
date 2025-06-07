@@ -427,7 +427,7 @@ if (!isset($_SESSION['user_id'])) {
         <div class="main-content">
           <!-- Posts Section -->
           <section class="content-section">
-            <?php if (count(obtenerPublicaciones($_SESSION['user_id'])) <= 0) { ?>
+            <?php if (count(obtenerPublicaciones()) <= 0) { ?>
               <div class="text-center">
                 <p class="text-muted">No hay publicaciones para mostrar.</p>
               </div>
@@ -443,7 +443,7 @@ if (!isset($_SESSION['user_id'])) {
                             <?php echo $publicacion['USUARIO']; ?>
                           </a>
                         </h6>
-                        <small class="text-muted post-date"><?php echo date("d-m-y H:i", strtotime($publicacion['FECHA_CREACION'])); ?></small>
+                        <small class="text-muted post-date"><?php echo date("d-m-y", strtotime($publicacion['FECHA_CREACION'])); ?></small>
                       </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-end">

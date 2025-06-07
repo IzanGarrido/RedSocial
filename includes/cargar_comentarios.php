@@ -53,7 +53,7 @@ function mostrarComentarios($post_id)
                         <img src="' . $User_PHOTO . '" class="rounded-circle me-2 user-avatar" width="32" height="32" alt="User">
                         <div>
                             <h6 class="mb-0 fw-bold user-name">' . $comentario['USUARIO'] . '</h6>
-                            <small class="text-muted comment-date">' . date("d-m-y H:i", strtotime($comentario['FECHA_COMENTARIO'])) . '</small>
+                            <small class="text-muted comment-date">' . date("d-m-y", strtotime($comentario['FECHA_COMENTARIO'])) . '</small>
                         </div>
                     </div>
                     <p class="card-text comment-content mt-2 mb-1">' . htmlspecialchars($comentario['CONTENIDO']) . '</p>

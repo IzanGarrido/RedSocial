@@ -67,7 +67,7 @@ try {
         return [
             'id' => $mensaje['ID_MENSAJE'],
             'contenido' => htmlspecialchars($mensaje['CONTENIDO']),
-            'fecha' => date('d-m H:i', strtotime($mensaje['FECHA_MENSAJE'])),
+            'fecha' => date('d-m', strtotime($mensaje['FECHA_MENSAJE'])),
             'es_propio' => $mensaje['IDUSUARIO_ORIGEN'] == $userId,
             'usuario_origen' => $mensaje['USUARIO'],
             'foto_origen' => correctImagePath($mensaje['URL_FOTO'])
