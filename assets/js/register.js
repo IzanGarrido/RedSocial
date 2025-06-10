@@ -6,11 +6,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function configurarFechasLimite() {
         const hoy = new Date();
 
-        // Min date: 100 years ago
+        // Max date: 100 years
         const fechaMinima = new Date(hoy.getFullYear() - 100, hoy.getMonth(), hoy.getDate());
 
-        // Fecha máxima: hace 16 años
-        // Max date: 16 years ago
+        // Min date: 16 years
         const fechaMaxima = new Date(hoy.getFullYear() - 16, hoy.getMonth(), hoy.getDate());
 
         // Establish the limits in the input

@@ -164,7 +164,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // **NUEVA FUNCIONALIDAD**: Event listeners para categorías y juegos del aside
   // Redirect functionality for sidebar categories
   document.addEventListener('click', function (e) {
     // Handle category clicks

@@ -39,7 +39,8 @@ function registrarUsuario($nombre, $apellidos, $usuario, $correo, $password, $fe
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         // SQL query to insert user in table usuario 
-        $sql = "INSERT INTO USUARIO (USUARIO, HASH_PASSWORD, NOMBRE, APELLIDOS, CORREO, FECHA_NACIMIENTO) VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO USUARIO (USUARIO, HASH_PASSWORD, NOMBRE, APELLIDOS, CORREO, FECHA_NACIMIENTO) 
+        VALUES (?, ?, ?, ?, ?, ?)";
         $params = [$usuario, $hashedPassword, $nombre, $apellidos, $correo, $fechaNacimiento];
 
         // Execute the query for usuario table
@@ -102,11 +103,11 @@ function obtenerRangoFechas()
 {
     $hoy = new DateTime();
 
-    // Fecha mínima: hace 100 años
+    // Max date: 100 years
     $fechaMinima = clone $hoy;
     $fechaMinima->modify('-100 years');
 
-    // Fecha máxima: hace 16 años
+    // Min date: 16 years
     $fechaMaxima = clone $hoy;
     $fechaMaxima->modify('-16 years');
 
@@ -138,8 +139,6 @@ function comprobarNombre($nombre)
 // Function to check the last name of the register form
 function comprobarApellidos($apellidos)
 {
-    // Remove spaces
-    $apellidos = trim($apellidos);
 
     // Check if empty
     if (empty($apellidos)) {

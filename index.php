@@ -46,7 +46,8 @@ if (!isset($_SESSION['user_id'])) {
       <!-- Search -->
       <div class="position-relative d-none d-md-block mx-3 flex-grow-1">
         <i class="bi bi-search position-absolute search-icon"></i>
-        <input type="text" id="searchInput" class="form-control search-box" placeholder="Buscar juegos, categorías, usuarios..." aria-label="Buscar">
+        <input type="text" id="searchInput" class="form-control search-box" 
+        placeholder="Buscar juegos, categorías, usuarios..." aria-label="Buscar">
         <div id="searchResults" class="search-results-list d-none"></div>
       </div>
 
@@ -125,7 +126,6 @@ if (!isset($_SESSION['user_id'])) {
                           </div>
                           <div class="flex-grow-1 ms-3 overflow-hidden">
                             <p class="mb-1 text-wrap"><strong>' . $notificacion['ORIGEN'] . '</strong> ' . $text . '</p>
-                            <small class="text-muted">' . date("d-m-y H:i", strtotime($notificacion['FECHA'])) . '</small>
                           </div>
                         </a>
                       </li>';

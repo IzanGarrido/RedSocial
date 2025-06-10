@@ -93,7 +93,6 @@ function authenticateWithCookie() {
     return false;
 }
 
-// Función para crear sesión de usuario
 // Function for create user session
 function createUserSession($userId, $rememberMe = false) {
     try {
