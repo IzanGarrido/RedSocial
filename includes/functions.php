@@ -641,7 +641,8 @@ function addNotification($idusuarioDestino, $idusuarioOrigen, $tipo)
         if ($idusuarioDestino != $idusuarioOrigen) {
 
             // SQL query to insert the notification
-            $sql = "INSERT INTO NOTIFICACIONES (IDUSUARIO_DESTINO, IDUSUARIO_ORIGEN, TIPO_NOTIFICACION) VALUES (?, ?, ?)";
+            $sql = "INSERT INTO NOTIFICACIONES (IDUSUARIO_DESTINO, IDUSUARIO_ORIGEN, TIPO_NOTIFICACION) 
+            VALUES (?, ?, ?)";
             $params = [$idusuarioDestino, $idusuarioOrigen, $tipo];
             DB::insert($sql, $params);
         }

@@ -282,7 +282,8 @@ if (!isset($_SESSION['user_id'])) {
         <div class="modal-body">
           <form id="createPostForm" action="includes/create_post.php" method="post" enctype="multipart/form-data">
             <div class="mb-3">
-              <textarea class="form-control" id="postContent" name="postContent" rows="3" placeholder="¿Qué estás pensando?" required></textarea>
+              <textarea class="form-control" id="postContent" name="postContent" 
+              rows="3" placeholder="¿Qué estás pensando?" required></textarea>
             </div>
 
             <div class="mb-3">

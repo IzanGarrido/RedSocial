@@ -296,7 +296,7 @@ $rangoFechas = obtenerRangoFechas();
 function obtenerUsuarioCompleto($userId)
 {
     try {
-        $sql = "SELECT IDUSUARIO, USUARIO, NOMBRE, APELLIDOS, CORREO, FECHA_NACIMIENTO, URL_FOTO, BIO, TEMA
+        $sql = "SELECT IDUSUARIO, USUARIO, NOMBRE, APELLIDOS, CORREO, FECHA_NACIMIENTO, URL_FOTO, BIO
                 FROM USUARIO 
                 WHERE IDUSUARIO = ?";
         $user = DB::getOne($sql, [$userId]);
