@@ -163,7 +163,7 @@ function getCorrectProfileImage($profileUrl)
                                     </div>
                                 </div>
                             </li>
-                            <li><a class="dropdown-item py-2" href="../pages/profile.php"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
+                            <li><a class="dropdown-item py-2" href="./pages/user.php?user=<?php echo urlencode($_SESSION['username']); ?>"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
                             <li><a class="dropdown-item py-2" href="../pages/settings.php"><i class="bi bi-gear me-2"></i>Configuración</a></li>
                             <li>
                                 <hr class="dropdown-divider">
