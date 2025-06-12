@@ -409,7 +409,8 @@ function obtenerCategorias()
 // Function to get all the games
 function obtenerJuegos()
 {
-    $juegos = DB::getAll("SELECT IDJUEGO, JUEGO, URL_IMAGEN FROM JUEGOS ORDER BY JUEGO ASC");
+    $juegos = DB::getAll("SELECT IDJUEGO, JUEGO, URL_IMAGEN 
+    FROM JUEGOS ORDER BY JUEGO ASC");
     return $juegos;
 }
 
@@ -469,7 +470,8 @@ function crearPublicacion($userId, $contenido, $archivo = null, $gameId = null)
         }
 
         // Insert the post in the database
-        $sql = "INSERT INTO PUBLICACIONES_USUARIOS (IDUSUARIO, URL, CONTENIDO, IDJUEGO) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO PUBLICACIONES_USUARIOS (IDUSUARIO, URL, CONTENIDO, IDJUEGO) 
+        VALUES (?, ?, ?, ?)";
         $params = [$userId, $url, $contenido, $gameId];
 
         // Execute the query and get the ID

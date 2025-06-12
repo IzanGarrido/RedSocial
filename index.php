@@ -358,7 +358,9 @@ if (!isset($_SESSION['user_id'])) {
 
                 // Show only some categories
                 for ($i = 0; $i < min($categoriasVisibles, $totalCategorias); $i++) {
-                  echo '<li><a href="./pages/categories.php?id=' . $categorias[$i]['ID_CATEGORIA'] . '" class="category-item" data-id="' . $categorias[$i]['ID_CATEGORIA'] . '"><i class="bi bi-controller category-icon"></i> ' . $categorias[$i]['CATEGORIA'] . '</a></li>';
+                  echo '<li><a href="./pages/categories.php?id=' . $categorias[$i]['ID_CATEGORIA'] . 
+                  '" class="category-item" data-id="' . $categorias[$i]['ID_CATEGORIA'] . '">
+                  <i class="bi bi-controller category-icon"></i> ' . $categorias[$i]['CATEGORIA'] . '</a></li>';
                 }
                 ?>
               </ul>
@@ -368,7 +370,9 @@ if (!isset($_SESSION['user_id'])) {
                 <ul class="list-unstyled" id="categorias-todas" style="display: none;">
                   <?php
                   foreach ($categorias as $categoria) {
-                    echo '<li><a href="./pages/categories.php?id=' . $categoria['ID_CATEGORIA'] . '" class="category-item" data-id="' . $categoria['ID_CATEGORIA'] . '"><i class="bi bi-controller category-icon"></i> ' . $categoria['CATEGORIA'] . '</a></li>';
+                    echo '<li><a href="./pages/categories.php?id=' . $categoria['ID_CATEGORIA'] . 
+                    '" class="category-item" data-id="' . $categoria['ID_CATEGORIA'] . '">
+                    <i class="bi bi-controller category-icon"></i> ' . $categoria['CATEGORIA'] . '</a></li>';
                   }
                   ?>
                 </ul>
@@ -397,7 +401,9 @@ if (!isset($_SESSION['user_id'])) {
 
                 // Show only some games
                 for ($i = 0; $i < min($juegosVisibles, $totalJuegos); $i++) {
-                  echo '<li><a href="./pages/games.php?id=' . $juegos[$i]['IDJUEGO'] . '" class="game-item" data-id="' . $juegos[$i]['IDJUEGO'] . '"><img src="' . $juegos[$i]['URL_IMAGEN'] . '" class="rounded-5 game-img" alt="Game image">' . $juegos[$i]['JUEGO'] . '</a></li>';
+                  echo '<li><a href="./pages/games.php?id=' . $juegos[$i]['IDJUEGO'] . 
+                  '" class="game-item" data-id="' . $juegos[$i]['IDJUEGO'] . '"><img src="' . 
+                  $juegos[$i]['URL_IMAGEN'] . '" class="rounded-5 game-img" alt="Game image">' . $juegos[$i]['JUEGO'] . '</a></li>';
                 }
                 ?>
               </ul>
@@ -407,7 +413,9 @@ if (!isset($_SESSION['user_id'])) {
                 <ul class="list-unstyled" id="juegos-todos" style="display: none;">
                   <?php
                   foreach ($juegos as $juego) {
-                    echo '<li><a href="./pages/games.php?id=' . $juego['IDJUEGO'] . '" class="game-item" data-id="' . $juego['IDJUEGO'] . '"><img src="' . $juego['URL_IMAGEN'] . '" class="rounded-5 game-img" alt="Game image">' . $juego['JUEGO'] . '</a></li>';
+                    echo '<li><a href="./pages/games.php?id=' . $juego['IDJUEGO'] . 
+                    '" class="game-item" data-id="' . $juego['IDJUEGO'] . '"><img src="' . 
+                    $juego['URL_IMAGEN'] . '" class="rounded-5 game-img" alt="Game image">' . $juego['JUEGO'] . '</a></li>';
                   }
                   ?>
                 </ul>
@@ -437,14 +445,19 @@ if (!isset($_SESSION['user_id'])) {
                 <div class="card post-card mb-4 shadow-sm">
                   <div class="card-header bg-transparent d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between">
                     <div class="d-flex align-items-center">
-                      <img src="<?php echo $publicacion['USER_PHOTO']; ?>" class="rounded-circle me-2 user-avatar" width="40" height="40" alt="User">
+                      <img src="<?php echo $publicacion['USER_PHOTO']; ?>"
+                       class="rounded-circle me-2 user-avatar" width="40" height="40" alt="User">
                       <div>
                         <h6 class="mb-0 fw-bold user-name">
-                          <a href="./pages/user.php?user=<?php echo urlencode($publicacion['USUARIO']); ?>" class="text-decoration-none text-dark">
+                          <a href="./pages/user.php?user=
+                          <?php echo urlencode($publicacion['USUARIO']); ?>
+                          " class="text-decoration-none text-dark">
                             <?php echo $publicacion['USUARIO']; ?>
                           </a>
                         </h6>
-                        <small class="text-muted post-date"><?php echo date("d-m-y", strtotime($publicacion['FECHA_CREACION'])); ?></small>
+                        <small class="text-muted post-date">
+                          <?php echo date("d-m-y", strtotime($publicacion['FECHA_CREACION'])); ?>
+                        </small>
                       </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-end">
@@ -511,8 +524,8 @@ if (!isset($_SESSION['user_id'])) {
                         <span class="ms-1 like-count"><?php echo $publicacion['LIKES_COUNT']; ?></span>
                       </button>
 
-
-                      <button class="btn btn-sm btn-outline-secondary comment-btn" onclick="openCommentsModal(<?php echo $publicacion['ID_PUBLICACION']; ?>)">
+                      <button class="btn btn-sm btn-outline-secondary comment-btn" 
+                      onclick="openCommentsModal(<?php echo $publicacion['ID_PUBLICACION']; ?>)">
                         <i class="bi bi-chat"></i>
                         <span class="ms-1"><?php echo $publicacion['COMMENTS_COUNT']; ?></span>
                       </button>

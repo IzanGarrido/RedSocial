@@ -1,11 +1,10 @@
 <?php
-// Incluir el archivo de control de sesiones
 require_once '../includes/config.php';
 require_once '../includes/session_control.php';
 
-// Cerrar la sesión
+// Logout
 logoutUser();
 
-// Redirigir al login
+// Redirect to login
 header('Location: login.php');
 exit;

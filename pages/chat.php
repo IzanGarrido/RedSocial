@@ -163,7 +163,7 @@ function getCorrectProfileImage($profileUrl)
                                     </div>
                                 </div>
                             </li>
-                            <li><a class="dropdown-item py-2" href="./user.php?user=<?php echo urlencode($_SESSION['username']); ?>"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
+                            <li><a class="dropdown-item py-2" href="/user.php?user=<?php echo urlencode($_SESSION['username']); ?>"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
                             <li><a class="dropdown-item py-2" href="../pages/settings.php"><i class="bi bi-gear me-2"></i>Configuración</a></li>
                             <li>
                                 <hr class="dropdown-divider">
@@ -224,7 +224,6 @@ function getCorrectProfileImage($profileUrl)
                             $profileImage = str_replace('./', '../', $profileImage);
                         }
 
-                        $timeFormatted = date('d-m H:i', strtotime($lastMessage['FECHA_MENSAJE']));
                         $lastMessageContent = $lastMessage ? htmlspecialchars(substr($lastMessage['CONTENIDO'], 0, 50) . (strlen($lastMessage['CONTENIDO']) > 50 ? '...' : '')) : 'Sin mensajes';
 
                         echo '<div class="contact-item" 
