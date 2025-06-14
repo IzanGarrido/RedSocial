@@ -259,12 +259,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (file_exists($userDir)) {
                         function eliminarDirectorio($dir)
                         {
-                            if (!file_exists($dir)) return true;
-                            if (!is_dir($dir)) return unlink($dir);
+                            if (!file_exists($dir))
+                                return true;
+                            if (!is_dir($dir))
+                                return unlink($dir);
 
                             foreach (scandir($dir) as $item) {
-                                if ($item == '.' || $item == '..') continue;
-                                if (!eliminarDirectorio($dir . DIRECTORY_SEPARATOR . $item)) return false;
+                                if ($item == '.' || $item == '..')
+                                    continue;
+                                if (!eliminarDirectorio($dir . DIRECTORY_SEPARATOR . $item))
+                                    return false;
                             }
 
                             return rmdir($dir);
@@ -345,16 +349,20 @@ function obtenerUsuarioCompleto($userId)
                 <!-- Notifications -->
                 <li class="nav-item mx-2 position-static">
                     <div class="dropdown">
-                        <a class="nav-link position-relative" href="#" id="Notificaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                        <a class="nav-link position-relative" href="#" id="Notificaciones" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                             <i class="bi bi-bell nav-icon"></i>
                             <?php if (obtenerNumeroNotificacionesNoLeidas($userId) > 0) { ?>
-                                <span class="position-absolute top-40 start-60 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6em;">
-                                    <?php echo obtenerNumeroNotificacionesNoLeidas($userId) > 9 ? '9+' : obtenerNumeroNotificacionesNoLeidas($userId); ?>
-                                    <span class="visually-hidden">notificaciones no leídas</span>
-                                </span>
+                            <span
+                                class="position-absolute top-40 start-60 translate-middle badge rounded-pill bg-danger"
+                                style="font-size: 0.6em;">
+                                <?php echo obtenerNumeroNotificacionesNoLeidas($userId) > 9 ? '9+' : obtenerNumeroNotificacionesNoLeidas($userId); ?>
+                                <span class="visually-hidden">notificaciones no leídas</span>
+                            </span>
                             <?php } ?>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="Notificaciones" style="min-width: 300px; max-height: 400px; overflow-y: auto;">
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="Notificaciones"
+                            style="min-width: 300px; max-height: 400px; overflow-y: auto;">
                             <?php
                             $notificaciones = obtenerNotificacionesNoLeidas($userId);
                             if (count($notificaciones) > 0) {
@@ -403,26 +411,34 @@ function obtenerUsuarioCompleto($userId)
                 <!-- User profile and settings -->
                 <li class="nav-item mx-2 position-static">
                     <div class="dropdown">
-                        <a class="nav-link d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                            <img src="<?php echo $profileImage; ?>" alt="User" class="rounded-circle me-1" width="32" height="32">
+                        <a class="nav-link d-flex align-items-center" href="#" id="userDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                            <img src="<?php echo $profileImage; ?>" alt="User" class="rounded-circle me-1" width="32"
+                                height="32">
                             <span class="d-none d-lg-block ms-1"><?php echo $username; ?></span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="userDropdown" style="min-width: 200px;">
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="userDropdown"
+                            style="min-width: 200px;">
                             <li class="px-3 py-2 border-bottom">
                                 <div class="d-flex align-items-center">
-                                    <img src="<?php echo $profileImage; ?>" alt="User" class="rounded-circle me-2" width="40" height="40">
+                                    <img src="<?php echo $profileImage; ?>" alt="User" class="rounded-circle me-2"
+                                        width="40" height="40">
                                     <div>
                                         <div class="fw-bold"><?php echo $username; ?></div>
                                         <small class="text-muted"><?php echo $email; ?></small>
                                     </div>
                                 </div>
                             </li>
-                            <li><a class="dropdown-item py-2" href="./user.php?user=<?php echo urlencode($username); ?>"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
-                            <li><a class="dropdown-item py-2 bg-light" href="./settings.php"><i class="bi bi-gear me-2"></i>Configuración</a></li>
+                            <li><a class="dropdown-item py-2"
+                                    href="./user.php?user=<?php echo urlencode($username); ?>"><i
+                                        class="bi bi-person me-2"></i>Mi perfil</a></li>
+                            <li><a class="dropdown-item py-2 bg-light" href="./settings.php"><i
+                                        class="bi bi-gear me-2"></i>Configuración</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item py-2 text-danger" href="./logout.php"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a></li>
+                            <li><a class="dropdown-item py-2 text-danger" href="./logout.php"><i
+                                        class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a></li>
                         </ul>
                     </div>
                 </li>
@@ -442,10 +458,10 @@ function obtenerUsuarioCompleto($userId)
 
             <!-- Success Message -->
             <?php if (!empty($exito)): ?>
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check-circle me-2"></i><?php echo $exito; ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle me-2"></i><?php echo $exito; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
             <?php endif; ?>
 
             <!-- Profile Image Section -->
@@ -455,20 +471,22 @@ function obtenerUsuarioCompleto($userId)
                 <form method="post" enctype="multipart/form-data">
                     <div class="image-upload-area">
                         <div class="profile-image-container">
-                            <img src="<?php echo $profileImage; ?>" alt="Imagen de perfil" class="profile-image-preview" id="imagePreview">
+                            <img src="<?php echo $profileImage; ?>" alt="Imagen de perfil" class="profile-image-preview"
+                                id="imagePreview">
                         </div>
 
                         <div class="mt-3">
                             <label for="profileImageInput" class="file-input-label">
                                 <i class="bi bi-camera me-2"></i>Seleccionar nueva imagen
                             </label>
-                            <input type="file" id="profileImageInput" name="profile_image" class="file-input-custom" accept="image/*" onchange="previewImage(this)">
+                            <input type="file" id="profileImageInput" name="profile_image" class="file-input-custom"
+                                accept="image/*" onchange="previewImage(this)">
                         </div>
 
                         <?php if (isset($errores['profile_image'])): ?>
-                            <div class="alert alert-danger mt-3">
-                                <i class="bi bi-exclamation-triangle me-2"></i><?php echo $errores['profile_image']; ?>
-                            </div>
+                        <div class="alert alert-danger mt-3">
+                            <i class="bi bi-exclamation-triangle me-2"></i><?php echo $errores['profile_image']; ?>
+                        </div>
                         <?php endif; ?>
 
                         <div class="mt-4">
@@ -480,7 +498,8 @@ function obtenerUsuarioCompleto($userId)
                         <div class="mt-3">
                             <small class="text-muted">
                                 <i class="bi bi-info-circle me-1"></i>
-                                Formatos admitidos: JPG, PNG, GIF, WEBP • Tamaño máximo: 5MB • Dimensiones recomendadas: 400x400px
+                                Formatos admitidos: JPG, PNG, GIF, WEBP • Tamaño máximo: 5MB • Dimensiones recomendadas:
+                                400x400px
                             </small>
                         </div>
                     </div>
@@ -495,21 +514,23 @@ function obtenerUsuarioCompleto($userId)
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="nombre" class="form-label">Nombre</label>
-                            <input type="text" class="form-control <?php echo isset($errores['nombre']) ? 'is-invalid' : ''; ?>"
+                            <input type="text"
+                                class="form-control <?php echo isset($errores['nombre']) ? 'is-invalid' : ''; ?>"
                                 id="nombre" name="nombre" value="<?php echo htmlspecialchars($nombre); ?>"
                                 maxlength="50" required>
                             <?php if (isset($errores['nombre'])): ?>
-                                <div class="invalid-feedback"><?php echo $errores['nombre']; ?></div>
+                            <div class="invalid-feedback"><?php echo $errores['nombre']; ?></div>
                             <?php endif; ?>
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label for="apellidos" class="form-label">Apellidos</label>
-                            <input type="text" class="form-control <?php echo isset($errores['apellidos']) ? 'is-invalid' : ''; ?>"
+                            <input type="text"
+                                class="form-control <?php echo isset($errores['apellidos']) ? 'is-invalid' : ''; ?>"
                                 id="apellidos" name="apellidos" value="<?php echo htmlspecialchars($apellidos); ?>"
                                 maxlength="100" required>
                             <?php if (isset($errores['apellidos'])): ?>
-                                <div class="invalid-feedback"><?php echo $errores['apellidos']; ?></div>
+                            <div class="invalid-feedback"><?php echo $errores['apellidos']; ?></div>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -517,22 +538,24 @@ function obtenerUsuarioCompleto($userId)
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="username" class="form-label">Nombre de usuario</label>
-                            <input type="text" class="form-control <?php echo isset($errores['username']) ? 'is-invalid' : ''; ?>"
+                            <input type="text"
+                                class="form-control <?php echo isset($errores['username']) ? 'is-invalid' : ''; ?>"
                                 id="username" name="username" value="<?php echo htmlspecialchars($username); ?>"
                                 maxlength="20" required>
                             <?php if (isset($errores['username'])): ?>
-                                <div class="invalid-feedback"><?php echo $errores['username']; ?></div>
+                            <div class="invalid-feedback"><?php echo $errores['username']; ?></div>
                             <?php endif; ?>
                             <small class="text-muted">Solo se puede cambiar si el nuevo nombre no existe</small>
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label for="email" class="form-label">Correo electrónico</label>
-                            <input type="email" class="form-control <?php echo isset($errores['email']) ? 'is-invalid' : ''; ?>"
-                                id="email" name="email" value="<?php echo htmlspecialchars($email); ?>"
-                                maxlength="100" required>
+                            <input type="email"
+                                class="form-control <?php echo isset($errores['email']) ? 'is-invalid' : ''; ?>"
+                                id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" maxlength="100"
+                                required>
                             <?php if (isset($errores['email'])): ?>
-                                <div class="invalid-feedback"><?php echo $errores['email']; ?></div>
+                            <div class="invalid-feedback"><?php echo $errores['email']; ?></div>
                             <?php endif; ?>
                             <small class="text-muted">Solo se puede cambiar si el nuevo correo no existe</small>
                         </div>
@@ -540,11 +563,12 @@ function obtenerUsuarioCompleto($userId)
 
                     <div class="mb-3">
                         <label for="fecha_nacimiento" class="form-label">Fecha de nacimiento</label>
-                        <input type="date" class="form-control <?php echo isset($errores['fecha_nacimiento']) ? 'is-invalid' : ''; ?>"
+                        <input type="date"
+                            class="form-control <?php echo isset($errores['fecha_nacimiento']) ? 'is-invalid' : ''; ?>"
                             id="fecha_nacimiento" name="fecha_nacimiento" value="<?php echo $fechaNacimiento; ?>"
                             min="<?php echo $rangoFechas['min']; ?>" max="<?php echo $rangoFechas['max']; ?>" required>
                         <?php if (isset($errores['fecha_nacimiento'])): ?>
-                            <div class="invalid-feedback"><?php echo $errores['fecha_nacimiento']; ?></div>
+                        <div class="invalid-feedback"><?php echo $errores['fecha_nacimiento']; ?></div>
                         <?php endif; ?>
                     </div>
 
@@ -563,38 +587,41 @@ function obtenerUsuarioCompleto($userId)
                 <form method="post">
                     <div class="mb-3">
                         <label for="current_password" class="form-label">Contraseña actual</label>
-                        <input type="password" class="form-control <?php echo isset($errores['current_password']) ? 'is-invalid' : ''; ?>"
+                        <input type="password"
+                            class="form-control <?php echo isset($errores['current_password']) ? 'is-invalid' : ''; ?>"
                             id="current_password" name="current_password" required>
                         <?php if (isset($errores['current_password'])): ?>
-                            <div class="invalid-feedback"><?php echo $errores['current_password']; ?></div>
+                        <div class="invalid-feedback"><?php echo $errores['current_password']; ?></div>
                         <?php endif; ?>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="new_password" class="form-label">Nueva contraseña</label>
-                            <input type="password" class="form-control <?php echo isset($errores['new_password']) ? 'is-invalid' : ''; ?>"
+                            <input type="password"
+                                class="form-control <?php echo isset($errores['new_password']) ? 'is-invalid' : ''; ?>"
                                 id="new_password" name="new_password" required>
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label for="confirm_password" class="form-label">Confirmar nueva contraseña</label>
-                            <input type="password" class="form-control <?php echo isset($errores['new_password']) ? 'is-invalid' : ''; ?>"
+                            <input type="password"
+                                class="form-control <?php echo isset($errores['new_password']) ? 'is-invalid' : ''; ?>"
                                 id="confirm_password" name="confirm_password" required>
                         </div>
                     </div>
 
                     <?php if (isset($errores['new_password']) && is_array($errores['new_password'])): ?>
-                        <div class="mb-3">
-                            <div class="alert alert-danger">
-                                <strong>Requisitos de la contraseña:</strong>
-                                <ul class="mb-0 mt-2">
-                                    <?php foreach ($errores['new_password'] as $passwordError): ?>
-                                        <li><?php echo $passwordError; ?></li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </div>
+                    <div class="mb-3">
+                        <div class="alert alert-danger">
+                            <strong>Requisitos de la contraseña:</strong>
+                            <ul class="mb-0 mt-2">
+                                <?php foreach ($errores['new_password'] as $passwordError): ?>
+                                <li><?php echo $passwordError; ?></li>
+                                <?php endforeach; ?>
+                            </ul>
                         </div>
+                    </div>
                     <?php endif; ?>
 
                     <div class="password-requirements mb-3">
@@ -624,13 +651,12 @@ function obtenerUsuarioCompleto($userId)
                     <div class="mb-3">
                         <label for="bio" class="form-label">Biografía</label>
                         <textarea class="form-control <?php echo isset($errores['bio']) ? 'is-invalid' : ''; ?>"
-                            id="bio" name="bio" rows="4"
-                            placeholder="Cuéntanos algo sobre ti..." maxlength="500"><?php
-                                                                                        $currentUserComplete = obtenerUsuarioCompleto($userId);
-                                                                                        echo htmlspecialchars($currentUserComplete['BIO'] ?? '');
-                                                                                        ?></textarea>
+                            id="bio" name="bio" rows="4" placeholder="Cuéntanos algo sobre ti..." maxlength="500"><?php
+                            $currentUserComplete = obtenerUsuarioCompleto($userId);
+                            echo htmlspecialchars($currentUserComplete['BIO'] ?? '');
+                            ?></textarea>
                         <?php if (isset($errores['bio'])): ?>
-                            <div class="invalid-feedback"><?php echo $errores['bio']; ?></div>
+                        <div class="invalid-feedback"><?php echo $errores['bio']; ?></div>
                         <?php endif; ?>
                         <small class="text-muted">Máximo 500 caracteres</small>
                     </div>
@@ -654,7 +680,8 @@ function obtenerUsuarioCompleto($userId)
                         todos tus datos, publicaciones, comentarios y configuraciones.
                     </p>
 
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                        data-bs-target="#deleteAccountModal">
                         <i class="bi bi-trash me-2"></i>Eliminar mi cuenta
                     </button>
                 </div>
@@ -663,14 +690,16 @@ function obtenerUsuarioCompleto($userId)
     </div>
 
     <!-- Delete Account Modal -->
-    <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-danger text-white">
                     <h5 class="modal-title" id="deleteAccountModalLabel">
                         <i class="bi bi-exclamation-triangle me-2"></i>Confirmar eliminación de cuenta
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger">
@@ -691,11 +720,11 @@ function obtenerUsuarioCompleto($userId)
                             <label for="delete_password" class="form-label">
                                 Para confirmar, introduce tu contraseña actual:
                             </label>
-                            <input type="password" class="form-control <?php echo isset($errores['delete_password']) ? 'is-invalid' : ''; ?>"
-                                id="delete_password" name="delete_password" required
-                                placeholder="Tu contraseña actual">
+                            <input type="password"
+                                class="form-control <?php echo isset($errores['delete_password']) ? 'is-invalid' : ''; ?>"
+                                id="delete_password" name="delete_password" required placeholder="Tu contraseña actual">
                             <?php if (isset($errores['delete_password'])): ?>
-                                <div class="invalid-feedback"><?php echo $errores['delete_password']; ?></div>
+                            <div class="invalid-feedback"><?php echo $errores['delete_password']; ?></div>
                             <?php endif; ?>
                         </div>
                 </div>

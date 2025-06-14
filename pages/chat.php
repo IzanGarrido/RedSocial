@@ -92,16 +92,20 @@ function getCorrectProfileImage($profileUrl)
                 <!-- Notifications -->
                 <li class="nav-item mx-2 position-static">
                     <div class="dropdown">
-                        <a class="nav-link position-relative" href="#" id="Notificaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                        <a class="nav-link position-relative" href="#" id="Notificaciones" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                             <i class="bi bi-bell nav-icon"></i>
                             <?php if (obtenerNumeroNotificacionesNoLeidas($userId) > 0) { ?>
-                                <span class="position-absolute top-40 start-60 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6em;">
+                                <span
+                                    class="position-absolute top-40 start-60 translate-middle badge rounded-pill bg-danger"
+                                    style="font-size: 0.6em;">
                                     <?php echo obtenerNumeroNotificacionesNoLeidas($userId) > 9 ? '9+' : obtenerNumeroNotificacionesNoLeidas($userId); ?>
                                     <span class="visually-hidden">notificaciones no leídas</span>
                                 </span>
                             <?php } ?>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="Notificaciones" style="min-width: 300px; max-height: 400px; overflow-y: auto;">
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="Notificaciones"
+                            style="min-width: 300px; max-height: 400px; overflow-y: auto;">
                             <?php
                             $notificaciones = obtenerNotificacionesNoLeidas($userId);
                             if (count($notificaciones) > 0) {
@@ -149,26 +153,34 @@ function getCorrectProfileImage($profileUrl)
                 <!-- User profile -->
                 <li class="nav-item mx-2 position-static">
                     <div class="dropdown">
-                        <a class="nav-link d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                            <img src="<?php echo $profileImage; ?>" alt="User" class="rounded-circle me-1" width="32" height="32">
+                        <a class="nav-link d-flex align-items-center" href="#" id="userDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                            <img src="<?php echo $profileImage; ?>" alt="User" class="rounded-circle me-1" width="32"
+                                height="32">
                             <span class="d-none d-lg-block ms-1"><?php echo $username; ?></span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="userDropdown" style="min-width: 200px;">
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="userDropdown"
+                            style="min-width: 200px;">
                             <li class="px-3 py-2 border-bottom">
                                 <div class="d-flex align-items-center">
-                                    <img src="<?php echo $profileImage; ?>" alt="User" class="rounded-circle me-2" width="40" height="40">
+                                    <img src="<?php echo $profileImage; ?>" alt="User" class="rounded-circle me-2"
+                                        width="40" height="40">
                                     <div>
                                         <div class="fw-bold"><?php echo $username; ?></div>
                                         <small class="text-muted"><?php echo $_SESSION['user_email']; ?></small>
                                     </div>
                                 </div>
                             </li>
-                            <li><a class="dropdown-item py-2" href="/user.php?user=<?php echo urlencode($_SESSION['username']); ?>"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
-                            <li><a class="dropdown-item py-2" href="../pages/settings.php"><i class="bi bi-gear me-2"></i>Configuración</a></li>
+                            <li><a class="dropdown-item py-2"
+                                    href="/user.php?user=<?php echo urlencode($_SESSION['username']); ?>"><i
+                                        class="bi bi-person me-2"></i>Mi perfil</a></li>
+                            <li><a class="dropdown-item py-2" href="../pages/settings.php"><i
+                                        class="bi bi-gear me-2"></i>Configuración</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item py-2 text-danger" href="../pages/logout.php"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a></li>
+                            <li><a class="dropdown-item py-2 text-danger" href="../pages/logout.php"><i
+                                        class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a></li>
                         </ul>
                     </div>
                 </li>
@@ -185,8 +197,10 @@ function getCorrectProfileImage($profileUrl)
                     <i class="bi bi-chat-dots me-2"></i>Mensajes
                 </h5>
                 <div class="position-relative">
-                    <i class="bi bi-search position-absolute" style="left: 12px; top: 50%; transform: translateY(-50%); color: #6c757d;"></i>
-                    <input type="text" id="searchContacts" class="form-control search-contacts" placeholder="Buscar contactos..." style="padding-left: 35px;">
+                    <i class="bi bi-search position-absolute"
+                        style="left: 12px; top: 50%; transform: translateY(-50%); color: #6c757d;"></i>
+                    <input type="text" id="searchContacts" class="form-control search-contacts"
+                        placeholder="Buscar contactos..." style="padding-left: 35px;">
                 </div>
             </div>
 
@@ -259,7 +273,8 @@ function getCorrectProfileImage($profileUrl)
                 </button>
 
                 <div class="chat-user-info">
-                    <img src="../assets/App-images/default_profile.png" alt="Usuario" class="chat-avatar" id="chatAvatar">
+                    <img src="../assets/App-images/default_profile.png" alt="Usuario" class="chat-avatar"
+                        id="chatAvatar">
                     <div>
                         <div class="chat-user-name" id="chatUserName">Selecciona una conversación</div>
                     </div>
@@ -285,13 +300,9 @@ function getCorrectProfileImage($profileUrl)
                         <i class="bi bi-person-plus fs-5" style="color: var(--primary-color);"></i>
                     </button>
 
-                    <input type="text"
-                        id="messageInput"
-                        class="form-control message-input "
+                    <input type="text" id="messageInput" class="form-control message-input "
                         placeholder="Selecciona una conversación o busca un usuario para empezar a chatear"
-                        onkeydown="handleKeyPress(event)"
-                        
-                        disabled>
+                        onkeydown="handleKeyPress(event)" disabled>
 
                     <button type="submit" class="send-button" title="Enviar mensaje" disabled>
                         <i class="bi bi-send"></i>
@@ -299,9 +310,11 @@ function getCorrectProfileImage($profileUrl)
                 </form>
 
                 <!-- Search users dropdown -->
-                <div id="userSearchDropdown" class="position-absolute w-100 bg-white border rounded shadow-sm" style="bottom: 70px; display: none; z-index: 1000;">
+                <div id="userSearchDropdown" class="position-absolute w-100 bg-white border rounded shadow-sm"
+                    style="bottom: 70px; display: none; z-index: 1000;">
                     <div class="p-3">
-                        <input type="text" id="userSearchInput" class="form-control mb-2" placeholder="Buscar usuarios..." oninput="searchUsers(this.value)">
+                        <input type="text" id="userSearchInput" class="form-control mb-2"
+                            placeholder="Buscar usuarios..." oninput="searchUsers(this.value)">
                         <div id="userSearchResults"></div>
                     </div>
                 </div>

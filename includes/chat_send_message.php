@@ -30,7 +30,7 @@ try {
 
     // If is numeric, it is an ID
     if (is_numeric($contact)) {
-        $contactId = (int)$contact;
+        $contactId = (int) $contact;
         // Verify that the user exists
         $contactRow = DB::getOne("SELECT IDUSUARIO FROM USUARIO WHERE IDUSUARIO = ?", [$contactId]);
     } else {

@@ -105,7 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="username">Nombre de usuario</label>
                     <div class="input-with-icon">
                         <i class="bi bi-person icon-left"></i>
-                        <input type="text" class="form-control" name="username" id="username" placeholder="Nombre de usuario" required>
+                        <input type="text" class="form-control" name="username" id="username"
+                            placeholder="Nombre de usuario" required>
                     </div>
                 </div>
 
@@ -114,7 +115,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="password">Contraseña</label>
                     <div class="input-with-icon">
                         <i class="bi bi-lock icon-left"></i>
-                        <input type="password" class="form-control" name="password" id="password" placeholder="Contraseña" required>
+                        <input type="password" class="form-control" name="password" id="password"
+                            placeholder="Contraseña" required>
                         <i class="bi bi-eye-slash icon-right" id="togglePassword"></i>
                     </div>
                 </div>

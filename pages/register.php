@@ -1,5 +1,4 @@
 <?php
-// Actualizar el archivo pages/register.php - Solo la parte de validación del servidor
 
 // Include the functions file
 require_once '../includes/functions.php';
@@ -60,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // If no errors, register the user and create the directory for save the posts and profile image
         if (empty($errores)) {
-            // Pasar la fecha de nacimiento a la función de registro
+            // Move the birthdate to the registrarUsuario function
             $userId = registrarUsuario($nombre, $apellidos, $username, $email, $password, $birthdate);
             creardirectoriobase($username);
 
@@ -121,9 +120,9 @@ $rangoFechas = obtenerRangoFechas();
                         <div class="input-with-icon">
                             <i class="bi bi-person"></i>
                             <input type="text" class="form-control 
-                            <?php echo isset($errores['nombre']) ? 'is-invalid' : ''; ?>"
-                            name="name" id="name" placeholder="Nombre" maxlength="50" 
-                            required value="<?php echo htmlspecialchars($nombre); ?>">
+                            <?php echo isset($errores['nombre']) ? 'is-invalid' : ''; ?>" name="name" id="name"
+                                placeholder="Nombre" maxlength="50" required
+                                value="<?php echo htmlspecialchars($nombre); ?>">
                         </div>
                         <?php if (isset($errores['nombre'])): ?>
                             <div class="invalid-feedback d-block">
@@ -138,9 +137,9 @@ $rangoFechas = obtenerRangoFechas();
                         <div class="input-with-icon">
                             <i class="bi bi-person"></i>
                             <input type="text" class="form-control 
-                            <?php echo isset($errores['apellidos']) ? 'is-invalid' : ''; ?>"
-                            name="lastname" id="lastname" placeholder="Apellidos" 
-                            maxlength="100" required value="<?php echo htmlspecialchars($apellidos); ?>">
+                            <?php echo isset($errores['apellidos']) ? 'is-invalid' : ''; ?>" name="lastname"
+                                id="lastname" placeholder="Apellidos" maxlength="100" required
+                                value="<?php echo htmlspecialchars($apellidos); ?>">
                         </div>
                         <?php if (isset($errores['apellidos'])): ?>
                             <div class="invalid-feedback d-block">
@@ -156,9 +155,9 @@ $rangoFechas = obtenerRangoFechas();
                     <div class="input-with-icon">
                         <i class="bi bi-person-badge"></i>
                         <input type="text" class="form-control 
-                        <?php echo isset($errores['username']) ? 'is-invalid' : ''; ?>"
-                        name="username" id="username" placeholder="Nombre de usuario"
-                        maxlength="20" required value="<?php echo htmlspecialchars($username); ?>">
+                        <?php echo isset($errores['username']) ? 'is-invalid' : ''; ?>" name="username" id="username"
+                            placeholder="Nombre de usuario" maxlength="20" required
+                            value="<?php echo htmlspecialchars($username); ?>">
                     </div>
                     <?php if (isset($errores['username'])): ?>
                         <div class="invalid-feedback d-block">
@@ -173,9 +172,9 @@ $rangoFechas = obtenerRangoFechas();
                     <div class="input-with-icon">
                         <i class="bi bi-envelope"></i>
                         <input type="email" class="form-control 
-                        <?php echo isset($errores['email']) ? 'is-invalid' : ''; ?>"
-                        name="email" id="email" placeholder="Correo electrónico" 
-                        maxlength="100" required value="<?php echo htmlspecialchars($email); ?>">
+                        <?php echo isset($errores['email']) ? 'is-invalid' : ''; ?>" name="email" id="email"
+                            placeholder="Correo electrónico" maxlength="100" required
+                            value="<?php echo htmlspecialchars($email); ?>">
                     </div>
                     <?php if (isset($errores['email'])): ?>
                         <div class="invalid-feedback d-block">
@@ -189,13 +188,9 @@ $rangoFechas = obtenerRangoFechas();
                     <label for="birthdate">Fecha de nacimiento</label>
                     <div class="input-with-icon">
                         <i class="bi bi-calendar"></i>
-                        <input type="date"
-                            name="birthdate"
-                            id="birthdate"
+                        <input type="date" name="birthdate" id="birthdate"
                             class="form-control <?php echo isset($errores['birthdate']) ? 'is-invalid' : ''; ?>"
-                            min="<?php echo $rangoFechas['min']; ?>"
-                            max="<?php echo $rangoFechas['max']; ?>"
-                            required
+                            min="<?php echo $rangoFechas['min']; ?>" max="<?php echo $rangoFechas['max']; ?>" required
                             value="<?php echo htmlspecialchars($birthdate); ?>">
                     </div>
                     <?php if (isset($errores['birthdate'])): ?>
@@ -212,8 +207,8 @@ $rangoFechas = obtenerRangoFechas();
                         <div class="input-with-icon">
                             <i class="bi bi-lock"></i>
                             <input type="password" class="form-control 
-                            <?php echo isset($errores['password']) ? 'is-invalid' : ''; ?>" 
-                            name="password" id="password" placeholder="Contraseña" required>
+                            <?php echo isset($errores['password']) ? 'is-invalid' : ''; ?>" name="password"
+                                id="password" placeholder="Contraseña" required>
                         </div>
                     </div>
 
@@ -223,8 +218,8 @@ $rangoFechas = obtenerRangoFechas();
                         <div class="input-with-icon">
                             <i class="bi bi-lock"></i>
                             <input type="password" class="form-control 
-                            <?php echo isset($errores['password']) ? 'is-invalid' : ''; ?>" 
-                            name="confirmPassword" id="confirmPassword" placeholder="Confirmar Contraseña" required>
+                            <?php echo isset($errores['password']) ? 'is-invalid' : ''; ?>" name="confirmPassword"
+                                id="confirmPassword" placeholder="Confirmar Contraseña" required>
                         </div>
                     </div>
                 </div>

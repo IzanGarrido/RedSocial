@@ -3,7 +3,7 @@ session_start();
 require_once 'functions.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post_id'])) {
-    $post_id = (int)$_POST['post_id'];
+    $post_id = (int) $_POST['post_id'];
     echo mostrarComentarios($post_id);
 } else {
     echo '<p class="text-muted">No se pudo cargar los comentarios.</p>';

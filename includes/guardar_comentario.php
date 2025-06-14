@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $post_id = isset($_POST['post_id']) ? (int)$_POST['post_id'] : 0;
+    $post_id = isset($_POST['post_id']) ? (int) $_POST['post_id'] : 0;
     $content = isset($_POST['content']) ? trim($_POST['content']) : '';
     $user_id = $_SESSION['user_id'];
 

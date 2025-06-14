@@ -273,7 +273,7 @@ function creardirectoriobase($username)
     if (!file_exists($directorio)) {
         mkdir($directorio, 0777, true);
 
-        // Crear también el directorio para posts
+        // Create the posts directory
         $postsDir = "$directorio/posts";
         if (!file_exists($postsDir)) {
             mkdir($postsDir, 0777, true);
@@ -288,7 +288,7 @@ function creardirectoriobase($username)
         copy($defaultProfileImage, $profileImagePath);
     }
 
-    // URL relativa para la base de datos
+    // Relative path for the profile image
     $urlRelativa = "./assets/users/$username/profile.png";
 
     // Add the url to the database
@@ -434,12 +434,12 @@ function crearPublicacion($userId, $contenido, $archivo = null, $gameId = null)
             // Get the username
             $username = $usuario['USUARIO'];
 
-            // Obtener rutas usando la nueva función
+            // Getting the base path for the user directory
             $rutaBase = obtenerRutaBase('absoluta');
             $userDir = $rutaBase . "assets/users/{$username}";
             $postsDir = "{$userDir}/posts";
 
-            // Asegurar que los directorios existan
+            // Check if the user directory and posts directory exist
             if (!file_exists($userDir)) {
                 if (!mkdir($userDir, 0777, true)) {
                     return false;
@@ -458,8 +458,7 @@ function crearPublicacion($userId, $contenido, $archivo = null, $gameId = null)
             $fileName = "{$timestamp}.{$fileExtension}";
             $filePath = "{$postsDir}/{$fileName}";
 
-            // Ruta relativa para guardar en la base de datos
-            // Usamos un formato consistente para URLs
+            // Relative URL for the post
             $url = "./assets/users/{$username}/posts/{$fileName}";
 
             // Move the uploaded file to the destination

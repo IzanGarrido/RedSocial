@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$contactId = isset($_POST['contact_id']) ? (int)$_POST['contact_id'] : 0;
+$contactId = isset($_POST['contact_id']) ? (int) $_POST['contact_id'] : 0;
 
 if (!$contactId) {
     echo json_encode(['error' => 'ID de contacto requerido']);

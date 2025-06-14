@@ -4,7 +4,7 @@ require_once '../includes/functions.php';
 checkSession();
 
 // Obtain the game ID from the URL 
-$gameId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$gameId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
 if (!$gameId) {
     header('Location: ../index.php');
@@ -36,7 +36,7 @@ function comprobarJuegoFavorito($userId, $gameId)
         $sql = "SELECT COUNT(*) as count FROM USUARIOS_JUEGOS WHERE IDUSUARIO = ? AND IDJUEGO = ?";
         $result = DB::getOne($sql, [$userId, $gameId]);
 
-        $count = isset($result['count']) ? (int)$result['count'] : 0;
+        $count = isset($result['count']) ? (int) $result['count'] : 0;
 
         return $count > 0;
     } catch (Exception $e) {
@@ -197,16 +197,20 @@ function getCorrectPostImage($imagePath)
                 <!-- Notifications -->
                 <li class="nav-item mx-2 position-static">
                     <div class="dropdown">
-                        <a class="nav-link position-relative" href="#" id="Notificaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                        <a class="nav-link position-relative" href="#" id="Notificaciones" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                             <i class="bi bi-bell nav-icon"></i>
                             <?php if (obtenerNumeroNotificacionesNoLeidas($userId) > 0) { ?>
-                                <span class="position-absolute top-40 start-60 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6em;">
+                                <span
+                                    class="position-absolute top-40 start-60 translate-middle badge rounded-pill bg-danger"
+                                    style="font-size: 0.6em;">
                                     <?php echo obtenerNumeroNotificacionesNoLeidas($userId) > 9 ? '9+' : obtenerNumeroNotificacionesNoLeidas($userId); ?>
                                     <span class="visually-hidden">notificaciones no leídas</span>
                                 </span>
                             <?php } ?>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="Notificaciones" style="min-width: 300px; max-height: 400px; overflow-y: auto;">
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="Notificaciones"
+                            style="min-width: 300px; max-height: 400px; overflow-y: auto;">
                             <?php
                             $notificaciones = obtenerNotificacionesNoLeidas($userId);
                             if (count($notificaciones) > 0) {
@@ -255,26 +259,34 @@ function getCorrectPostImage($imagePath)
                 <!-- User profile -->
                 <li class="nav-item mx-2 position-static">
                     <div class="dropdown">
-                        <a class="nav-link d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                            <img src="<?php echo $profileImage; ?>" alt="User" class="rounded-circle me-1" width="32" height="32">
+                        <a class="nav-link d-flex align-items-center" href="#" id="userDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                            <img src="<?php echo $profileImage; ?>" alt="User" class="rounded-circle me-1" width="32"
+                                height="32">
                             <span class="d-none d-lg-block ms-1"><?php echo $username; ?></span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="userDropdown" style="min-width: 200px;">
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="userDropdown"
+                            style="min-width: 200px;">
                             <li class="px-3 py-2 border-bottom">
                                 <div class="d-flex align-items-center">
-                                    <img src="<?php echo $profileImage; ?>" alt="User" class="rounded-circle me-2" width="40" height="40">
+                                    <img src="<?php echo $profileImage; ?>" alt="User" class="rounded-circle me-2"
+                                        width="40" height="40">
                                     <div>
                                         <div class="fw-bold"><?php echo $username; ?></div>
                                         <small class="text-muted"><?php echo $_SESSION['user_email']; ?></small>
                                     </div>
                                 </div>
                             </li>
-                            <li><a class="dropdown-item py-2" href="./user.php?user=<?php echo urlencode($username); ?>"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
-                            <li><a class="dropdown-item py-2" href="./settings.php"><i class="bi bi-gear me-2"></i>Configuración</a></li>
+                            <li><a class="dropdown-item py-2"
+                                    href="./user.php?user=<?php echo urlencode($username); ?>"><i
+                                        class="bi bi-person me-2"></i>Mi perfil</a></li>
+                            <li><a class="dropdown-item py-2" href="./settings.php"><i
+                                        class="bi bi-gear me-2"></i>Configuración</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item py-2 text-danger" href="./logout.php"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a></li>
+                            <li><a class="dropdown-item py-2 text-danger" href="./logout.php"><i
+                                        class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a></li>
                         </ul>
                     </div>
                 </li>
@@ -288,8 +300,7 @@ function getCorrectPostImage($imagePath)
             <div class="row align-items-center">
                 <div class="col-auto">
                     <img src="<?php echo getCorrectGameImagePath($gameInfo['URL_IMAGEN']); ?>"
-                        alt="<?php echo htmlspecialchars($gameInfo['JUEGO']); ?>"
-                        class="rounded-3 shadow-sm"
+                        alt="<?php echo htmlspecialchars($gameInfo['JUEGO']); ?>" class="rounded-3 shadow-sm"
                         style="width: 120px; height: 120px; object-fit: cover;"
                         onerror="this.src='../assets/App-images/default_game.png'">
                 </div>
@@ -314,7 +325,8 @@ function getCorrectPostImage($imagePath)
                     <?php } ?>
 
                     <form method="post" class="d-inline">
-                        <button type="submit" name="toggle_favorite" class="btn <?php echo $esFavorito ? 'btn-warning' : 'btn-outline-warning'; ?>">
+                        <button type="submit" name="toggle_favorite"
+                            class="btn <?php echo $esFavorito ? 'btn-warning' : 'btn-outline-warning'; ?>">
                             <i class="bi <?php echo $esFavorito ? 'bi-star-fill' : 'bi-star'; ?> me-2"></i>
                             <?php echo $esFavorito ? 'Eliminar de favoritos' : 'Agregar a favoritos'; ?>
                         </button>
@@ -332,7 +344,9 @@ function getCorrectPostImage($imagePath)
                     <div class="text-center py-5">
                         <i class="bi bi-joystick text-muted" style="font-size: 4rem;"></i>
                         <h3 class="text-muted mt-3">No hay publicaciones</h3>
-                        <p class="text-muted">Aún no hay publicaciones sobre <?php echo htmlspecialchars($gameInfo['JUEGO']); ?>.</p>
+                        <p class="text-muted">Aún no hay publicaciones sobre
+                            <?php echo htmlspecialchars($gameInfo['JUEGO']); ?>.
+                        </p>
                         <a href="../index.php" class="btn btn-primary">
                             <i class="bi bi-plus-circle me-2"></i>Crear primera publicación
                         </a>
@@ -340,24 +354,31 @@ function getCorrectPostImage($imagePath)
                 <?php } else { ?>
                     <?php foreach ($publicaciones as $publicacion) { ?>
                         <div class="card post-card mb-4 shadow-sm">
-                            <div class="card-header bg-transparent d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between">
+                            <div
+                                class="card-header bg-transparent d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between">
                                 <div class="d-flex align-items-center">
-                                    <img src="<?php echo getCorrectUserImage($publicacion['USER_PHOTO']); ?>" class="rounded-circle me-2 user-avatar" width="40" height="40" alt="User" onerror="this.src='../assets/App-images/default_profile.png'">
+                                    <img src="<?php echo getCorrectUserImage($publicacion['USER_PHOTO']); ?>"
+                                        class="rounded-circle me-2 user-avatar" width="40" height="40" alt="User"
+                                        onerror="this.src='../assets/App-images/default_profile.png'">
                                     <div>
                                         <h6 class="mb-0 fw-bold user-name">
-                                            <a href="./user.php?user=<?php echo urlencode($publicacion['USUARIO']); ?>" class="text-decoration-none text-dark">
+                                            <a href="./user.php?user=<?php echo urlencode($publicacion['USUARIO']); ?>"
+                                                class="text-decoration-none text-dark">
                                                 <?php echo $publicacion['USUARIO']; ?>
                                             </a>
                                         </h6>
-                                        <small class="text-muted post-date"><?php echo date("d-m-y H:i", strtotime($publicacion['FECHA_CREACION'])); ?></small>
+                                        <small
+                                            class="text-muted post-date"><?php echo date("d-m-y H:i", strtotime($publicacion['FECHA_CREACION'])); ?></small>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-end">
                                     <div class="d-flex align-items-center game-info me-3">
-                                        <img src="<?php echo getCorrectGameImagePath($publicacion['GAME_IMAGE']); ?>" class="rounded-circle me-2 game-image" width="40" height="40" alt="Game">
+                                        <img src="<?php echo getCorrectGameImagePath($publicacion['GAME_IMAGE']); ?>"
+                                            class="rounded-circle me-2 game-image" width="40" height="40" alt="Game">
                                         <div>
                                             <h6 class="mb-0 game-title">
-                                                <a href="./games.php?id=<?php echo $publicacion['IDJUEGO'] ?? ''; ?>" class="text-decoration-none text-dark">
+                                                <a href="./games.php?id=<?php echo $publicacion['IDJUEGO'] ?? ''; ?>"
+                                                    class="text-decoration-none text-dark">
                                                     <?php echo $publicacion['JUEGO']; ?>
                                                 </a>
                                             </h6>
@@ -367,7 +388,8 @@ function getCorrectPostImage($imagePath)
                                         <i class="bi bi-controller category-icon me-2"></i>
                                         <div>
                                             <h6 class="mb-0 game-title">
-                                                <a href="./categories.php?id=<?php echo $publicacion['ID_CATEGORIA'] ?? ''; ?>" class="text-decoration-none text-body-tertiary">
+                                                <a href="./categories.php?id=<?php echo $publicacion['ID_CATEGORIA'] ?? ''; ?>"
+                                                    class="text-decoration-none text-body-tertiary">
                                                     <?php echo $publicacion['CATEGORIA']; ?>
                                                 </a>
                                             </h6>
@@ -380,7 +402,8 @@ function getCorrectPostImage($imagePath)
                                 <?php if ($publicacion['URL'] != '') { ?>
                                     <?php if (in_array(strtolower(pathinfo($publicacion['URL'], PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) { ?>
                                         <div class="d-flex justify-content-center media-container">
-                                            <img src="<?php echo getCorrectPostImage($publicacion['URL']); ?>" class="post-media img-fluid" alt="Post image" onerror="this.style.display='none'">
+                                            <img src="<?php echo getCorrectPostImage($publicacion['URL']); ?>"
+                                                class="post-media img-fluid" alt="Post image" onerror="this.style.display='none'">
                                         </div>
                                     <?php } elseif (in_array(strtolower(pathinfo($publicacion['URL'], PATHINFO_EXTENSION)), ['mp4', 'webm', 'avi', 'mov'])) { ?>
                                         <div class="d-flex justify-content-center media-container">
@@ -392,7 +415,9 @@ function getCorrectPostImage($imagePath)
                                     <?php } ?>
                                 <?php } ?>
 
-                                <p class="card-text post-content mt-3"><?php echo htmlspecialchars($publicacion['CONTENIDO']); ?></p>
+                                <p class="card-text post-content mt-3">
+                                    <?php echo htmlspecialchars($publicacion['CONTENIDO']); ?>
+                                </p>
                             </div>
 
                             <div class="card-footer bg-white d-flex justify-content-between align-items-center">
@@ -409,7 +434,8 @@ function getCorrectPostImage($imagePath)
                                         <span class="ms-1 like-count"><?php echo $publicacion['LIKES_COUNT']; ?></span>
                                     </button>
 
-                                    <button class="btn btn-sm btn-outline-secondary comment-btn" onclick="openCommentsModal(<?php echo $publicacion['ID_PUBLICACION']; ?>)">
+                                    <button class="btn btn-sm btn-outline-secondary comment-btn"
+                                        onclick="openCommentsModal(<?php echo $publicacion['ID_PUBLICACION']; ?>)">
                                         <i class="bi bi-chat"></i>
                                         <span class="ms-1"><?php echo $publicacion['COMMENTS_COUNT']; ?></span>
                                     </button>
@@ -447,7 +473,8 @@ function getCorrectPostImage($imagePath)
                         <form id="commentForm">
                             <input type="hidden" id="post_id" name="post_id" value="">
                             <div class="mb-2">
-                                <textarea class="form-control" id="commentContent" name="content" rows="2" placeholder="Escribe tu comentario..." required></textarea>
+                                <textarea class="form-control" id="commentContent" name="content" rows="2"
+                                    placeholder="Escribe tu comentario..." required></textarea>
                             </div>
                             <div class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-primary">Comentar</button>

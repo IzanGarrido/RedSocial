@@ -17,19 +17,19 @@ $userId = $_SESSION['user_id'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Obtain the form data
     $contenido = isset($_POST['postContent']) ? trim($_POST['postContent']) : '';
-    $gameId = !empty($_POST['gameId']) ? (int)$_POST['gameId'] : null;
-    
+    $gameId = !empty($_POST['gameId']) ? (int) $_POST['gameId'] : null;
+
     // Verify that there is content or a file
     if (empty($contenido) && empty($_FILES['postMedia']['name'])) {
         header('Location: ../index.php?error=empty_post');
         exit;
     }
-    
+
     $archivo = isset($_FILES['postMedia']) && !empty($_FILES['postMedia']['name']) ? $_FILES['postMedia'] : null;
     $result = crearPublicacion($userId, $contenido, $archivo, $gameId);
 
     header('Location: ../index.php');
-    
+
 } else {
     header('Location: ../index.php');
 }
